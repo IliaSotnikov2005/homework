@@ -56,7 +56,6 @@ void fillStringArray(char** array, int size)
         array[i] = (char*)malloc((strlen(value) + 1) * sizeof(char));
         strcpy(array[i], value);
     }
-    free(array);
 }
 
 void printStringArray(char** array, int size)
