@@ -5,7 +5,7 @@
 
 #define SIZE 100
 
-void sort(int* array, int size)
+void distribute(int* array, int size)
 {
     int pivot = array[0];
     int pIndex = 0, index = 0;
@@ -53,7 +53,7 @@ int main()
     int value = array[0];
     printf("\nThe firts number in array: %d\n", array[0]);
 
-    sort(array, SIZE);
+    distribute(array, SIZE);
     printf("\nResult:\n");
     printIntArray(array, SIZE);
 
