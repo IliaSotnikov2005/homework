@@ -2,6 +2,10 @@
 
 int recursiveExponentiation(int number, int power)
 {
+    if (power < 0)
+    {
+        return -1;
+    }
     if (power == 0)
     {
         return 1;
@@ -16,6 +20,10 @@ int recursiveExponentiation(int number, int power)
 
 int linearExponentiation(int number, int power)
 {
+    if (power < 0)
+    {
+        return -1;
+    }
     int result = 1;
     for (int i = 0; i < power; ++i)
     {
