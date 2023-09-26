@@ -7,7 +7,7 @@ int recursiveFibonacci(int number)
 {
     if (number < 1)
     {
-        return 0;
+        return -1;
     }
     if (number == 1 || number == 2)
     {
@@ -21,7 +21,7 @@ int linearFibonacci(int number)
     int number1 = 1, number2 = 1, number3 = 2;
     if (number < 1)
     {
-        return 0;
+        return -1;
     }
     if (number == 1 || number == 2)
     {
