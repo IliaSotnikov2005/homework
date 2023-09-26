@@ -1,6 +1,5 @@
 #include "../../lib/functions.h"
 #include <stdio.h>
-#include <stdio.h>
 #include  <time.h>
 #include <string.h>
 #include <stdlib.h>
@@ -127,6 +126,8 @@ int main()
     {
         return -1;
     }
+
+    printf("Now the algorithms are sorting the array, please wait\n\n");
 
     int array1[ARRAY_SIZE] = { 0 };
     int array2[ARRAY_SIZE] = { 0 };
