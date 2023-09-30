@@ -2,15 +2,18 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int partition(int *array, const int start, const int end, const int pivot) {
+int partition(int *array, const int start, const int end, const int pivot)
+{
     if (start < 0 || end < 0)
     {
         return -1;
     }
     int i = start;
     int j = start;
-    while (i <= end) {
-        if (array[i] > pivot) {
+    while (i <= end)
+    {
+        if (array[i] > pivot)
+        {
             i++;
         }
         else {
@@ -24,7 +27,8 @@ int partition(int *array, const int start, const int end, const int pivot) {
     return j - 1;
 }
 
-int smartQSort(int *array, const int start, const int end) {
+int smartQSort(int *array, const int start, const int end)
+{
     if (start < 0 || end < 0)
     {
         return -1;
