@@ -66,7 +66,8 @@ void bubbleSorting(int* array, int size)
     }
 }
 
-int testBubble(void) {
+int testBubble(void)
+{
     int array1[] = { 3, 7, 1, 9, 2 };
     int array1c[] = { 1, 2, 3, 7, 9 };
     bubbleSorting(array1, 5);
@@ -93,7 +94,8 @@ int testBubble(void) {
     return 1;
 }
 
-int testCounting(void) {
+int testCounting(void)
+{
     int array1[] = { 3, 7, 1, 9, 2 };
     int array1c[] = { 1, 2, 3, 7, 9 };
     sortingByCounting(array1, 5);
