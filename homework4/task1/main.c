@@ -109,6 +109,10 @@ int main()
         return -1;
     }
     int *binNumber1 = calloc(bitDepth, sizeof(int));
+    if (binNumber1 == NULL)
+    {
+        return -1;
+    }
     toTwosComplement(number1, binNumber1, bitDepth);
     printf("\nПервое число в дополнительном коде: ");
     printBin(binNumber1, bitDepth);
@@ -121,6 +125,10 @@ int main()
         return -1;
     }
     int *binNumber2 = calloc(bitDepth, sizeof(int));
+    if (binNumber2 == NULL)
+    {
+        return -1;
+    }
     toTwosComplement(number2, binNumber2, bitDepth);
     printf("\nВторое число в дополнительном коде: ");
     printBin(binNumber2, bitDepth);
@@ -132,6 +140,10 @@ int main()
     }
 
     int* binNumberSum = calloc(bitDepth, sizeof(int));
+    if (binNumberSum == NULL)
+    {
+        return -1;
+    }
     sumBin(binNumber1, binNumber2, binNumberSum, bitDepth);
     printf("\nСумма двух чисел в бинарной системе: ");
     printBin(binNumberSum, bitDepth);
