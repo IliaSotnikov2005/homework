@@ -61,6 +61,7 @@ void reverse(int* binNumber, int size)
 
 int binToDecimal(int* bin, int size)
 {
+    int negative = (bin[0] == 1) ? -1 : 1;
     if (bin[0] == 1)
     {
         for (int i = size - 1; i >= 0; --i)
@@ -83,10 +84,9 @@ int binToDecimal(int* bin, int size)
     int result = 0;
     for (int i = 1; i <= size; ++i)
     {
-        result += bin[size - i] * (2 << (i - 2));
-        printf("%d %d %d>", bin[size - i], i, 2 << (i - 2));
+        result += bin[size - i] * (1 << (i - 1));
     }
-    return result;
+    return negative * result;
 }
 
 void toTwosComplement(int number, int *bin, int size)
@@ -122,28 +122,46 @@ int main()
 {
     setlocale(LC_ALL, "RU");
 
-    printf("Введите первое число:\n");
+    printf("Введите желаемое число двоичных разрядов: ");
+    int bitDepth = getNum();
+    int lowLimit = -(1 << (bitDepth - 1)), highLimit = (1 << (bitDepth - 1)) - 1;
+    printf("\nСейчас вы работаете с числами в промежутке от %d до %d\n", lowLimit, highLimit);
+
+    printf("\nВведите первое число: ");
     int number1 = getNum();
-    int size1 = 8;
-    int *binNumber1 = calloc(size1, sizeof(int));
-    toTwosComplement(number1, binNumber1, size1);
+    if (number1 < lowLimit || number1 > highLimit)
+    {
+        printf("Неверный ввод данных\n");
+        return -1;
+    }
+    int *binNumber1 = calloc(bitDepth, sizeof(int));
+    toTwosComplement(number1, binNumber1, bitDepth);
     printf("\nПервое число в дополнительном коде: ");
-    printBin(binNumber1, size1);
+    printBin(binNumber1, bitDepth);
 
-    printf("\nВведите второе число:\n");
+    printf("\nВведите второе число: ");
     int number2 = getNum();
-    int size2 = 8;
-    int *binNumber2 = calloc(size2, sizeof(int));
-    toTwosComplement(number2, binNumber2, size2);
+    if (number2 < lowLimit || number2 > highLimit)
+    {
+        printf("Неверный ввод данных\n");
+        return -1;
+    }
+    int *binNumber2 = calloc(bitDepth, sizeof(int));
+    toTwosComplement(number2, binNumber2, bitDepth);
     printf("\nВторое число в дополнительном коде: ");
-    printBin(binNumber2, size2);
+    printBin(binNumber2, bitDepth);
 
-    int size3 = 8;
-    int* binNumberSum = calloc(size3, sizeof(int));
-    sumBin(binNumber1, binNumber2, binNumberSum, size3);
-    printf("\nСумма двух чисел в бинарной системе:\n");
-    printBin(binNumberSum, size3);
+    if (number1 + number2 < lowLimit || number1 + number2 > highLimit)
+    {
+        printf("\nРезультат вычисления суммы вышел за рамки указанного выше диапазона\n");
+        return -1;
+    }
 
-    int result = binToDecimal(binNumberSum, size3);
+    int* binNumberSum = calloc(bitDepth, sizeof(int));
+    sumBin(binNumber1, binNumber2, binNumberSum, bitDepth);
+    printf("\nСумма двух чисел в бинарной системе: ");
+    printBin(binNumberSum, bitDepth);
+
+    int result = binToDecimal(binNumberSum, bitDepth);
     printf("\nВ десятичной системе: %d\n", result);
 }
