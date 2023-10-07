@@ -45,20 +45,6 @@ void printBin(const int* bin, const int size)
     printf("\n");
 }
 
-void reverse(int* binNumber, int size)
-{
-    int i = 0, j = size - 1;
-    int temp = 0;
-    while (i < j)
-    {
-        temp = binNumber[i];
-        binNumber[i] = binNumber[j];
-        binNumber[j] = temp;
-        ++i;
-        --j;
-    }
-}
-
 int binToDecimal(int* bin, int size)
 {
     int negative = (bin[0] == 1) ? -1 : 1;
@@ -89,38 +75,26 @@ int binToDecimal(int* bin, int size)
     return negative * result;
 }
 
-void toTwosComplement(int number, int *bin, int size)
- {
-    int i = 0;
-    bool negative = number < 0;
-    number = abs(number);
-    while (number > 0)
-    {
-        bin[i] = number % 2;
-        number /= 2;
-        ++i;
+void toTwosComplement(int number, int* bin, int size) {
+    for (int i = size - 1; i >= 0; i--) {
+        bin[i] = number & 1;
+        number >>= 1;
     }
-    if (negative)
-    {
-        for (i = 0; i < size; ++i)
-        {
-            bin[i] = !bin[i];
-        }
-        int carry = 1;
-        for (i = 0; i < size; ++i)
-        {
-            bin[i] = bin[i] + carry;
-            carry = bin[i] / 2;
-            bin[i] %= 2;
+}
 
-        }
-    }
-    reverse(bin, size);
+int test()
+{
+    return 0;
 }
 
 int main()
 {
     setlocale(LC_ALL, "RU");
+
+    if (test() != 0)
+    {
+        return -1;
+    }
 
     printf("¬ведите желаемое число двоичных разр€дов: ");
     int bitDepth = getNum();
