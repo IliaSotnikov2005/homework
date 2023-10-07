@@ -30,34 +30,64 @@ void sumBin(int* bin1, int* bin2, int* result)
 {
     int size1 = sizeof(bin1) / sizeof(int);
     int size2 = sizeof(bin2) / sizeof(int);
-    int size3 = sizeof(result) / sizeof(int);
-
-    
-
+    int size3 = max(size1, size2);
+    int transfer = 0;
+    for (int i = size3; i > -1; --i)
+    {
+        result[i] += transfer;
+        if (i - (i - size1) > -1)
+        {
+            result[i] += bin1[i - (i - size1)];
+        }
+        if (i - (i - size2) > -1)
+        {
+            result[i] += bin2[i - (i - size2)];
+        }
+        if (result > 1)
+        {
+            transfer = 1;
+        }
+        else
+        {
+            transfer = 0;
+        }
+        result[i] %= 2;
+        printf("\n%d %d %d\n", (bin1[i] + bin2[i]) % 2, result[i], i);
+    }
 }
 
-void toBin(int number, int *bin)
+void reverse(int* binNumber, int size)
 {
-    int size = sizeof(bin) / sizeof(int);
-    int i = size - 1;
+    int i = 0, j = size - 1;
+    int temp = 0;
+    while (i < j)
+    {
+        temp = binNumber[i];
+        binNumber[i] = binNumber[j];
+        binNumber[j] = temp;
+        ++i;
+        --j;
+    }
+}
+
+void toTwosComplement(int number, int *bin, int size)
+{
+    int i = 0;
+    int addition = (number < 0) ? 1: 0;
+    number = abs(number);
     while (number > 0)
     {
-        bin[i] = number % 2;
+        bin[i] = ((number % 2) + addition) % 2;
+        printf("^%d^", bin[i]);
         number /= 2;
-        --i;
+        ++i;
     }
-    if (number < 0)
-    {
-        for (i = 0; i < size; ++i)
-        {
-            bin[i] = (bin[i] + 1) % 2;
-        }
-    }
+    reverse(bin, size);
 }
 
-void printBin(const int* bin)
+void printBin(const int* bin, const int size)
 {
-    int size = sizeof(bin) / sizeof(int);
+    printf("->%d<-", size);
     for (int i = 0; i < size; ++i)
     {
         printf("%d", bin[i]);
@@ -71,15 +101,29 @@ int main()
 
     printf("¬ведите первое число:\n");
     int number1 = getNum();
-    int size = (int)ceil(log2(number1));
-    int *binNumber1 = calloc(size + 1, sizeof(int));
+    int size1 = (int)floor(log2(abs(number1))) + 2;
+    int *binNumber1 = calloc(size1, sizeof(int));
+    toTwosComplement(number1, binNumber1, size1);
+    reverse(binNumber1, size1);
+    printf("\nѕервое число в дополнительном коде: ");
+    printBin(binNumber1, size1);
 
     printf("\n¬ведите второе число:\n");
     int number2 = getNum();
-    size = (int)ceil(log2(number2));
-    int *binNumber2 = calloc(size + 1, sizeof(int));
+    int size2 = (int)floor(log2(abs(number2))) + 2;
+    int *binNumber2 = calloc(size2, sizeof(int));
+    toTwosComplement(number2, binNumber2, size2);
+    //reverse(binNumber2, size2);
 
-    toBin(number1, binNumber1);
-    printf("-----------> ");
-    printBin(binNumber1);
+    printBin(binNumber1, size1);
+
+  
+    //int* binNumberSum = calloc(max(size1, size2) + 1, sizeof(int));
+    //sumBin(binNumber1, binNumber2, binNumberSum);
+    //printf("----------->");
+    //printBin(binNumber1);
+    //reverse(binNumber1, size1);
+    //printf("      ");
+   // printBin(binNumber1);
+    //printBin(binNumberSum);
 }
