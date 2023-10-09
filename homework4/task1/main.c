@@ -1,4 +1,4 @@
-#include <stdio.h>
+п»ї#include <stdio.h>
 #include <locale.h>
 #include <stdbool.h>
 #include <math.h>
@@ -19,7 +19,7 @@ int getNum(void)
         }
         else
         {
-            printf("\nНеправильный формат ввода\nПопробуйте снова: ");
+            printf("\nРќРµРїСЂР°РІРёР»СЊРЅС‹Р№ С„РѕСЂРјР°С‚ РІРІРѕРґР°\nРџРѕРїСЂРѕР±СѓР№С‚Рµ СЃРЅРѕРІР°: ");
         }
         while ((symbol = getchar()) != '\n' && symbol != EOF);
     }
@@ -144,16 +144,16 @@ int main()
         return 1 - ;
     }
 
-    printf("Введите желаемое число двоичных разрядов: ");
+    printf("Р’РІРµРґРёС‚Рµ Р¶РµР»Р°РµРјРѕРµ С‡РёСЃР»Рѕ РґРІРѕРёС‡РЅС‹С… СЂР°Р·СЂСЏРґРѕРІ: ");
     int bitDepth = getNum();
     int lowLimit = -(1 << (bitDepth - 1)), highLimit = (1 << (bitDepth - 1)) - 1;
-    printf("\nСейчас вы работаете с числами в промежутке от %d до %d\n", lowLimit, highLimit);
+    printf("\nРЎРµР№С‡Р°СЃ РІС‹ СЂР°Р±РѕС‚Р°РµС‚Рµ СЃ С‡РёСЃР»Р°РјРё РІ РїСЂРѕРјРµР¶СѓС‚РєРµ РѕС‚ %d РґРѕ %d\n", lowLimit, highLimit);
 
-    printf("\nВведите первое число: ");
+    printf("\nР’РІРµРґРёС‚Рµ РїРµСЂРІРѕРµ С‡РёСЃР»Рѕ: ");
     int number1 = getNum();
     if (number1 < lowLimit || number1 > highLimit)
     {
-        printf("Неверный ввод данных\n");
+        printf("РќРµРІРµСЂРЅС‹Р№ РІРІРѕРґ РґР°РЅРЅС‹С…\n");
         return -1;
     }
     int* binNumber1 = calloc(bitDepth, sizeof(int));
@@ -162,14 +162,14 @@ int main()
         return -1;
     }
     toTwosComplement(number1, binNumber1, bitDepth);
-    printf("\nПервое число в дополнительном коде: ");
+    printf("\nРџРµСЂРІРѕРµ С‡РёСЃР»Рѕ РІ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРј РєРѕРґРµ: ");
     printBin(binNumber1, bitDepth);
 
-    printf("\nВведите второе число: ");
+    printf("\nР’РІРµРґРёС‚Рµ РІС‚РѕСЂРѕРµ С‡РёСЃР»Рѕ: ");
     int number2 = getNum();
     if (number2 < lowLimit || number2 > highLimit)
     {
-        printf("Неверный ввод данных\n");
+        printf("РќРµРІРµСЂРЅС‹Р№ РІРІРѕРґ РґР°РЅРЅС‹С…\n");
         return -1;
     }
     int* binNumber2 = calloc(bitDepth, sizeof(int));
@@ -178,12 +178,12 @@ int main()
         return -1;
     }
     toTwosComplement(number2, binNumber2, bitDepth);
-    printf("\nВторое число в дополнительном коде: ");
+    printf("\nР’С‚РѕСЂРѕРµ С‡РёСЃР»Рѕ РІ РґРѕРїРѕР»РЅРёС‚РµР»СЊРЅРѕРј РєРѕРґРµ: ");
     printBin(binNumber2, bitDepth);
 
     if (number1 + number2 < lowLimit || number1 + number2 > highLimit)
     {
-        printf("\nРезультат вычисления суммы вышел за рамки указанного выше диапазона\n");
+        printf("\nР РµР·СѓР»СЊС‚Р°С‚ РІС‹С‡РёСЃР»РµРЅРёСЏ СЃСѓРјРјС‹ РІС‹С€РµР» Р·Р° СЂР°РјРєРё СѓРєР°Р·Р°РЅРЅРѕРіРѕ РІС‹С€Рµ РґРёР°РїР°Р·РѕРЅР°\n");
         return -1;
     }
 
@@ -195,10 +195,10 @@ int main()
     sumBin(binNumber1, binNumber2, binNumberSum, bitDepth);
     free(binNumber1);
     free(binNumber2);
-    printf("\nСумма двух чисел в бинарной системе: ");
+    printf("\nРЎСѓРјРјР° РґРІСѓС… С‡РёСЃРµР» РІ Р±РёРЅР°СЂРЅРѕР№ СЃРёСЃС‚РµРјРµ: ");
     printBin(binNumberSum, bitDepth);
 
     int result = binToDecimal(binNumberSum, bitDepth);
     free(binNumberSum);
-    printf("\nВ десятичной системе: %d\n", result);
+    printf("\nР’ РґРµСЃСЏС‚РёС‡РЅРѕР№ СЃРёСЃС‚РµРјРµ: %d\n", result);
 }
