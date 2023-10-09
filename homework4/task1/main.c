@@ -84,6 +84,54 @@ void toTwosComplement(int number, int* bin, int size) {
 
 int test()
 {
+    int bin1[8] = { 0 };
+    int bin2[8] = { 0 };
+    int binSum[8] = { 0 };
+    int decimalSum = 0;
+
+    int num1 = 0, num2 = 10;
+    toTwosComplement(num1, bin1, 8);
+    toTwosComplement(num2, bin2, 8);
+    sumBin(bin1, bin2, binSum, 8);
+    decimalSum = binToDecimal(binSum, 8);
+    if (decimalSum != 10)
+    {
+        return -1;
+    }
+
+    num1 = 10;
+    num2 = -5;
+    toTwosComplement(num1, bin1, 8);
+    toTwosComplement(num2, bin2, 8);
+    sumBin(bin1, bin2, binSum, 8);
+    decimalSum = binToDecimal(binSum, 8);
+    if (decimalSum != 5)
+    {
+        return -2;
+    }
+
+    num1 = -50;
+    num2 = -77;
+    toTwosComplement(num1, bin1, 8);
+    toTwosComplement(num2, bin2, 8);
+    sumBin(bin1, bin2, binSum, 8);
+    decimalSum = binToDecimal(binSum, 8);
+    if (decimalSum != -127)
+    {
+        return -3;
+    }
+
+    num1 = -127;
+    num2 = 127;
+    toTwosComplement(num1, bin1, 8);
+    toTwosComplement(num2, bin2, 8);
+    sumBin(bin1, bin2, binSum, 8);
+    decimalSum = binToDecimal(binSum, 8);
+    if (decimalSum != 0)
+    {
+        return -4;
+    }
+
     return 0;
 }
 
@@ -93,7 +141,7 @@ int main()
 
     if (test() != 0)
     {
-        return -1;
+        return 1 - ;
     }
 
     printf("Введите желаемое число двоичных разрядов: ");
@@ -108,7 +156,7 @@ int main()
         printf("Неверный ввод данных\n");
         return -1;
     }
-    int *binNumber1 = calloc(bitDepth, sizeof(int));
+    int* binNumber1 = calloc(bitDepth, sizeof(int));
     if (binNumber1 == NULL)
     {
         return -1;
@@ -124,7 +172,7 @@ int main()
         printf("Неверный ввод данных\n");
         return -1;
     }
-    int *binNumber2 = calloc(bitDepth, sizeof(int));
+    int* binNumber2 = calloc(bitDepth, sizeof(int));
     if (binNumber2 == NULL)
     {
         return -1;
@@ -145,9 +193,12 @@ int main()
         return -1;
     }
     sumBin(binNumber1, binNumber2, binNumberSum, bitDepth);
+    free(binNumber1);
+    free(binNumber2);
     printf("\nСумма двух чисел в бинарной системе: ");
     printBin(binNumberSum, bitDepth);
 
     int result = binToDecimal(binNumberSum, bitDepth);
+    free(binNumberSum);
     printf("\nВ десятичной системе: %d\n", result);
 }
