@@ -2,12 +2,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int findMostFrequent(char *name)
+int findMostFrequent(char *name, int *exitCode)
 {
-    int *exitCode = 0;
+    *exitCode = 0;
     FILE* file = fopen(name, "r");
     if (file == NULL) {
-        printf("\n%s\nError: file not found\n", name);
         *exitCode = -1;
         return 0;
     }
@@ -15,27 +14,31 @@ int findMostFrequent(char *name)
     char line[100];
     if (fgets(line, 100, file) == NULL)
     {
-        *exitCode = -1;
+        *exitCode = -2;
         return 0;
     }
     int size = 0;
     if (sscanf(line, "%d", &size) == NULL)
     {
-        *exitCode = -1;
+        *exitCode = -3;
         return 0;
     }
 
     int *array = calloc(size, sizeof(int));
     if (array == NULL)
     {
-        *exitCode = -1;
+        *exitCode = -4;
         return 0;
     }
     for (int i = 0; i < size; ++i) {
-        fgets(line, sizeof(line), file);
+        if (fgets(line, sizeof(line), file) == NULL)
+        {
+            *exitCode = -5;
+            return 0;
+        }
         if (sscanf(line, "%d", &array[i]) == NULL)
         {
-            *exitCode = -1;
+            *exitCode = -5;
             return 0;
         }
     }
@@ -65,6 +68,11 @@ int findMostFrequent(char *name)
     }
 
     int* countingArray = calloc(max + min + 1, sizeof(int));
+    if (countingArray == NULL)
+    {
+        *exitCode = -6;
+        return 0;
+    }
     for (int i = 0; i < size; ++i)
     {
         ++countingArray[array[i] + min];
