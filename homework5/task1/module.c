@@ -4,30 +4,39 @@
 
 int findMostFrequent(char *name)
 {
+    int *exitCode = 0;
     FILE* file = fopen(name, "r");
     if (file == NULL) {
-        printf("Error: file not found\n");
-        return -1;
+        printf("\n%s\nError: file not found\n", name);
+        *exitCode = -1;
+        return 0;
     }
 
     char line[100];
-    fgets(line, 100, file);
+    if (fgets(line, 100, file) == NULL)
+    {
+        *exitCode = -1;
+        return 0;
+    }
     int size = 0;
     if (sscanf(line, "%d", &size) == NULL)
     {
-        return -2;
+        *exitCode = -1;
+        return 0;
     }
 
     int *array = calloc(size, sizeof(int));
     if (array == NULL)
     {
-        return -3;
+        *exitCode = -1;
+        return 0;
     }
     for (int i = 0; i < size; ++i) {
         fgets(line, sizeof(line), file);
         if (sscanf(line, "%d", &array[i]) == NULL)
         {
-            return -4;
+            *exitCode = -1;
+            return 0;
         }
     }
 
