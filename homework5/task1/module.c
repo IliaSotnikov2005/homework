@@ -11,14 +11,8 @@ int findMostFrequent(char *name, int *exitCode)
         return 0;
     }
 
-    char line[100];
-    if (fgets(line, 100, file) == NULL)
-    {
-        *exitCode = -2;
-        return 0;
-    }
     int size = 0;
-    if (sscanf(line, "%d", &size) == NULL)
+    if (fscanf(file, "%d", &size) == NULL)
     {
         *exitCode = -3;
         return 0;
@@ -31,12 +25,7 @@ int findMostFrequent(char *name, int *exitCode)
         return 0;
     }
     for (int i = 0; i < size; ++i) {
-        if (fgets(line, sizeof(line), file) == NULL)
-        {
-            *exitCode = -5;
-            return 0;
-        }
-        if (sscanf(line, "%d", &array[i]) == NULL)
+        if (fscanf(file, "%d", &array[i]) == NULL)
         {
             *exitCode = -5;
             return 0;
