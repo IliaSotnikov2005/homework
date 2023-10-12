@@ -13,13 +13,14 @@ typedef struct User
     char phoneNumber[MAX_PHONE_LENGHT];
 } User;
 
-int addUser(User **userData, User newUser, int *usersCount)
+int addUser(User *userData, User newUser, int *usersCount)
 {
     if (*usersCount >= MAX_USERS_COUNT)
     {
         return -1;
     }
-    showContacts(*userData, usersCount);
+    userData[*usersCount] = newUser;
+    (*usersCount)++;
     return 0;
 }
 
@@ -28,7 +29,7 @@ int readData(const char* filename)
 
 }
 
-void showContacts(const User *userData, const int count)
+void showContacts(User *userData, int count)
 {
     for (int i = 0; i < count; ++i)
     {
@@ -43,7 +44,6 @@ int main()
     if (database == NULL)
     {
         database = fopen("database.txt", "a+");
-        fprintf(database, "%d\n", 0);
     }
     
     int usersCount = 0;
@@ -86,7 +86,12 @@ int main()
             {
                 return -1;
             }
-            addUser(&userData, newUser, &usersCount);
+            if (addUser(userData, newUser, &usersCount) == -1)
+            {
+                printf("\nThere is already a maximum number of people in your phone book\n");
+                break;
+            }
+            printf("\nSuccessful!\n\n");
             break;
         }
         case 2:
@@ -96,7 +101,7 @@ int main()
         }
         case 3:
         {
-            printf("\nfindNumber\n");
+            findPhoneByName();
             break;
         }
         case 4:
@@ -115,6 +120,8 @@ int main()
         }
         }
     }
+
+    free(userData);
     fclose(database);
     printf("\nGood bye!");
 }
