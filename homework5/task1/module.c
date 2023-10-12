@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int findMostFrequent(char *name, int *exitCode)
+int findMostFrequent(const char *name, int *exitCode)
 {
     *exitCode = 0;
     FILE* file = fopen(name, "r");
