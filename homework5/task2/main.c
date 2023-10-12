@@ -24,9 +24,32 @@ int addUser(User *userData, User newUser, int *usersCount)
     return 0;
 }
 
-int readData(const char* filename)
+int findPhoneByName(User* userData, char *name, const int usersCount, char *phoneNumber)
 {
+    for (int i = 0; i < usersCount; ++i)
+    {
+        if (strcmp(userData[i].name, name) == 0)
+        {
+            memcpy(phoneNumber, userData[i].phoneNumber, MAX_PHONE_LENGHT);
+            return 0;
+        }
+    }
+    memcpy(phoneNumber, "empty", MAX_PHONE_LENGHT);
+    return -1;
+}
 
+int findNameByPhone(User* userData, char* phoneNumber, const int usersCount, char* name)
+{
+    for (int i = 0; i < usersCount; ++i)
+    {
+        if (strcmp(userData[i].phoneNumber, phoneNumber) == 0)
+        {
+            memcpy(name, userData[i].name, MAX_NAME_LENGTH);
+            return 0;
+        }
+    }
+    memcpy(name, "empty", MAX_NAME_LENGTH);
+    return -1;
 }
 
 void showContacts(User *userData, int count)
@@ -36,6 +59,28 @@ void showContacts(User *userData, int count)
         printf("\n%s - %s", userData[i].name, userData[i].phoneNumber);
     }
     printf("\n\n");
+}
+
+int save(FILE *database, User *userData, const int usersCount)
+{
+    fseek(database, 0, SEEK_SET);
+    int currentUsersCount = 0;
+    if (fscanf_s(database, "%d", &currentUsersCount) == NULL)
+    {
+        return -1;
+    }
+    currentUsersCount = usersCount;
+    if (currentUsersCount == usersCount)
+    {
+        return 0;
+    }
+    fseek(database, 0, SEEK_SET);
+    fprintf(database, "%d\n", usersCount);
+    fseek(database, 0, SEEK_END);
+    for (int i = currentUsersCount; i < usersCount; ++i)
+    {
+        fprintf(database, "%s\n%s\n", userData[i].name, userData[i].phoneNumber);
+    }
 }
 
 int main()
@@ -101,17 +146,35 @@ int main()
         }
         case 3:
         {
-            findPhoneByName();
+            printf("\nSearch for a phone by name\n\nEnter a name: ");
+            char name[MAX_NAME_LENGTH] = { 0 };
+            if (scanf_s("%s", name, MAX_NAME_LENGTH) == NULL)
+            {
+                return -1;
+            }
+            char phone[MAX_PHONE_LENGHT] = { 0 };
+            findPhoneByName(userData, name, usersCount, phone);
+            printf("The result: %s\n\n", phone);
             break;
         }
         case 4:
         {
-            printf("\nfindPerson\n");
+            printf("\nSearch for a name by phone\n\nEnter a phone: ");
+            char phoneNumber[MAX_PHONE_LENGHT] = { 0 };
+            if (scanf_s("%s", phoneNumber, MAX_PHONE_LENGHT) == NULL)
+            {
+                return -1;
+            }
+            char name[MAX_NAME_LENGTH] = { 0 };
+            findNameByPhone(userData, phoneNumber, usersCount, name);
+            printf("The result: %s\n\n", name);
             break;
         }
         case 5:
         {
-            printf("\nsave\n");
+            save(database, userData, usersCount);
+            fclose(database);
+            break;
         }
         default:
         {
@@ -122,6 +185,6 @@ int main()
     }
 
     free(userData);
-    fclose(database);
+    //fclose(database);
     printf("\nGood bye!");
 }
