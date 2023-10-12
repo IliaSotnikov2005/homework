@@ -12,7 +12,7 @@ int findMostFrequent(char *name, int *exitCode)
     }
 
     int size = 0;
-    if (fscanf(file, "%d", &size) == NULL)
+    if (fscanf_s(file, "%d", &size) == NULL)
     {
         *exitCode = -3;
         return 0;
@@ -25,7 +25,7 @@ int findMostFrequent(char *name, int *exitCode)
         return 0;
     }
     for (int i = 0; i < size; ++i) {
-        if (fscanf(file, "%d", &array[i]) == NULL)
+        if (fscanf_s(file, "%d", &array[i]) == NULL)
         {
             *exitCode = -5;
             return 0;
