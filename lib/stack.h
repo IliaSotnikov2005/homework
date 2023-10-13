@@ -6,6 +6,7 @@ typedef struct Stack
 {
     int value;
     struct Stack* previous;
+    int size;
 } Stack;
 
 //push value to stack
