@@ -10,6 +10,7 @@ void push(Stack** head, const int value)
         return -1;
     }
     next->value = value;
+    next->size = (*head)->size + 1;
     next->previous = *head;
     *head = next;
     return 0;
@@ -23,8 +24,15 @@ int pop(Stack** head)
     }
     Stack* trash = *head;
     *head = (*head)->previous;
+    int trashValue = trash->value;
+    if (trash->size == 1)
+    {
+        (*head)->previous = NULL;
+        (*head)->size = 0;
+        (*head)->value = NULL;
+    }
     free(trash);
-    return 0;
+    return trashValue;
 }
 
 int clean(Stack** head)
