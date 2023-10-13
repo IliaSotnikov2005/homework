@@ -52,34 +52,43 @@ int findNameByPhone(User* userData, char* phoneNumber, const int usersCount, cha
     return -1;
 }
 
-void showContacts(User *userData, int count)
+void showContacts(const User *userData, const int usersCount)
 {
-    for (int i = 0; i < count; ++i)
+    for (int i = 0; i < usersCount; ++i)
     {
         printf("\n%s - %s", userData[i].name, userData[i].phoneNumber);
     }
     printf("\n\n");
 }
 
-int save(FILE *database, User *userData, const int usersCount)
+int save(FILE *database, User *userData, const int usersCount, const int newUsers)
 {
-    fseek(database, 0, SEEK_SET);
-    int currentUsersCount = 0;
-    if (fscanf_s(database, "%d", &currentUsersCount) == NULL)
-    {
-        return -1;
-    }
-    currentUsersCount = usersCount;
-    if (currentUsersCount == usersCount)
+    if (!newUsers)
     {
         return 0;
     }
-    fseek(database, 0, SEEK_SET);
-    fprintf(database, "%d\n", usersCount);
     fseek(database, 0, SEEK_END);
-    for (int i = currentUsersCount; i < usersCount; ++i)
+    for (int i = 0; i < newUsers; ++i)
     {
-        fprintf(database, "%s\n%s\n", userData[i].name, userData[i].phoneNumber);
+        fprintf(database, "\n%s\n%s", userData[usersCount - newUsers + i].name, userData[usersCount - newUsers + i].phoneNumber);
+    }
+}
+
+int read(FILE* database, User* userData, int *usersCount)
+{
+    int i = 0;
+    while (!feof(database))
+    {
+        if (fscanf_s(database, "%s", userData[i].name, 100) == NULL)
+        {
+            return -1;
+        }
+        if (fscanf_s(database, "%s", userData[i].phoneNumber, 12) == NULL)
+        {
+            return -1;
+        }
+        ++i;
+        ++(*usersCount);
     }
 }
 
@@ -92,20 +101,11 @@ int main()
     }
     
     int usersCount = 0;
-    fscanf_s(database, "%d", &usersCount);
+    User* userData[MAX_USERS_COUNT] = { 0 };
 
-    User *userData = malloc(usersCount * sizeof(User));
-    for (int i = 0; i < usersCount * 2; ++i)
-    { 
-        if (fscanf_s(database, "%s", userData[i].name, 100) == NULL)
-        {
-            return -1;
-        }
-        if (fscanf_s(database, "%s", userData[i].phoneNumber, 12) == NULL)
-        {
-            return -1;
-        }
-    }
+    read(database, userData, &usersCount);
+
+    int newUsers = 0;
 
     int command = -1;
     while (command != 0)
@@ -136,6 +136,7 @@ int main()
                 printf("\nThere is already a maximum number of people in your phone book\n");
                 break;
             }
+            ++newUsers;
             printf("\nSuccessful!\n\n");
             break;
         }
@@ -172,8 +173,7 @@ int main()
         }
         case 5:
         {
-            save(database, userData, usersCount);
-            fclose(database);
+            save(database, userData, usersCount, newUsers);
             break;
         }
         default:
@@ -183,8 +183,6 @@ int main()
         }
         }
     }
-
-    free(userData);
-    //fclose(database);
+    fclose(database);
     printf("\nGood bye!");
 }
