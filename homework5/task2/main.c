@@ -2,18 +2,19 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #define MAX_USERS_COUNT 100
 #define MAX_NAME_LENGTH 100
-#define MAX_PHONE_LENGHT 12
+#define MAX_PHONE_LENGTH 12
 
 typedef struct User
 {
     char name[MAX_NAME_LENGTH];
-    char phoneNumber[MAX_PHONE_LENGHT];
+    char phoneNumber[MAX_PHONE_LENGTH];
 } User;
 
-int addUser(User *userData, User newUser, int *usersCount)
+int addUser(User* userData, User newUser, int* usersCount)
 {
     if (*usersCount >= MAX_USERS_COUNT)
     {
@@ -24,17 +25,16 @@ int addUser(User *userData, User newUser, int *usersCount)
     return 0;
 }
 
-int findPhoneByName(User* userData, char *name, const int usersCount, char *phoneNumber)
+int findPhoneByName(User* userData, char* name, const int usersCount, char* phoneNumber)
 {
     for (int i = 0; i < usersCount; ++i)
     {
         if (strcmp(userData[i].name, name) == 0)
         {
-            memcpy(phoneNumber, userData[i].phoneNumber, MAX_PHONE_LENGHT);
+            memcpy(phoneNumber, userData[i].phoneNumber, MAX_PHONE_LENGTH);
             return 0;
         }
     }
-    memcpy(phoneNumber, "empty", MAX_PHONE_LENGHT);
     return -1;
 }
 
@@ -48,11 +48,10 @@ int findNameByPhone(User* userData, char* phoneNumber, const int usersCount, cha
             return 0;
         }
     }
-    memcpy(name, "empty", MAX_NAME_LENGTH);
     return -1;
 }
 
-void showContacts(const User *userData, const int usersCount)
+void showContacts(const User* userData, const int usersCount)
 {
     for (int i = 0; i < usersCount; ++i)
     {
@@ -61,7 +60,7 @@ void showContacts(const User *userData, const int usersCount)
     printf("\n\n");
 }
 
-int save(FILE *database, User *userData, const int usersCount, const int newUsers)
+int save(FILE* database, User* userData, const int usersCount, const int newUsers)
 {
     if (!newUsers)
     {
@@ -70,36 +69,104 @@ int save(FILE *database, User *userData, const int usersCount, const int newUser
     fseek(database, 0, SEEK_END);
     for (int i = 0; i < newUsers; ++i)
     {
-        fprintf(database, "\n%s\n%s", userData[usersCount - newUsers + i].name, userData[usersCount - newUsers + i].phoneNumber);
+        fprintf(database, "%s\n%s\n", userData[usersCount - newUsers + i].name, userData[usersCount - newUsers + i].phoneNumber);
     }
 }
 
-int read(FILE* database, User* userData, int *usersCount)
+int read(FILE* database, User* userData, int* usersCount)
 {
-    int i = 0;
     while (!feof(database))
     {
-        if (fscanf_s(database, "%s", userData[i].name, 100) == NULL)
+        if (fscanf_s(database, "%s", userData[*usersCount].name, 100) == NULL)
         {
             return -1;
         }
-        if (fscanf_s(database, "%s", userData[i].phoneNumber, 12) == NULL)
+        if (fscanf_s(database, "%s", userData[*usersCount].phoneNumber, 12) == NULL)
         {
             return -1;
         }
-        ++i;
-        ++(*usersCount);
+        if (userData[*usersCount].name[0] != '\0')
+        {
+            ++(*usersCount);
+        }
+
     }
+}
+
+void usersToArray(User* from, char*** to, const int size) {
+    for (int i = 0; i < size; ++i) {
+        (*to)[i][0] = (char*)malloc(strlen(from[i].name) + 1);
+        (*to)[i][1] = (char*)malloc(strlen(from[i].phoneNumber) + 1);
+        strcpy((*to)[i][0], from[i].name);
+        strcpy((*to)[i][1], from[i].phoneNumber);
+    }
+}
+
+int testAddUser(void)
+{
+    User* userData[2] = { 0 };
+    int usersCount = 0;
+    User newUser1 = {.name = "ivan", .phoneNumber = "3377312" };
+    User newUser2 = {.name = "oleg", .phoneNumber = "141413" };
+    char** correct[][2] = {{"ivan", "3377312"}, {"oleg", "141413"}};
+    addUser(userData, newUser1, &usersCount);
+    addUser(userData, newUser2, &usersCount);
+    char** userDataStr[][2] = { 0 };
+    usersToArray(userData, &userDataStr, usersCount);
+    if (memcpy(correct, userDataStr, usersCount) == NULL)
+    {
+        return 0;
+    }
+    return -1;
+}
+
+int testFindPhone(void)
+{
+    User* userData[2] = { 0 };
+    int usersCount = 0;
+    User newUser1 = { .name = "ivan", .phoneNumber = "33" };
+    User newUser2 = { .name = "oleg", .phoneNumber = "141413" };
+    addUser(userData, newUser1, &usersCount);
+    addUser(userData, newUser2, &usersCount);
+    char phone[MAX_PHONE_LENGTH] = { 0 };
+    if (strcpy(findPhoneByName(userData, "ivan", usersCount, phone), "33") == NULL)
+    {
+        printf("da");
+        return 0;
+    }
+    printf("net");
+    return -1;
+}
+
+int testFindName(void)
+{
+    User* userData[2] = { 0 };
+    int usersCount = 0;
+    User newUser1 = { .name = "ivan", .phoneNumber = "33" };
+    User newUser2 = { .name = "oleg", .phoneNumber = "141413" };
+    addUser(userData, newUser1, &usersCount);
+    addUser(userData, newUser2, &usersCount);
+    char name[MAX_NAME_LENGTH] = { 0 };
+    if (strcpy(findNameByPhone(userData, "33", usersCount, name), "ivan") == NULL)
+    {
+        printf("da");
+        return 0;
+    }
+    printf("net");
+    return -1;
 }
 
 int main()
 {
+    testAddUser();
+    testFindPhone();
+
     FILE* database = fopen("database.txt", "r+");
     if (database == NULL)
     {
         database = fopen("database.txt", "a+");
     }
-    
+
     int usersCount = 0;
     User* userData[MAX_USERS_COUNT] = { 0 };
 
@@ -153,22 +220,22 @@ int main()
             {
                 return -1;
             }
-            char phone[MAX_PHONE_LENGHT] = { 0 };
+            char phone[MAX_PHONE_LENGTH] = { 0 };
             findPhoneByName(userData, name, usersCount, phone);
-            printf("The result: %s\n\n", phone);
+            printf("The result: %s\n\n", phone == NULL ? "empty" : phone);
             break;
         }
         case 4:
         {
             printf("\nSearch for a name by phone\n\nEnter a phone: ");
-            char phoneNumber[MAX_PHONE_LENGHT] = { 0 };
-            if (scanf_s("%s", phoneNumber, MAX_PHONE_LENGHT) == NULL)
+            char phoneNumber[MAX_PHONE_LENGTH] = { 0 };
+            if (scanf_s("%s", phoneNumber, MAX_PHONE_LENGTH) == NULL)
             {
                 return -1;
             }
             char name[MAX_NAME_LENGTH] = { 0 };
             findNameByPhone(userData, phoneNumber, usersCount, name);
-            printf("The result: %s\n\n", name);
+            printf("The result: %s\n\n", name == NULL ? "empty" : name);
             break;
         }
         case 5:
