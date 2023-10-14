@@ -26,6 +26,12 @@
     <Text Include="database.txt">
       <Filter>Resource Files</Filter>
     </Text>
+    <Text Include="testRead.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="testSave.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\functions.h">

@@ -77,11 +77,11 @@ int read(FILE* database, User* userData, int* usersCount)
 {
     while (!feof(database))
     {
-        if (fscanf_s(database, "%s", userData[*usersCount].name, 100) == NULL)
+        if (fscanf_s(database, "%s", userData[*usersCount].name, MAX_NAME_LENGTH) == NULL)
         {
             return -1;
         }
-        if (fscanf_s(database, "%s", userData[*usersCount].phoneNumber, 12) == NULL)
+        if (fscanf_s(database, "%s", userData[*usersCount].phoneNumber, MAX_PHONE_LENGTH) == NULL)
         {
             return -1;
         }
@@ -91,75 +91,163 @@ int read(FILE* database, User* userData, int* usersCount)
         }
 
     }
+    return 0;
 }
 
-void usersToArray(User* from, char*** to, const int size) {
-    for (int i = 0; i < size; ++i) {
-        (*to)[i][0] = (char*)malloc(strlen(from[i].name) + 1);
-        (*to)[i][1] = (char*)malloc(strlen(from[i].phoneNumber) + 1);
-        strcpy((*to)[i][0], from[i].name);
-        strcpy((*to)[i][1], from[i].phoneNumber);
-    }
+bool compare(User* user1, User* user2)
+{
+    return ((strcmp(user1->name, user2->name) == 0) && (strcmp(user1->phoneNumber, user2->phoneNumber) == 0));
 }
 
 int testAddUser(void)
 {
-    User* userData[2] = { 0 };
+    User userData[2] = { 0 };
     int usersCount = 0;
     User newUser1 = {.name = "ivan", .phoneNumber = "3377312" };
     User newUser2 = {.name = "oleg", .phoneNumber = "141413" };
-    char** correct[][2] = {{"ivan", "3377312"}, {"oleg", "141413"}};
+
+    User correct[] = {newUser1, newUser2};
+
     addUser(userData, newUser1, &usersCount);
     addUser(userData, newUser2, &usersCount);
-    char** userDataStr[][2] = { 0 };
-    usersToArray(userData, &userDataStr, usersCount);
-    if (memcpy(correct, userDataStr, usersCount) == NULL)
+
+    for (int i = 0; i < usersCount; ++i)
     {
-        return 0;
+        if (!compare(&userData[i], &correct[i]))
+        {
+            return -1;
+        }
     }
-    return -1;
+    return 0;
 }
 
 int testFindPhone(void)
 {
-    User* userData[2] = { 0 };
+    User userData[2] = { 0 };
     int usersCount = 0;
     User newUser1 = { .name = "ivan", .phoneNumber = "33" };
     User newUser2 = { .name = "oleg", .phoneNumber = "141413" };
     addUser(userData, newUser1, &usersCount);
     addUser(userData, newUser2, &usersCount);
     char phone[MAX_PHONE_LENGTH] = { 0 };
-    if (strcpy(findPhoneByName(userData, "ivan", usersCount, phone), "33") == NULL)
+    char name[] = "ivan";
+    char correct[] = "33";
+    findPhoneByName(userData, name, usersCount, phone);
+    if (strcmp(phone, correct) == 0)
     {
-        printf("da");
         return 0;
     }
-    printf("net");
     return -1;
 }
 
 int testFindName(void)
 {
-    User* userData[2] = { 0 };
+    User userData[2] = { 0 };
     int usersCount = 0;
     User newUser1 = { .name = "ivan", .phoneNumber = "33" };
     User newUser2 = { .name = "oleg", .phoneNumber = "141413" };
     addUser(userData, newUser1, &usersCount);
     addUser(userData, newUser2, &usersCount);
     char name[MAX_NAME_LENGTH] = { 0 };
-    if (strcpy(findNameByPhone(userData, "33", usersCount, name), "ivan") == NULL)
+    char phone[] = "33";
+    char correct[] = "ivan";
+    findNameByPhone(userData, phone, usersCount, name);
+    if (strcmp(name, correct) == 0)
     {
-        printf("da");
         return 0;
     }
-    printf("net");
     return -1;
+}
+
+int testRead(void)
+{
+    FILE *testDatabase = fopen("testRead.txt", "r");
+    if (testDatabase == NULL)
+    {
+        return -1;
+    }
+    int usersCount = 0;
+    User* userData[MAX_USERS_COUNT] = { 0 };
+
+    read(testDatabase, userData, &usersCount);
+    fclose(testDatabase);
+
+    User user1 = { "ivan", "1337" };
+    User user2 = { "oleg", "228" };
+    User user3 = { "gena", "6666" };
+    User correct[] = {user1, user2, user3};
+
+    for (int i = 0; i < usersCount; ++i)
+    {
+        if (!compare(&userData[i], &correct[i]))
+        {
+            return -1;
+        }
+    }
+    return 0;
+}
+
+int testSave(void)
+{
+    FILE* testDatabase = fopen("testSave.txt", "w");
+
+    if (testDatabase == NULL)
+    {
+        return -1;
+    }
+
+    User user1 = { "ivan", "1337" };
+    User user2 = { "oleg", "228" };
+    User user3 = { "gena", "6666" };
+    User correct[] = { user1, user2, user3 };
+
+    save(testDatabase, correct, 0, 3);
+
+    fclose(testDatabase);
+
+    testDatabase = fopen("testSave.txt", "r");
+    if (testDatabase == NULL)
+    {
+        return -1;
+    }
+    int usersCount = 0;
+    User* userData[MAX_USERS_COUNT] = { 0 };
+
+    read(testDatabase, userData, &usersCount);
+    fclose(testDatabase);
+
+    for (int i = 0; i < usersCount; ++i)
+    {
+        if (!compare(&userData[i], &correct[i]))
+        {
+            return -1;
+        }
+    }
+    return 0;
 }
 
 int main()
 {
-    testAddUser();
-    testFindPhone();
+    if (testAddUser() != 0)
+    {
+        return -1;
+    }
+    if (testFindPhone() != 0)
+    {
+        return -2;
+    }
+    if (testFindName() != 0)
+    {
+        return -3;
+    }
+    if (testRead() != 0)
+    {
+        //return -4;
+    }
+    if (testSave() != 0)
+    {
+        return -5;
+    }
 
     FILE* database = fopen("database.txt", "r+");
     if (database == NULL)

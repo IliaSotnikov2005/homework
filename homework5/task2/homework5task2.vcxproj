@@ -124,6 +124,8 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="database.txt" />
+    <Text Include="testRead.txt" />
+    <Text Include="testSave.txt" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\lib\functions.h" />
