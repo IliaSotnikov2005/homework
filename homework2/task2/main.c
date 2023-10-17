@@ -1,6 +1,7 @@
 #include "../../lib/functions.h"
 #include <stdio.h>
 #include <math.h>
+#include <stdbool.h>
 
 float recursiveExponentiation(int number, int power)
 {
@@ -34,125 +35,54 @@ float linearExponentiation(int number, int power)
     return (float)1 / result;
 }
 
-int testLinearExponentiation(void) {
-    if (linearExponentiation(2, 3) != 8)
-    {
-        return -1;
-    }
-    if (linearExponentiation(5, 2) != 25)
-    {
-        return -2;
-    }
-    if (linearExponentiation(2, -3) != 0.125)
-    {
-        return -3;
-    }
-    if (linearExponentiation(5, -2) != (float)0.04)
-    {
-        return -4;
-    }
-    if (linearExponentiation(2, 0) != 1)
-    {
-        return -5;
-    }
-    if (linearExponentiation(5, 0) != 1)
-    {
-        return -6;
-    }
-    if (linearExponentiation(0, 3) != 0)
-    {
-        return -7;
-    }
-    if (linearExponentiation(2, 1) != 2)
-    {
-        return -8;
-    }
-    if (linearExponentiation(5, 1) != 5)
-    {
-        return -9;
-    }
-    if (linearExponentiation(-2, 4) != 16)
-    {
-        return -10;
-    }
-    if (linearExponentiation(-5, 2) != 25)
-    {
-        return -11;
-    }
-    if (linearExponentiation(-2, 3) != -8)
-    {
-        return -12;
-    }
-    if (linearExponentiation(-5, 3) != -125)
-    {
-        return -13;
-    }
-    return 0;
-}
+bool* powerTest(float (*powerFunction)(int, int), bool* testResult)
+{
+    float testCases[][3] = {
+        {2, 3, 8},
+        {5, 2, 25},
+        {2, -3, 0.125},
+        {5, -2, 0.04},
+        {2, 0, 1},
+        {0, 3, 0},
+        {2, 1, 2},
+        {5, 1, 5},
+        {-2, 4, 16},
+        {-5, 2, 25},
+        {-2, 3, -8},
+        {-5, 3, -125}
+    };
 
+    for (int i = 0; i < 12; ++i)
+    {
+        int input1 = (int)testCases[i][0];
+        int input2 = (int)testCases[i][1];
+        float expectedOutput = testCases[i][2];
+        float actualOutput = powerFunction(input1, input2);
 
-int testRecursiveExponentiation(void) {
-    if (recursiveExponentiation(2, 3) != 8)
-    {
-        return -1;
+        testResult[i] = (actualOutput == expectedOutput);
     }
-    if (recursiveExponentiation(5, 2) != 25)
-    {
-        return -2;
-    }
-    if (recursiveExponentiation(2, -3) != (float)0.125)
-    {
-        return -3;
-    }
-    if (recursiveExponentiation(5, -2) != (float)0.04)
-    {
-        return -4;
-    }
-    if (recursiveExponentiation(2, 0) != 1)
-    {
-        return -5;
-    }
-    if (recursiveExponentiation(5, 0) != 1)
-    {
-        return -6;
-    }
-    if (recursiveExponentiation(0, 3) != 0)
-    {
-        return -7;
-    }
-    if (recursiveExponentiation(2, 1) != 2)
-    {
-        return -8;
-    }
-    if (recursiveExponentiation(5, 1) != 5)
-    {
-        return -9;
-    }
-    if (recursiveExponentiation(-2, 4) != 16)
-    {
-        return -10;
-    }
-    if (recursiveExponentiation(-5, 2) != 25)
-    {
-        return -11;
-    }
-    if (recursiveExponentiation(-2, 3) != -8)
-    {
-        return -12;
-    }
-    if (recursiveExponentiation(-5, 3) != -125)
-    {
-        return -13;
-    }
-    return 0;
 }
 
 int main()
 {
-    if (testLinearExponentiation() != 0 || testRecursiveExponentiation() != 0)
+    bool testResult[12] = { 0 };
+    powerTest(&linearExponentiation, testResult);
+    for (int i = 0; i < 12; ++i)
     {
-        return -1;
+        if (!testResult[i])
+        {
+            printf("LINEAR TEST %d FAILED\n", i + 1);
+        }
     }
+    powerTest(&recursiveExponentiation, testResult);
+    for (int i = 0; i < 12; ++i)
+    {
+        if (!testResult[i])
+        {
+            printf("RECURSIVE TEST %d FAILED\n", i + 1);
+        }
+    }
+
     printf("Enter a number and a power:\nnumber = ");
     int number = getNum();
     printf("power = ");
