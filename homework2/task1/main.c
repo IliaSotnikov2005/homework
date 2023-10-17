@@ -4,12 +4,11 @@
 
 #define AMOUNT_OF_FIBONACCI_NUMBERS 40
 
-// recursively calculates the nth fibonacci number, returns -1 in case of incorrect argument
-int recursiveFibonacci(int number)
+unsigned int recursiveFibonacci(unsigned int number)
 {
-    if (number < 1)
+    if (number == 0)
     {
-        return -1;
+        return 0;
     }
     if (number == 1 || number == 2)
     {
@@ -18,13 +17,12 @@ int recursiveFibonacci(int number)
     return recursiveFibonacci(number - 1) + recursiveFibonacci(number - 2);
 }
 
-// linearly calculates the nth fibonacci number, returns -1 in case of incorrect argument
-int linearFibonacci(int number)
+unsigned int linearFibonacci(unsigned int number)
 {
     int number1 = 1, number2 = 1, number3 = 2;
-    if (number < 1)
+    if (number == 0)
     {
-        return -1;
+        return 0;
     }
     if (number == 1 || number == 2)
     {
@@ -39,11 +37,10 @@ int linearFibonacci(int number)
     return number3;
 }
 
-void recursiveFibonacciTest(bool *testResult)
+bool* fibonacciTest(unsigned int (*fibonacciFunction)(unsigned int), bool* testResult)
 {
     int testCases[][2] = {
-        {-2, -1},
-        {0, -1},
+        {0, 0},
         {1, 1},
         {2, 1},
         {3, 2},
@@ -54,36 +51,11 @@ void recursiveFibonacciTest(bool *testResult)
         {8, 21}
     };
 
-    for (int i = 0; i < 10; ++i)
+    for (int i = 0; i < 9; ++i)
     {
         int input = testCases[i][0];
         int expectedOutput = testCases[i][1];
-        int actualOutput = recursiveFibonacci(input);
-
-        testResult[i] = (actualOutput == expectedOutput);
-    }
-}
-
-void linearFibonacciTest(bool* testResult)
-{
-    int testCases[][2] = {
-        {-2, -1},
-        {0, -1},
-        {1, 1},
-        {2, 1},
-        {3, 2},
-        {4, 3},
-        {5, 5},
-        {6, 8},
-        {7, 13},
-        {8, 21}
-    };
-
-    for (int i = 0; i < 10; ++i)
-    {
-        int input = testCases[i][0];
-        int expectedOutput = testCases[i][1];
-        int actualOutput = linearFibonacci(input);
+        int actualOutput = fibonacciFunction(input);
 
         testResult[i] = (actualOutput == expectedOutput);
     }
@@ -91,17 +63,17 @@ void linearFibonacciTest(bool* testResult)
 
 int main()
 {
-    bool testResult[10] = { 0 };
-    linearFibonacciTest(testResult);
-    for (int i = 0; i < 10; ++i)
+    bool testResult[9] = { 0 };
+    fibonacciTest(&linearFibonacci, testResult);
+    for (int i = 0; i < 9; ++i)
     {
         if (!testResult[i])
         {
             printf("LINEAR TEST %d FAILED\n", i + 1);
         }
     }
-    recursiveFibonacciTest(testResult);
-    for (int i = 0; i < 10; ++i)
+    fibonacciTest(&recursiveFibonacci, testResult);
+    for (int i = 0; i < 9; ++i)
     {
         if (!testResult[i])
         {
