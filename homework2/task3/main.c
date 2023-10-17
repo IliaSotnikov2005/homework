@@ -6,7 +6,7 @@
 
 #define ARRAY_SIZE 100000
 
-void sortingByCounting(int* array, int size)
+int* sortingByCounting(int* array, int size)
 {
     int max = array[0];
     int min = array[0];
@@ -50,7 +50,7 @@ void sortingByCounting(int* array, int size)
     free(countingArray);
 }
 
-void bubbleSorting(int* array, int size)
+int* bubbleSorting(int* array, int size)
 {
     for (int i = 0; i < size; i++)
     {
