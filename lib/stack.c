@@ -2,18 +2,34 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+struct Stack
+{
+    int value;
+    struct Stack* previous;
+    int size;
+};
+
+int stackSize(Stack* head)
+{
+    return head->size;
+}
+
+int top(Stack* head)
+{
+    return head->value;
+}
+
 void push(Stack** head, const int value)
 {
     Stack* next = malloc(sizeof(Stack));
     if (next == NULL)
     {
-        return -1;
+        return;
     }
     next->value = value;
-    next->size = (*head)->size + 1;
+    next->size = (*head == NULL) ? 1 : (*head)->size + 1;
     next->previous = *head;
     *head = next;
-    return 0;
 }
 
 int pop(Stack** head)
@@ -25,17 +41,11 @@ int pop(Stack** head)
     Stack* trash = *head;
     *head = (*head)->previous;
     int trashValue = trash->value;
-    if (trash->size == 1)
-    {
-        (*head)->previous = NULL;
-        (*head)->size = 0;
-        (*head)->value = NULL;
-    }
     free(trash);
     return trashValue;
 }
 
-int clean(Stack** head)
+int freeStack(Stack** head)
 {
     Stack* next = (*head)->previous;
     free(*head);
