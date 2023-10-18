@@ -1,13 +1,6 @@
 #pragma once
-#ifndef HEADER_H
-#define HEADER_H
 
-typedef struct Stack
-{
-    int value;
-    struct Stack* previous;
-    int size;
-} Stack;
+typedef struct Stack Stack;
 
 //push value to stack
 void push(Stack** head, const int value);
@@ -16,6 +9,10 @@ void push(Stack** head, const int value);
 int pop(Stack** head);
 
 //clean stack
-int clean(Stack** head);
+int freeStack(Stack** head);
 
-#endif
+//return stack size
+int stackSize(Stack *head);
+
+//return stack top element
+int top(Stack* head);

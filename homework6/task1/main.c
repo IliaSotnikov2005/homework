@@ -4,9 +4,8 @@
 
 int main()
 {
-    Stack* stack = malloc(sizeof(Stack));
-    stack->size = 0;
-    int symbol = 0;
+    Stack* stack = NULL;
+    char symbol = 0;
     int operand1 = 0;
     int operand2 = 0;
     int result = 0;
@@ -59,12 +58,14 @@ int main()
             push(&stack, result);
         }
     }
-    while (stack->size > 1)
+    while (stackSize(stack) > 1)
     {
         operand2 = pop(&stack);
         operand1 = pop(&stack);
         result = operand1 * operand2;
         push(&stack, result);
     }
-    printf("Result is %d", stack->value);
+    printf("Result is %d", top(stack));
+
+    freeStack(&stack);
 }
