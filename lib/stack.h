@@ -2,6 +2,9 @@
 
 typedef struct Stack Stack;
 
+// create stack
+Stack* createStack();
+
 //push value to stack
 void push(Stack** head, const int value);
 

@@ -56,3 +56,9 @@ int freeStack(Stack** head)
         free(temp);
     }
 }
+
+Stack* createStack()
+{
+    Stack* stack = calloc(1, sizeof(Stack));
+    return stack;
+}
