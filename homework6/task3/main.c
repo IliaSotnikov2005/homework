@@ -76,7 +76,7 @@ char* fromInfixToPostfix(char* expression)
     freeStack(&outputStack);
 }
 
-void test(bool* testResults)
+bool* test(bool* testResults)
 {
     char expression1[] = "2 + 2 * 2";
     char expected1[] = "2 2 2 * +";
