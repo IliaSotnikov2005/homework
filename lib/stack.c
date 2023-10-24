@@ -46,7 +46,7 @@ char pop(Stack** head)
 
 int freeStack(Stack** head)
 {
-    if (&head == NULL)
+    if ((*head) == NULL || (*head)->size == 0)
     {
         return 0;
     }
