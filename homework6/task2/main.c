@@ -77,6 +77,7 @@ int main()
         }
     }
 
+    printf("Enter the bracket sequence: ");
     char string[MAX_LENGTH] = { 0 };
     if (scanf_s("%s", string, MAX_LENGTH) == NULL)
     {
