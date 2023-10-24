@@ -54,8 +54,29 @@ bool isCorrect(const char* string, const size_t size)
     return false;
 }
 
+bool* test(bool* testResults)
+{
+    const char* testStrings[] = { "()", "{[]}", "(]", "({})", "{[()]}", "{[(])}", "{[()]}{}()" };
+    const bool expectedResults[] = { true, true, false, true, true, false, true };
+
+    for (size_t i = 0; i < 7; ++i)
+    {
+        testResults[i] = isCorrect(testStrings[i], strlen(testStrings[i])) == expectedResults[i];
+    }
+}
+
 int main()
 {
+    bool testResults[7] = { 0 };
+    test(testResults);
+    for (int i = 0; i < 7; ++i)
+    {
+        if (!testResults[i])
+        {
+            printf("TEST %d FAILED\n");
+        }
+    }
+
     char string[MAX_LENGTH] = { 0 };
     if (scanf_s("%s", string, MAX_LENGTH) == NULL)
     {
