@@ -1,10 +1,9 @@
 #include "stack.h"
-#include <stdio.h>
 #include <stdlib.h>
 
 struct Stack
 {
-    int value;
+    char value;
     struct Stack* previous;
     int size;
 };
@@ -19,7 +18,7 @@ int top(Stack* head)
     return head->value;
 }
 
-void push(Stack** head, const int value)
+void push(Stack** head, const char value)
 {
     Stack* next = malloc(sizeof(Stack));
     if (next == NULL)
@@ -32,7 +31,7 @@ void push(Stack** head, const int value)
     *head = next;
 }
 
-int pop(Stack** head)
+char pop(Stack** head)
 {
     if (head == NULL)
     {
@@ -40,13 +39,17 @@ int pop(Stack** head)
     }
     Stack* trash = *head;
     *head = (*head)->previous;
-    int trashValue = trash->value;
+    char trashValue = trash->value;
     free(trash);
     return trashValue;
 }
 
 int freeStack(Stack** head)
 {
+    if (&head == NULL)
+    {
+        return 0;
+    }
     Stack* next = (*head)->previous;
     free(*head);
     while (next != NULL)
@@ -55,6 +58,7 @@ int freeStack(Stack** head)
         next = next->previous;
         free(temp);
     }
+    return 0;
 }
 
 Stack* createStack()
