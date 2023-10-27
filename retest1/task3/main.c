@@ -1,28 +1,37 @@
 #include <stdio.h>
 #include <string.h>
 
-int main()
+#define CHARS_AMOUNT 256
+
+int charsCounting(char* filename, char* charCountingArray)
 {
-    char string[] = "123aboba\n334kflr\n";
-    int countingChars[257] = { 0 };
-    char charArray[257] = { 0 };
-    int charArraySize = 0;
-    
-    for (int i = 0; i < strlen(string); ++i)
+    FILE* file = fopen(filename, "r");
+    if (file == NULL)
     {
-        int index = strstr(charArray, string[i]);
-        if (index != NULL)
+        return -1;
+    }
+    int size = 0;
+    char buffer[100] = { 0 };
+    while (size = fgets(buffer, 100, file) > 0)
+    {
+        for (int i = 0; i < size; ++i)
         {
-            ++countingChars[index];
-        }
-        else
-        {
-            charArray[charArraySize] = string[i];
-            ++charArraySize;
+            charCountingArray[buffer[i]]++;
         }
     }
-    for (int i = 0; i < charArraySize; ++i)
+    fclose(file);
+}
+
+
+int main()
+{
+    int occurrences[CHARS_AMOUNT] = { 0 };
+    charsCounting("text.txt", occurrences);
+    for (int i = 0; i < CHARS_AMOUNT; ++i)
     {
-        printf("/afefeada\n");
+        if (occurrences[i] > 0)
+        {
+            printf("%c - %i\n", i, occurrences[i]);
+        }
     }
 }
