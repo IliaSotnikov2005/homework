@@ -3,7 +3,7 @@
 
 #define CHARS_AMOUNT 256
 
-int charsCounting(char* filename, char* charCountingArray)
+int* charsCounting(char* filename, char* charCountingArray)
 {
     FILE* file = fopen(filename, "r");
     if (file == NULL)
@@ -31,7 +31,7 @@ int main()
     {
         if (occurrences[i] > 0)
         {
-            printf("%c - %i\n", i, occurrences[i]);
+            printf("%c - %d\n", i, occurrences[i]);
         }
     }
 }
