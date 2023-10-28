@@ -25,10 +25,26 @@ int push(List** head, int value)
         return -1;
     }
     temp->value = value;
-    temp->next = (*head);
+    if ((*head) == NULL)
+    {
+        temp->next = temp;
+        (*head) = temp;
+        return 0;
+    }
+    List *nextOld = (*head)->next;
+    (*head)->next = temp;
+    temp->next = nextOld;
     (*head) = temp;
-
     return 0;
+}
+
+void shift(List **head)
+{
+    if ((*head) == NULL)
+    {
+        return;
+    }
+    (*head) = (*head)->next;
 }
 
 int pop(List** head)
@@ -38,11 +54,21 @@ int pop(List** head)
         return NULL;
     }
     List* temp = (*head);
-    (*head) = (*head)->next;
-    int tempValue = temp->value;
-    free(temp);
-
-    return tempValue;
+    while (temp->next != (*head))
+    {
+        temp = temp->next;
+    }
+    temp->next = (*head)->next;
+    int headValue = (*head)->value;
+    if ((*head) == temp)
+    {
+        free(*head);
+        *head = NULL;
+        return headValue;
+    }
+    free(*head);
+    *head = temp->next;
+    return headValue;
 }
 
 List* getNth(List* head, unsigned int index)
@@ -127,3 +153,16 @@ void printList(const List* head)
     printf("\n");
 }
 
+int deleteNthWithShift(List** head, int index)
+{
+    if (index == 0)
+    {
+        return pop(head);
+    }
+    while (index > 1)
+    {
+        (*head) = (*head)->next;
+        --index;
+    }
+    return pop(head);
+}

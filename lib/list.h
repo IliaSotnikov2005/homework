@@ -28,3 +28,9 @@ int deleteNth(List** head, int index);
 
 // free list
 void deleteList(List** head);
+
+// removes the Nth element and shifts the head of the list
+int deleteNthWithShift(List** head, int index);
+
+// shift to 1 element
+void shift(List** head);
