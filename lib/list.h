@@ -28,3 +28,6 @@ int deleteNth(List** head, int index);
 
 // free list
 void deleteList(List** head);
+
+// list to array
+int* toArray(const List* head);
