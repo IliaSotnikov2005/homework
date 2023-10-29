@@ -1,9 +1,12 @@
 #include "list.h"
 #include <stdlib.h>
+#include <string.h>
+#include <stdio.h>
 
 struct List
 {
-    int value;
+    char* name;
+    char* phoneNumber;
     List* next;
     
 };
@@ -16,7 +19,7 @@ List* createList()
     return list;
 }
 
-int push(List** head, int value)
+int push(List** head, char* name, char* phoneNumber)
 {
     List* temp = malloc(sizeof(List));
 
@@ -24,86 +27,122 @@ int push(List** head, int value)
     {
         return -1;
     }
-    temp->value = value;
+    temp->name = calloc(strlen(name), sizeof(char));
+    if (temp->name == NULL)
+    {
+        return -1;
+    }
+    strcpy(temp->name, name);
+    temp->phoneNumber = calloc(strlen(phoneNumber), sizeof(char));
+    if (temp->phoneNumber == NULL)
+    {
+        return -1;
+    }
+    strcpy(temp->phoneNumber, phoneNumber);
     temp->next = (*head);
     (*head) = temp;
 
     return 0;
 }
 
-int pop(List** head)
+List* listFromFile(const char* filename)
 {
-    if ((*head) == NULL)
-    {
-        return NULL;
-    }
-    List* temp = (*head);
-    (*head) = (*head)->next;
-    int tempValue = temp->value;
-    free(temp);
-
-    return tempValue;
-}
-
-List* getNth(List* head, unsigned int index)
-{
-    while (head != NULL && index > 0)
-    {
-        head = head->next;
-        --index;
-    }
-
-    return head;
-}
-
-List* getLast(List* head)
-{
-    if (head == NULL)
-    {
-        return NULL;
-    }
-    while (head->next)
-    {
-        head = head->next;
-    }
-
-    return head;
-}
-
-int pushBack(List* head, int value)
-{
-    List *last = getLast(head);
-    List* temp = malloc(sizeof(List));
-
-    if (temp == NULL)
+    FILE* file = fopen(filename, "r");
+    if (file == NULL)
     {
         return -1;
     }
-    temp->value = value;
-    temp->next = NULL;
-    last->next = temp;
+    List* list = createList();
 
-    return 0;
+    char buffer[100] = { 0 };
+    while (fgets(buffer, 100, file) != NULL)
+    {
+        char* name = strtok(buffer, " -");
+        char* phoneNumber = strtok(NULL, "-");
+        push(&list, name, phoneNumber);
+    }
+
+    fclose(file);
+    return list;
 }
 
-int deleteNth(List** head, int index)
+void splitList(List* source, List** firstPart, List** secondPart)
 {
-    if (index == 0)
+    List* slow = source;
+    List* fast = source->next;
+
+    while (fast != NULL)
     {
-        return pop(head);
-    }
-    List* previous = getNth(*head, index - 1);
-    List* element = previous->next;
-    if (element == NULL)
-    {
-        return NULL;
+        fast = fast->next;
+        if (fast != NULL)
+        {
+            slow = slow->next;
+            fast = fast->next;
+        }
     }
 
-    int trashValue = element->value;
-    previous->next = element->next;
+    *firstPart = source;
+    *secondPart = slow->next;
+    slow->next = NULL;
+}
 
-    free(element);
-    return trashValue;
+List* mergeLists(List* firstPart, List* secondPart, const int sortType)
+{
+    List* result = NULL;
+
+    if (firstPart == NULL)
+    {
+        return secondPart;
+    }
+    if (secondPart == NULL)
+    {
+        return firstPart;
+    }
+
+    if (sortType == 1)
+    {
+        if (strcmp(firstPart->name, secondPart->name) < 0)
+        {
+            result = firstPart;
+            result->next = mergeLists(firstPart->next, secondPart, sortType);
+        }
+        else
+        {
+            result = secondPart;
+            result->next = mergeLists(firstPart, secondPart->next, sortType);
+        }
+    }
+    else if (sortType == 2)
+    {
+        if (strcmp(firstPart->phoneNumber, secondPart->phoneNumber) < 0)
+        {
+            result = firstPart;
+            result->next = mergeLists(firstPart->next, secondPart, sortType);
+        }
+        else
+        {
+            result = secondPart;
+            result->next = mergeLists(firstPart, secondPart->next, sortType);
+        }
+    }
+    return result;
+}
+
+void mergeSort(List** head, const int sortType)
+{
+    if (((*head) == NULL) || ((*head)->next == NULL))
+    {
+        return;
+    }
+
+    List* firstPart;
+    List* secondPart;
+    splitList(*head, &firstPart, &secondPart);
+
+    mergeSort(&firstPart, sortType);
+    mergeSort(&secondPart, sortType);
+
+    (*head) = mergeLists(firstPart, secondPart, sortType);
 }
 
 void deleteList(List** head)
@@ -113,15 +152,19 @@ void deleteList(List** head)
     {
         previous = (*head);
         *head = (*head)->next;
+        free(previous->name);
+        free(previous->phoneNumber);
         free(previous);
     }
+    free((*head)->name);
+    free((*head)->phoneNumber);
     free(*head);
 }
 
 void printList(const List* head)
 {
     while (head) {
-        printf("%d ", head->value);
+        printf("%s -%s", head->name, head->phoneNumber);
         head = head->next;
     }
     printf("\n");

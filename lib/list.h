@@ -6,7 +6,7 @@ typedef struct List List;
 List *createList();
 
 // add element to list
-int push(List** head, int value);
+int push(List** head, char* name, int phoneNumber);
 
 // delete head element
 int pop(List** head);
@@ -28,3 +28,27 @@ int deleteNth(List** head, int index);
 
 // free list
 void deleteList(List** head);
+
+// returns next element
+List* nextElement(List* head);
+
+// shift to 1 element
+void shift(List** head);
+
+// changes next element
+void changeNext(List* head, List* newList);
+
+// get name
+char* getName(List* head);
+
+// get phone
+int getPhone(List* head);
+
+//create list from file
+List* listFromFile(const char* filename);
+
+// merge sort list
+void mergeSort(List** head, const int sortType);
+
+// split list
+void splitList(List* source, List** firstPart, List** secondPart);
