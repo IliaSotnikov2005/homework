@@ -195,11 +195,23 @@ int length(List* head)
 char** toArray(List* head)
 {
     char** array = malloc(length(head) * 2 * sizeof(char*));
+    if (array == NULL)
+    {
+        return NULL;
+    }
     for (int i = 0; head; i += 2)
     {
         array[i] = calloc(7, sizeof(char));
+        if (array[i] == NULL)
+        {
+            return NULL;
+        }
         strcpy(array[i], head->name);
         array[i + 1] = calloc(7, sizeof(char));
+        if (array[i + 1] == NULL)
+        {
+            return NULL;
+        }
         strcpy(array[i + 1], head->phoneNumber);
         head = head->next;
     }

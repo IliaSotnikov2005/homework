@@ -11,7 +11,7 @@ void freeArray(char** array, int size)
     {
         free(array[i]);
     }
-    free(listArray);
+    free(array);
 }
 
 int test()
