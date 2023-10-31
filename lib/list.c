@@ -58,7 +58,8 @@ List* listFromFile(const char* filename)
     while (fgets(buffer, 100, file) != NULL)
     {
         char* name = strtok(buffer, " -");
-        char* phoneNumber = strtok(NULL, "-");
+        char* phoneNumber = strtok(NULL, "- ");
+        phoneNumber[strlen(phoneNumber) - 1] = '\0';
         push(&list, name, phoneNumber);
     }
 
@@ -174,20 +175,33 @@ void printList(const List* head)
 {
     while (head)
     {
-        printf("%s -%s", head->name, head->phoneNumber);
+        printf("%s - %s\n", head->name, head->phoneNumber);
         head = head->next;
     }
     printf("\n");
 }
 
-void toArray(const List* head, char** array)
+int length(List* head)
 {
-    for (int i = 0; head; ++i)
+    int i = 0;
+    while (head)
     {
-        array[i * 2] = malloc(7 * sizeof(char));
-        strcpy(array[i * 2], head->name);
-        array[i * 2 + 1] = malloc(7 * sizeof(char));
-        strcpy(array[i * 2 + 1], head->phoneNumber);
+        ++i;
         head = head->next;
     }
+    return i;
+}
+
+char** toArray(List* head)
+{
+    char** array = malloc(length(head) * 2 * sizeof(char*));
+    for (int i = 0; head; i += 2)
+    {
+        array[i] = calloc(7, sizeof(char));
+        strcpy(array[i], head->name);
+        array[i + 1] = calloc(7, sizeof(char));
+        strcpy(array[i + 1], head->phoneNumber);
+        head = head->next;
+    }
+    return array;
 }
