@@ -130,7 +130,7 @@ List* mergeLists(List* firstPart, List* secondPart, const int sortType)
 
 int mergeSort(List** head, const int sortType)
 {
-    if (sortType != 1 || sortType != 2)
+    if (sortType != 1 && sortType != 2)
     {
         return -1;
     }
@@ -172,10 +172,22 @@ void deleteList(List** head)
 
 void printList(const List* head)
 {
-    while (head) {
+    while (head)
+    {
         printf("%s -%s", head->name, head->phoneNumber);
         head = head->next;
     }
     printf("\n");
 }
 
+void toArray(const List* head, char** array)
+{
+    for (int i = 0; head; ++i)
+    {
+        array[i * 2] = malloc(7 * sizeof(char));
+        strcpy(array[i * 2], head->name);
+        array[i * 2 + 1] = malloc(7 * sizeof(char));
+        strcpy(array[i * 2 + 1], head->phoneNumber);
+        head = head->next;
+    }
+}

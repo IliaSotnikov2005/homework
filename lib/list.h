@@ -19,3 +19,6 @@ int mergeSort(List** head, const int sortType);
 
 // split list
 void splitList(List* source, List** firstPart, List** secondPart);
+
+// list to array
+void toArray(const List* head, char** array);
