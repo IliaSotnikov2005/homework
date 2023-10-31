@@ -22,8 +22,7 @@ int main()
     }
 
 
-    List* list = listFromFile("file.txt");
-    //printList(list);
+    List* list = listFromFile(filename);
     mergeSort(&list, sortType);
     printList(list);
 }

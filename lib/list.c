@@ -50,7 +50,7 @@ List* listFromFile(const char* filename)
     FILE* file = fopen(filename, "r");
     if (file == NULL)
     {
-        return -1;
+        return NULL;
     }
     List* list = createList();
 
@@ -128,11 +128,15 @@ List* mergeLists(List* firstPart, List* secondPart, const int sortType)
     return result;
 }
 
-void mergeSort(List** head, const int sortType)
+int mergeSort(List** head, const int sortType)
 {
+    if (sortType != 1 || sortType != 2)
+    {
+        return -1;
+    }
     if (((*head) == NULL) || ((*head)->next == NULL))
     {
-        return;
+        return -1;
     }
 
     List* firstPart;
@@ -143,10 +147,15 @@ void mergeSort(List** head, const int sortType)
     mergeSort(&secondPart, sortType);
 
     (*head) = mergeLists(firstPart, secondPart, sortType);
+    return 0;
 }
 
 void deleteList(List** head)
 {
+    if ((*head) == NULL)
+    {
+        free(*head);
+    }
     List* previous = NULL;
     while ((*head)->next)
     {
