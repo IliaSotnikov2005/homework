@@ -17,13 +17,13 @@ float recursiveExponentiation(int number, int power)
     {
         return number * recursiveExponentiation(number, power - 1);
     }
-    int b = recursiveExponentiation(number, power / 2);
+    float b = recursiveExponentiation(number, power / 2);
     return b * b;
 }
 
 float linearExponentiation(int number, int power)
 {
-    int result = 1;
+    float result = 1;
     for (int i = 0; i < abs(power); ++i)
     {
         result *= number;
@@ -41,7 +41,7 @@ void powerTest(float (*powerFunction)(int, int), bool* testResult)
         {2, 3, 8},
         {5, 2, 25},
         {2, -3, 0.125},
-        {5, -2, 0.04},
+        {5, -2, (float)0.04},
         {2, 0, 1},
         {0, 3, 0},
         {2, 1, 2},
