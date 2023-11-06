@@ -1,6 +1,6 @@
 #include "../../lib/functions.h"
 #include <stdio.h>
-#include <math.h>
+#include <stdlib.h>
 #include <stdbool.h>
 
 float recursiveExponentiation(int number, int power)
@@ -35,7 +35,7 @@ float linearExponentiation(int number, int power)
     return (float)1 / result;
 }
 
-bool* powerTest(float (*powerFunction)(int, int), bool* testResult)
+void powerTest(float (*powerFunction)(int, int), bool* testResult)
 {
     float testCases[][3] = {
         {2, 3, 8},
@@ -49,7 +49,8 @@ bool* powerTest(float (*powerFunction)(int, int), bool* testResult)
         {-2, 4, 16},
         {-5, 2, 25},
         {-2, 3, -8},
-        {-5, 3, -125}
+        {-5, 3, -125},
+        {0, 0, 1}
     };
 
     for (int i = 0; i < 12; ++i)
@@ -74,6 +75,7 @@ int main()
             printf("LINEAR TEST %d FAILED\n", i + 1);
         }
     }
+
     powerTest(&recursiveExponentiation, testResult);
     for (int i = 0; i < 12; ++i)
     {
@@ -88,7 +90,8 @@ int main()
     printf("power = ");
     int power = getNum();
 
-    float resultLinear = linearExponentiation(number, power), resultRecursive = recursiveExponentiation(number, power);
+    float resultLinear = linearExponentiation(number, power);
+    float resultRecursive = recursiveExponentiation(number, power);
     printf("\nThe result of the linear algorithm: %f\n", resultLinear);
     printf("\nThe result of the recursive algorithm: %f\n", resultRecursive);
 }
