@@ -1,17 +1,17 @@
-#include "../../lib/functions.h"
 #include <stdio.h>
-#include  <time.h>
+#include <time.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #define ARRAY_SIZE 100000
 
-int* sortingByCounting(int* array, int size)
+void sortingByCounting(int* array, const size_t size)
 {
     int max = array[0];
     int min = array[0];
 
-    for (int i = 0; i < size; ++i)
+    for (size_t i = 0; i < size; ++i)
     {
         if (array[i] > max)
         {
@@ -33,7 +33,12 @@ int* sortingByCounting(int* array, int size)
     }
 
     int* countingArray = calloc(max + min + 1, sizeof(int));
-    for (int i = 0; i < size; ++i)
+    if (countingArray == NULL)
+    {
+        return;
+    }
+
+    for (size_t i = 0; i < size; ++i)
     {
         ++countingArray[array[i] + min];
     }
@@ -50,11 +55,11 @@ int* sortingByCounting(int* array, int size)
     free(countingArray);
 }
 
-int* bubbleSorting(int* array, int size)
+void bubbleSorting(int* array, const size_t size)
 {
-    for (int i = 0; i < size; i++)
+    for (size_t i = 0; i < size; i++)
     {
-        for (int j = i + 1; j < size; j++)
+        for (size_t j = i + 1; j < size; j++)
         {
             if (array[i] > array[j])
             {
@@ -66,76 +71,64 @@ int* bubbleSorting(int* array, int size)
     }
 }
 
-int testBubble(void)
+void randomIntArrayFill(int* array, const size_t size)
 {
-    int array1[] = { 3, 7, 1, 9, 2 };
-    int array1c[] = { 1, 2, 3, 7, 9 };
-    bubbleSorting(array1, 5);
-    if (memcmp(array1, array1c, sizeof(array1)) != 0)
+    for (size_t i = 0; i < size; i++)
     {
-        return -1;
+        int value = rand();
+        array[i] = value;
     }
-
-    int array2[] = { -5, 0, 10, -2, 7 };
-    int array2c[] = { -5, -2, 0, 7, 10 };
-    bubbleSorting(array2, 5);
-    if (memcmp(array2, array2c, sizeof(array2)) != 0)
-    {
-        return -1;
-    }
-
-    int array3[] = { 5, 5, 5, 5, 5 };
-    int array3c[] = { 5, 5, 5, 5, 5 };
-    bubbleSorting(array3, 5);
-    if (memcmp(array3, array3c, sizeof(array3)) != 0)
-    {
-        return -1;
-    }
-    return 1;
 }
 
-int testCounting(void)
+void sortTest(void (*sortFunction)(int* array, const size_t size), bool* testResults)
 {
-    int array1[] = { 3, 7, 1, 9, 2 };
-    int array1c[] = { 1, 2, 3, 7, 9 };
-    sortingByCounting(array1, 5);
-    if (memcmp(array1, array1c, sizeof(array1)) != 0)
-    {
-        return -1;
-    }
+    int testBase[][5] = { { 3, 7, 1, 9, 2 }, { -5, 0, 10, -2, 7 }, { 5, 5, 5, 5, 5 } };
+    int expectedResults[][5] = { { 1, 2, 3, 7, 9 }, { -5, -2, 0, 7, 10 }, { 5, 5, 5, 5, 5 } };
+    size_t testsAmount = sizeof(testBase) / sizeof(testBase[0]);
 
-    int array2[] = { -5, 0, 10, -2, 7 };
-    int array2c[] = { -5, -2, 0, 7, 10 };
-    sortingByCounting(array2, 5);
-    if (memcmp(array2, array2c, sizeof(array2)) != 0)
+    for (size_t i = 0; i < testsAmount; ++i)
     {
-        return -1;
+        sortFunction(testBase[i], 5);
+        testResults[i] = memcmp(testBase[i], expectedResults[i], sizeof(testBase[0])) == 0;
     }
-
-    int array3[] = { 5, 5, 5, 5, 5 };
-    int array3c[] = { 5, 5, 5, 5, 5 };
-    sortingByCounting(array3, 5);
-    if (memcmp(array3, array3c, sizeof(array3)) != 0)
-    {
-        return -1;
-    }
-    return 1;
 }
 
 int main()
 {
-    if (testBubble() == -1 || testCounting() == -1)
+    bool testResults[3] = { 0 };
+    sortTest(bubbleSorting, testResults);
+    for (size_t i = 0; i * 2 < sizeof(testResults); ++i)
     {
-        return -1;
+        if (!testResults[i])
+        {
+            printf("BUBBLE SORTING TEST %d FAILED\n", (int)i);
+        }
+    }
+
+    sortTest(sortingByCounting, testResults);
+    for (size_t i = 0; i * 2 < sizeof(testResults); ++i)
+    {
+        if (!testResults[i])
+        {
+            printf("SORTING BY COUNTING TEST %d FAILED\n", (int)i);
+        }
     }
 
     printf("Now the algorithms are sorting the array, please wait\n\n");
 
-    int array1[ARRAY_SIZE] = { 0 };
-    int array2[ARRAY_SIZE] = { 0 };
+    int* array1 = calloc(ARRAY_SIZE, sizeof(int));
+    if (array1 == NULL)
+    {
+        return -1;
+    }
+    int* array2 = calloc(ARRAY_SIZE, sizeof(int));
+    if (array2 == NULL)
+    {
+        return -1;
+    }
     randomIntArrayFill(array1, ARRAY_SIZE);
 
-    for (int i = 0; i < ARRAY_SIZE; ++i)
+    for (size_t i = 0; i < ARRAY_SIZE; ++i)
     {
         array2[i] = array1[i];
     }
@@ -143,12 +136,14 @@ int main()
     clock_t start = clock();
     bubbleSorting(array1, ARRAY_SIZE);
     clock_t end = clock();
-    float bubbleSortingRuntime = end - start;
+    float bubbleSortingRuntime = (float)((end - start) / CLOCKS_PER_SEC);
+    free(array1);
 
     start = clock();
     sortingByCounting(array2, ARRAY_SIZE);
     end = clock();
-    float sortingByCountingRuntime = end - start;
+    float sortingByCountingRuntime = (float)((end - start) / CLOCKS_PER_SEC);
+    free(array2);
 
-    printf("Runtime of bubble sorting = %.10f\nRuntime of sotring by counting = %.10f\n", bubbleSortingRuntime / CLOCKS_PER_SEC, sortingByCountingRuntime / CLOCKS_PER_SEC);
+    printf("Runtime of bubble sorting = %.10f\nRuntime of sotring by counting = %.10f\n", bubbleSortingRuntime, sortingByCountingRuntime);
 }
