@@ -17,6 +17,7 @@ bool* test()
     {
         Node* root = buildTreeFromFile(testFiles[i]);
         testResults[i] = evaluate(root) == expected[i];
+        freeTree(&root);
     }
 
     return testResults;

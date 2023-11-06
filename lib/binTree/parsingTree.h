@@ -10,3 +10,6 @@ void printTree(Node* root);
 
 // evaluate tree
 int evaluate(Node* node);
+
+// delete tree
+void freeTree(Node** root);

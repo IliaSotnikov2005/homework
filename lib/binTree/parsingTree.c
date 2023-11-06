@@ -152,3 +152,20 @@ int evaluate(Node* node)
         return atoi(node->value);
     }
 }
+
+void freeTree(Node** node)
+{
+    if ((*node) == NULL)
+    {
+        free(*node);
+    }
+    if ((*node)->leftChild == NULL)
+    {
+        free(*node);
+    }
+    else
+    {
+        freeTree(&((*node)->leftChild));
+        freeTree(&((*node)->rightChild));
+    }
+}

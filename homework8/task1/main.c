@@ -20,4 +20,5 @@ int main()
     printf("Parsing tree from file: ");
     printTree(root);
     printf("\n\nExpression value: %d", evaluate(root));
+    freeTree(&root);
 }
