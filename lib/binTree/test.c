@@ -4,7 +4,7 @@
 
 bool* test()
 {
-    char testFiles[][10] = { "test1.txt", "test2.txt", "test3.txt" };
+    char testFiles[][28] = { "../../lib/binTree/test1.txt", "../../lib/binTree/test2.txt", "../../lib/binTree/test3.txt" };
     int expected[] = { 3, 13, 1 };
     size_t testsAmount = sizeof(testFiles) / sizeof(testFiles[0]);
     bool* testResults = calloc(testsAmount, sizeof(bool));
