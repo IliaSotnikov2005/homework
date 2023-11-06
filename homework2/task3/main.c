@@ -96,7 +96,7 @@ void sortTest(void (*sortFunction)(int* array, const size_t size), bool* testRes
 int main()
 {
     bool testResults[3] = { 0 };
-    sortTest(bubbleSorting, testResults);
+    sortTest(&bubbleSorting, testResults);
     for (size_t i = 0; i * 2 < sizeof(testResults); ++i)
     {
         if (!testResults[i])
@@ -105,7 +105,7 @@ int main()
         }
     }
 
-    sortTest(sortingByCounting, testResults);
+    sortTest(&sortingByCounting, testResults);
     for (size_t i = 0; i * 2 < sizeof(testResults); ++i)
     {
         if (!testResults[i])
