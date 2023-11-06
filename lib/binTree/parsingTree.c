@@ -10,10 +10,64 @@ struct Node
     Node* rightChild;
 };
 
-Node* buildTreeFromFile(const char const* const filename)
+Node* buildTree(char expression[100][100], int* pointer)
 {
-    FILE* file = fopen(filename, "r");
-    if (file == NULL)
+    char* item = expression[*pointer];
+    ++(*pointer);
+    if (!item[0])
+    {
+        return NULL;
+    }
+    if (strstr("+-/*", item))
+    {
+        Node* operator = calloc(1, sizeof(Node));
+        if (operator == NULL)
+        {
+            return NULL;
+        }
+        operator->value = calloc(2, sizeof(char));
+        if (operator->value == NULL)
+        {
+            return NULL;
+        }
+        strcpy(operator->value, item);
+
+        Node* operand1 = calloc(1, sizeof(Node*));
+        if (operand1 == NULL)
+        {
+            return NULL;
+        }
+        operand1 = buildTree(expression, pointer);
+        operator->leftChild = operand1;
+
+        Node* operand2 = calloc(1, sizeof(Node*));
+        if (operand2 == NULL)
+        {
+            return NULL;
+        }
+        operand2 = buildTree(expression, pointer);
+        operator->rightChild = operand2;
+
+        return operator;
+    }
+    else
+    {
+        Node* operand = calloc(1, sizeof(Node));
+        if (operand == NULL)
+        {
+            return NULL;
+        }
+        operand->value = calloc(strlen(item), sizeof(char));
+        strcpy(operand->value, item);
+        return operand;
+    }
+}
+
+Node* buildTreeFromFile(const char* filename)
+{
+    FILE* file;
+    errno_t err = fopen_s(&file, filename, "r");
+    if (err != 0)
     {
         return NULL;
     }
@@ -36,64 +90,14 @@ Node* buildTreeFromFile(const char const* const filename)
         strcpy(expression[i], substring);
         substring = strtok(NULL, " ");
     }
+
+    fclose(file);
     int pointer = 0;
     Node* root = buildTree(expression, &pointer);
     return root;
 }
 
-Node* buildTree(char expression[100][100], int* pointer)
-{
-    char* item = expression[*pointer];
-    ++(*pointer);
-    if (!item[0])
-    {
-        return NULL;
-    }
-    if (strstr("+-/*", item))
-    {
-        Node* operator = calloc(1, sizeof(Node));
-        if (operator == NULL)
-        {
-            return -1;
-        }
-        operator->value = calloc(2, sizeof(char));
-        if (operator->value == NULL)
-        {
-            return NULL;
-        }
-        strcpy(operator->value, item);
-        
-        Node* operand1 = calloc(1, sizeof(Node*));
-        if (operand1 == NULL)
-        {
-            return NULL;
-        }
-        operand1 = buildTree(expression, pointer);
-        operator->leftChild = operand1;
-
-        Node* operand2 = calloc(1, sizeof(Node*));
-        if (operand2 == NULL)
-        {
-            return NULL;
-        }
-        operand2 = buildTree(expression, pointer);
-        operator->rightChild = operand2;
-
-    }
-    else
-    {
-        Node* operand = calloc(1, sizeof(Node));
-        if (operand == NULL)
-        {
-            return NULL;
-        }
-        operand->value = calloc(strlen(item), sizeof(char));
-        strcpy(operand->value, item);
-        return operand;
-    }
-}
-
-int printTree(Node* root)
+void printTree(Node* root)
 {
     if (root->leftChild == NULL)
     {
@@ -106,5 +110,45 @@ int printTree(Node* root)
         printTree(operator->leftChild);
         printTree(operator->rightChild);
         printf(")");
+    }
+}
+
+int evaluate(Node* node)
+{
+    if (strstr("+-/*", node->value))
+    {
+        char operator = node->value[0];
+        int operand1 = evaluate(node->leftChild);
+        int operand2 = evaluate(node->rightChild);
+        switch (operator)
+        {
+        case '+':
+        {
+            return operand1 + operand2;
+            break;
+        }
+        case '-':
+        {
+            return operand1 - operand2;
+            break;
+        }
+        case '*':
+        {
+            return operand1 * operand2;
+            break;
+        }
+        case '/':
+        {
+            return operand1 / operand2;
+            break;
+        }
+        default:
+            return -1;
+            break;
+        }
+    }
+    else
+    {
+        return atoi(node->value);
     }
 }
