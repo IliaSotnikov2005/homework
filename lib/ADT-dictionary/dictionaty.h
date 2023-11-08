@@ -25,7 +25,7 @@ void freeTree(Node** node);
 Node* findNearestElement(Node* tree);
 
 // convert tree to array
-int* toArray(Node* tree);
+int* toArray(const Node* tree, const size_t size);
 
 // tree traversal
-void inorderTraversal(Node* node, int* arr, int* index);
+void inorderTraversal(const Node* node, int* array, int* index);

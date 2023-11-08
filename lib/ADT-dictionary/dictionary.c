@@ -162,17 +162,17 @@ void freeTree(Node** node)
     free((*node)->value);
 }
 
-void inOrderTraversal(const Node* node, int* array, int* index)
+void inorderTraversal(const Node* node, int* array, int* index)
 {
     if (node == NULL)
     {
         return;
     }
 
-    inOrderTraversal(node->leftChild, array, index);
+    inorderTraversal(node->leftChild, array, index);
     array[*index] = node->key;
     ++(*index);
-    inOrderTraversal(node->rightChild, array, index);
+    inorderTraversal(node->rightChild, array, index);
 }
 
 int* toArray(const Node* tree, const size_t size)
@@ -184,7 +184,7 @@ int* toArray(const Node* tree, const size_t size)
     }
 
     int index = 0;
-    inOrderTraversal(tree, array, &index);
+    inorderTraversal(tree, array, &index);
 
     return array;
 }
