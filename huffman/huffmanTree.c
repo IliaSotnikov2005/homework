@@ -1,31 +1,41 @@
 #include "huffmanTree.h"
 #include <stdlib.h>
 
-struct Node
+typedef struct Node
 {
     char value;
     size_t count;
-    Node* leftChild;
-    Node* rightChild;
-};
+    struct Node* leftChild;
+    struct Node* rightChild;
+} Node;
 
 struct HuffmanTree
 {
     Node* root;
 };
 
-Node* makeLeaf(const char value, const size_t count)
+const HuffmanTree* makeLeaf(const char value, const size_t count)
 {
-    Node* leaf = calloc(1, sizeof(Node));
+    Node* leaf = (Node*)calloc(1, sizeof(Node));
+    if (leaf == NULL)
+    {
+        return NULL;
+    }
     leaf->value = value;
     leaf->count = count;
-    
-    HuffmanTree* tree = calloc(1, sizeof(HuffmanTree));
-    tree->root = leaf;
+
+    HuffmanTree* tree = (HuffmanTree*)malloc(sizeof(HuffmanTree));
+    if (tree == NULL)
+    {
+        free(leaf);
+        return NULL;
+    }
+    tree->root = tree;
+
     return tree;
 }
 
-HuffmanTree* getCount(HuffmanTree* tree)
+const int getCount(HuffmanTree* tree)
 {
     return tree->root->count;
 }

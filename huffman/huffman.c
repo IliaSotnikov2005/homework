@@ -1,29 +1,53 @@
-#include "huffmanTree.h"
 #include "huffman.h"
-#include <string.h>
-#include <stdlib.h>
+#include "huffmanTree.h"
 
-void insertionSortStep(HuffmanTree* const* const array, const size_t index)
+#include <stdlib.h>
+#include <string.h>
+
+#define ALPHABET_SIZE 256
+
+void insertionSortStep(const HuffmanTree** const array, const size_t index)
 {
-    for (size_t i = index; i >= 1; --i)
+    for (size_t i = index; i >= 1 && getCount(array[i - 1]) < getCount(array[i]); --i)
     {
-        if (array[])
+        const HuffmanTree* temporary = array[i];
+        array[i] = array[i - 1];
+        array[i - 1] = temporary;
     }
 }
 
-char* const compress(const char* string, size_t* const resultSize)
+void insertionSort(const HuffmanTree** const array, const size_t size)
 {
-    size_t* const charCount = calloc(256, sizeof(size_t));
-    const size_t stringLength = strlen(string);
+    for (size_t i = 1; i < size; ++i)
+    {
+        insertionSortStep(array, i);
+    }
+}
 
-    for (int i = 0; i < stringLength; ++i)
+char* const compress(const char* const string, size_t* const resultSize)
+{
+    size_t* const charCount = (size_t*)calloc(ALPHABET_SIZE, sizeof(size_t));
+    if (charCount == NULL)
+    {
+        return NULL;
+    }
+    size_t stringLength = strlen(string);
+
+    for (size_t i = 0; i < stringLength; ++i)
     {
         ++charCount[string[i]];
     }
 
-    HuffmanTree** treeArray = calloc(256, sizeof(HuffmanTree*));
-    for (int i = 0; i < 256; ++i)
+    HuffmanTree** treeArray = (HuffmanTree**)calloc(ALPHABET_SIZE, sizeof(HuffmanTree*));
+    if (treeArray == NULL)
     {
-        treeArray[i] = makeLeaf(string[i], charCount[i]);
+        return NULL;
     }
+
+    for (size_t i = 0; i < ALPHABET_SIZE; ++i)
+    {
+        treeArray[i] = makeLeaf((char)i, charCount[i]);
+    }
+
+    insertionSort(treeArray, ALPHABET_SIZE);
 }
