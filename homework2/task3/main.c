@@ -23,32 +23,26 @@ void sortingByCounting(int* array, const size_t size)
         }
     }
 
-    if (min < 0)
-    {
-        min = -min;
-    }
-    else
-    {
-        min = 0;
-    }
-
-    int* countingArray = calloc(max + min + 1, sizeof(int));
+    size_t countingArraySize = max - min + 1;
+    int* countingArray = calloc(countingArraySize, sizeof(int));
     if (countingArray == NULL)
     {
         return;
     }
 
+    int shifter = min;
+
     for (size_t i = 0; i < size; ++i)
     {
-        ++countingArray[array[i] + min];
+        ++countingArray[array[i] - shifter];
     }
 
     int index = 0;
-    for (int i = 0; i < max + min + 1; ++i)
+    for (size_t i = 0; i < countingArraySize; ++i)
     {
         for (int j = 0; j < countingArray[i]; ++j)
         {
-            array[index] = i - min;
+            array[index] = i + shifter;
             ++index;
         }
     }
@@ -119,11 +113,14 @@ int main()
     int* array1 = calloc(ARRAY_SIZE, sizeof(int));
     if (array1 == NULL)
     {
+        printf("Memory allocation error");
         return -1;
     }
     int* array2 = calloc(ARRAY_SIZE, sizeof(int));
     if (array2 == NULL)
     {
+        free(array1);
+        printf("Memory allocation error");
         return -1;
     }
     randomIntArrayFill(array1, ARRAY_SIZE);
@@ -136,14 +133,14 @@ int main()
     clock_t start = clock();
     bubbleSorting(array1, ARRAY_SIZE);
     clock_t end = clock();
-    float bubbleSortingRuntime = (float)((end - start) / CLOCKS_PER_SEC);
+    float bubbleSortingRuntime = ((float)(end - start) / CLOCKS_PER_SEC);
     free(array1);
 
     start = clock();
     sortingByCounting(array2, ARRAY_SIZE);
     end = clock();
-    float sortingByCountingRuntime = (float)((end - start) / CLOCKS_PER_SEC);
+    float sortingByCountingRuntime = ((float)(end - start) / CLOCKS_PER_SEC);
     free(array2);
 
-    printf("Runtime of bubble sorting = %.10f\nRuntime of sotring by counting = %.10f\n", bubbleSortingRuntime, sortingByCountingRuntime);
+    printf("Runtime of bubble sorting = %.10f sec\nRuntime of sorting by counting = %.10f sec\n", bubbleSortingRuntime, sortingByCountingRuntime);
 }
