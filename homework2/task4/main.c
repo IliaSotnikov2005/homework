@@ -4,37 +4,38 @@
 #include <stdbool.h>
 #include <string.h>
 
-#define SIZE 100
+#define ARRAY_SIZE 100
 
-int* distribute(int* array, int size)
+void distribute(int* array, const size_t size)
 {
     if (size <= 1)
     {
         return;
     }
-    int pivot = array[0];
-    int pIndex = 0, index = 0;
-    for (int i = 1; i < size; ++i)
+
+    int separator = array[0];
+    int correctSeparatorPosition = 0;
+    size_t separatorPosition = 0;
+    for (size_t i = 1; i < size; ++i)
     {
-        if (array[i] < pivot)
+        if (array[i] < separator)
         {
-            int temp = array[pIndex];
-            array[pIndex] = array[i];
+            int temp = array[correctSeparatorPosition];
+            array[correctSeparatorPosition] = array[i];
             array[i] = temp;
-            ++pIndex;
-            index = i;
+            ++correctSeparatorPosition;
+            separatorPosition = i;
         }
     }
-    int temp = array[pIndex];
-    array[pIndex] = pivot;
-    array[index] = temp;
-    return;
+    int temp = array[correctSeparatorPosition];
+    array[correctSeparatorPosition] = separator;
+    array[separatorPosition] = temp;
 }
 
-bool checkArray(int* array, int size, int number)
+bool checkArray(const int* array, const size_t size, const int number)
 {
     bool isGreater = false;
-    for (int i = 0; i < size; ++i)
+    for (size_t i = 0; i < size; ++i)
     {
         if (array[i] == number)
         {
@@ -67,25 +68,24 @@ int main()
 {
     bool testResult[3] = { 0 };
     testDistribute(testResult);
-    for (int i = 0; i < 3; ++i)
+    for (size_t i = 0; i < 3; ++i)
     {
         if (!testResult[i])
         {
-            printf("TEST %d FAILED\n", i);
+            printf("TEST %d FAILED\n", (int)i);
         }
     }
 
-    int array[SIZE] = { 0 };
-    randomIntArrayFill(array, SIZE);
+    int array[ARRAY_SIZE] = { 0 };
+    randomIntArrayFill(array, ARRAY_SIZE);
     array[0] = rand();
 
     printf("Original array:\n");
-    printIntArray(array, SIZE);
+    printIntArray(array, ARRAY_SIZE);
 
-    int value = array[0];
     printf("\nThe firts number in array: %d\n", array[0]);
 
-    distribute(array, SIZE);
+    distribute(array, ARRAY_SIZE);
     printf("\nResult:\n");
-    printIntArray(array, SIZE);
+    printIntArray(array, ARRAY_SIZE);
 }
