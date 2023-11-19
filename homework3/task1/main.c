@@ -1,104 +1,135 @@
 #include "../../lib/functions.h"
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
-int partition(int *array, const int start, const int end, const int pivot)
+enum ErrorCode
 {
-    if (start < 0 || end < 0)
-    {
-        return -1;
-    }
-    int i = start;
-    int j = start;
-    while (i <= end)
-    {
-        if (array[i] > pivot)
-        {
-            i++;
-        }
-        else {
-            int temp = array[i];
-            array[i] = array[j];
-            array[j] = temp;
-            i++;
-            j++;
-        }
-    }
-    return j - 1;
+    OK,
+    MEMORY_ALLOCATION_ERROR,
+    INVALID_INPUT
+};
+
+void swap(int* number1, int* number2)
+{
+    int temp = *number1;
+    *number1 = *number2;
+    *number2 = temp;
 }
 
-int smartQSort(int *array, const int start, const int end)
+void insertionSort(int* array, const unsigned int end)
 {
-    if (start < 0 || end < 0)
+    for (unsigned int i = 1; i < end + 1; ++i)
     {
-        return -1;
+        for (unsigned int j = i; j > 0 && array[j - 1] > array[j]; --j)
+        {
+            swap(&array[j], &array[j - 1]);
+        }
     }
+}
+
+void smartQSort(int* array, const unsigned int start, const unsigned int end)
+{
     if (end - start + 1 < 10)
     {
-        for (int i = 1; i < end + 1; ++i)
+        insertionSort(array, end);
+        return;
+    }
+    if (start < end)
+    {
+        int separator = array[end];
+        int left = start;
+        int right = end;
+        while (left <= right)
         {
-            for (int j = i; j > 0 && array[j - 1] > array[j]; --j)
+            for (left; array[left] < separator; ++left);
+            for (right; array[right] > separator; --right);
+            if (left <= right)
             {
-                int temp = array[j];
-                array[j] = array[j - 1];
-                array[j - 1] = temp;
+                swap(&array[left], &array[right]);
+                ++left;
+                --right;
             }
         }
-        return 0;
-    }
-    if (start < end) {
-        int pivot = array[end];
-        int pIndex = partition(array, start, end, pivot);
-
-        smartQSort(array, start, pIndex - 1);
-        smartQSort(array, pIndex + 1, end);
+        smartQSort(array, start, right);
+        smartQSort(array, left, end);
     }
 }
 
-int test(void)
+bool* test()
 {
-    int array1[] = { 3, 7, 1, 9, 2 };
-    int array1c[] = { 1, 2, 3, 7, 9 };
-    smartQSort(array1, 0, 4);
-    if (memcmp(array1, array1c, sizeof(array1)) != 0)
+    bool* testResults = calloc(4, sizeof(bool));
+    if (testResults == NULL)
     {
-        return -1;
+        return NULL;
     }
 
-    int array2[] = { -5, 0, 10, -2, 7 };
-    int array2c[] = { -5, -2, 0, 7, 10 };
-    smartQSort(array2, 0, 4);
-    if (memcmp(array2, array2c, sizeof(array2)) != 0)
+    int arrayLess10[][9] = {
+        {3, 7, 1, 9, 2, 34, 33, 3, -5},
+        {-5, 0, 10, -2, -70, 67, 9, 17, -10}
+    };
+    int expected1[][9] = {
+        {-5, 1, 2, 3, 3, 7, 9, 33, 34},
+        {-70, -10, -5, -2, 0, 9, 10, 17, 67}
+    };
+
+    for (size_t i = 0; i < 2; ++i)
     {
-        return -1;
+        smartQSort(arrayLess10[i], 0, 8);
+        testResults[i] = memcmp(arrayLess10[i], expected1[i], sizeof(arrayLess10[i])) == 0;
     }
 
-    int array3[] = { 5, 5, 5, 5, 5 };
-    int array3c[] = { 5, 5, 5, 5, 5 };
-    smartQSort(array3, 0, 4);
-    if (memcmp(array3, array3c, sizeof(array3)) != 0)
+    int arrayMore10[][15] = {
+        {5, 10, 3, 8, 15, 7, 12, 1, 9, 6, 2, 11, 4, 13, 14},
+        {17, 22, -19, 24, 31, 27, 20, 16, 29, 26, 21, 30, 18, 28, 23}
+    };
+    int expected2[][15] = {
+        {1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15},
+        {-19, 16, 17, 18, 20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31}
+    };
+
+    for (size_t i = 2; i < 4; ++i)
     {
-        return -1;
+        smartQSort(arrayMore10[i - 2], 0, 14);
+        testResults[i] = memcmp(arrayMore10[i - 2], expected2[i - 2], sizeof(arrayMore10[i - 2])) == 0;
     }
-    return 1;
+
+    return testResults;
 }
 
 int main()
 {
-    if (test == -1)
+    bool* testResults = test();
+    if (testResults == NULL)
     {
-        return -1;
+        printf("Memory allocation error");
+        return MEMORY_ALLOCATION_ERROR;
     }
+    for (size_t i = 0; i < 4; ++i)
+    {
+        if (!testResults[i])
+        {
+            printf("TEST %d FAILED\n", (int)i);
+        }
+    }
+    free(testResults);
+
     printf("Enter the size of the array\n");
     int size = getNum();
     if (size < 0)
     {
         printf("The size must be greater than 0");
-        return -1;
+        return INVALID_INPUT;
     }
 
     printf("Enter the numbers one by one\n");
     int* array = calloc(size, sizeof(int));
+    if (array == NULL)
+    {
+        printf("Memory allocation error");
+        return MEMORY_ALLOCATION_ERROR;
+    }
     for (int i = 0; i < size; ++i)
     {
         printf("array[%d] = ", i);
