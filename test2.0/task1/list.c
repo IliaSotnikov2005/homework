@@ -99,8 +99,9 @@ int* listToArray(const List* head)
     int* values = calloc(size, sizeof(int));
     if (values == NULL)
     {
-        return -1;
+        return MemoryAllocationError;
     }
+
     int i = 0;
     while (head)
     {
@@ -108,6 +109,7 @@ int* listToArray(const List* head)
         ++i;
         head = head->next;
     }
+
     return values;
 }
 
