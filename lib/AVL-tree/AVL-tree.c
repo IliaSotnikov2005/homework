@@ -257,6 +257,33 @@ ErrorCode deleteElement(const char* key, AVLTree* tree)
     return OK;
 }
 
+static void inorderTraversal(const Node* node, int* array, int* index)
+{
+    if (node == NULL)
+    {
+        return;
+    }
+
+    inorderTraversal(node->leftChild, array, index);
+    array[*index] = node->key;
+    ++(*index);
+    inorderTraversal(node->rightChild, array, index);
+}
+
+int* toArray(const AVLTree* tree, const size_t size)
+{
+    int* array = calloc(size, sizeof(int));
+    if (array == NULL)
+    {
+        return NULL;
+    }
+
+    int index = 0;
+    inorderTraversal(tree->root, array, &index);
+
+    return array;
+}
+
 static void freeTree(Node* node)
 {
     if (node == NULL)

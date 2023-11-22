@@ -3,4 +3,4 @@
 #include <stdbool.h>
 
 // test AVL-tree
-bool* test();
+int test();

@@ -2,146 +2,60 @@
 #include "AVL-tree.h"
 #include "errorCodes.h"
 
-#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
-int main()
+int test()
 {
+    size_t testsCount = 5;
+    bool* testResults = calloc(testsCount, sizeof(bool));
+    if (testResults == NULL)
+    {
+        return -1;
+    }
     AVLTree* tree = createAVLTree();
-    
-    printf("List of commands:\n"
-           "1 - add new element\n"
-           "2 - get element by key\n"
-           "3 - check element existence\n"
-           "4 - delete element from tree\n\n");
-    
-    printf("Enter your command: ");
-    
-    int command = 0;
-    if (scanf_s("%d", &command) == 0)
+    addElement("6", "6", tree);
+    addElement("7", "7", tree);
+    addElement("8", "8", tree);
+    addElement("9", "9", tree);
+    addElement("2", "2", tree);
+    addElement("1", "1", tree);
+
+    int* array = toArray(tree, 6);
+    int expected0[] = { 1, 2, 6, 7, 8, 9 };
+    testResults[0] = memcmp(expected0, array, sizeof(expected0));
+    free(array);
+
+    deleteElement("7", tree);
+    array = toArray(tree, 5);
+    int expected1[] = { 1, 2, 6, 8, 9 };
+    testResults[1] = memcmp(expected1, array, sizeof(expected1));
+    free(array);
+
+    deleteElement("1", tree);
+    array = toArray(tree, 4);
+    int expected2[] = { 2, 6, 8, 9 };
+    testResults[2] = memcmp(expected2, array, sizeof(expected2));
+    free(array);
+
+    char* value = get("6", tree);
+    testResults[3] = strcmp(value, "6") == 0;
+    free(value);
+
+    value = get("32", tree);
+    testResults[4] = value == NULL;
+    free(value);
+
+    int failedTest = -1;
+    for (size_t i = 0; i < testsCount; ++i)
     {
-        freeAVLTree(tree);
-        printf("\nInvalid input\n");
-        return InvalidInput;
-    }
-
-    while (command != 0)
-    {
-        switch (command)
+        if (!testResults[i])
         {
-        case 1:
-        {
-            printf("\nAdding a new element");
-                   
-            char* key = (char*)calloc(100, sizeof(char));
-            char* value = (char*)calloc(100, sizeof(char));
-            if (key == NULL || value == NULL)
-            {
-                free(key);
-                free(value);
-                freeAVLTree(tree);
-                printf("Memory allocation error");
-                return MemoryAllocationError;
-            }
-
-            printf("\nEnter a key: ");
-            if (scanf_s("%s", key, 100) == 0)
-            {
-                free(key);
-                freeAVLTree(tree);
-                printf("Invalid input");
-                return InvalidInput;
-            }
-
-            printf("Enter a value: ");
-            if (scanf_s("%s", value, 100) == 0)
-            {
-                free(key);
-                freeAVLTree(tree);
-                printf("Invalid input");
-                return InvalidInput;
-            }
-
-            if (addElement(key, value, tree) == MemoryAllocationError)
-            {
-                printf("Memory allocation error");
-                return MemoryAllocationError;
-            }
+            failedTest = (int)i;
             break;
-        }
-        case 2:
-        {
-            printf("\nEnter key to find value: ");
-            char* key = calloc(100, sizeof(char));
-            if (key == NULL)
-            {
-                printf("Memory allocation error");
-                return MemoryAllocationError;
-            }
-            if (scanf_s("%s", key) == 0)
-            {
-                printf("Invalid input");
-                return InvalidInput;
-            }
-
-            char* result = get(key, tree);
-            printf(result ? "\nResult: %s\n" : "\n%s is not in dictionary\n", result ? result : key);
-
-            free(key);
-            break;
-        }
-        case 3:
-        {
-            printf("Enter the key to verify that it is inside: ");
-            char* key = calloc(100, sizeof(char));
-            if (key == NULL)
-            {
-                printf("Memory allocation error");
-                return MemoryAllocationError;
-            }
-            if (scanf_s("%s", key) == 0)
-            {
-                printf("Invalid input");
-                return InvalidInput;
-            }
-
-            char* result = get(key, tree);
-            printf(result ? "\nKey is inside\n" : "\nKey is not inside\n");
-
-            free(key);
-            break;
-        }
-        case 4:
-            printf("\nEnter the key to delete element: ");
-            char* key = calloc(100, sizeof(char));
-            if (key == NULL)
-            {
-                printf("Memory allocation error");
-                return MemoryAllocationError;
-            }
-            if (scanf_s("%s", key) == 0)
-            {
-                printf("Invalid input");
-                return InvalidInput;
-            }
-
-            deleteElement(key, tree);
-            printf("\nSuccessful\n");
-
-            free(key);
-            break;
-
-        default:
-           break;
-        }
-        printf("\nEnter your command: ");
-        if (scanf_s("%d", &command) == 0)
-        {
-            freeAVLTree(tree);
-            printf("\nInvalid input\n");
-            return InvalidInput;
         }
     }
+    return failedTest;
 
-    return 0;
+
 }

@@ -20,3 +20,6 @@ char* get(char* key, AVLTree* tree);
 
 // delete element
 ErrorCode deleteElement(const char* key, AVLTree* tree);
+
+// tree to array
+int* toArray(const AVLTree* tree, const size_t size);

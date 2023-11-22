@@ -119,7 +119,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\lib\AVL-tree\AVL-test.c" />
+    <ClCompile Include="..\..\lib\AVL-tree\AVL-tree.c" />
     <ClCompile Include="main.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\lib\AVL-tree\AVL-test.h" />
+    <ClInclude Include="..\..\lib\AVL-tree\AVL-tree.h" />
+    <ClInclude Include="..\..\lib\AVL-tree\errorCodes.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
