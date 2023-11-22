@@ -56,6 +56,8 @@ int main()
     listPush(&list, 3);
     listPush(&list, 4);
     listPush(&list, 5);
+
+    listPrint(list);
     deleteElementsInOddPlaces(list);
     listPrint(list);
 

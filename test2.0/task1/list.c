@@ -90,6 +90,7 @@ int listSize(const List* head)
         ++size;
         head = head->next;
     }
+
     return size;
 }
 
