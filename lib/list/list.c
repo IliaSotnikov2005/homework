@@ -1,15 +1,13 @@
 #include "list.h"
-#include "errorCodes.h"
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 
-typedef struct ListElement ListElement;
 struct ListElement
 {
-    char* stringValue;
+    char* key;
     int intValue;
     ListElement* next;
 };
@@ -17,226 +15,210 @@ struct ListElement
 struct List
 {
     ListElement* head;
+    ListElement* back;
+    size_t length;
 };
 
 List* listCreate()
 {
-    List* list = (List*)calloc(1, sizeof(List));
-    if (list == NULL)
-    {
-        return NULL;
-    }
-
-    list->head = NULL;
-    return list;
+    return (List*)calloc(1, sizeof(List));
 }
 
-static ErrorCode freeListElement(ListElement* listElement)
+static ListErrorCode freeListElement(ListElement* listElement)
 {
     if (listElement == NULL)
     {
-        return NULLPointerError;
+        return ListNULLPointerError;
     }
 
-    free(listElement->stringValue);
+    free(listElement->key);
     free(listElement);
 
-    return OK;
+    return ListOK;
 }
 
-ErrorCode listPush(const char* stringValue, const int intValue, List* list)
+ListErrorCode listPush(const char* key, const int intValue, List* list)
 {
     ListElement* newElement = (ListElement*)calloc(1, sizeof(ListElement));
     if (newElement == NULL)
     {
-        return MemoryAllocationError;
+        return ListMemoryAllocationError;
     }
 
-    newElement->stringValue = strdup(stringValue);
+    newElement->key = strdup(key);
     newElement->intValue = intValue;
     newElement->next = list->head;
     list->head = newElement;
+    if (list->length == 0)
+    {
+        list->back = newElement;
+    }
+    ++list->length;
 
-    return OK;
+    return ListOK;
 }
 
-static ListElement* getLast(const List* list)
-{
-    ListElement* element = list->head;
-    if (element == NULL)
-    {
-        return NULL;
-    }
-    while (element->next != NULL)
-    {
-        element = element->next;
-    }
-
-    return element;
-}
-
-ErrorCode listPushBack(const char* stringValue, const int intValue, List* list)
+ListErrorCode listPushBack(const char* key, const int intValue, List* list)
 {
     if (list == NULL)
     {
-        return NULLPointerError;
+        return ListNULLPointerError;
     }
 
     ListElement* newElement = (ListElement*)calloc(1, sizeof(ListElement));
     if (newElement == NULL)
     {
-        return MemoryAllocationError;
+        return ListMemoryAllocationError;
     }
 
     newElement->intValue = intValue;
-    newElement->stringValue = strdup(stringValue);
+    newElement->key = strdup(key);
     newElement->next = NULL;
 
-    ListElement* listElement = getLast(list);
+    ListElement* listElement = list->back;
 
     if (listElement == NULL)
     {
         list->head = newElement;
-        return OK;
+        list->back = newElement;
+        return ListOK;
     }
 
     listElement->next = newElement;
+    list->back = newElement;
+    ++list->length;
 
-    return OK;
-    
+    return ListOK;
 }
 
-ErrorCode listPop(List* list, char* stringValue, int* intValue)
+ListErrorCode listPop(List* list, char* key, int* intValue)
 {
     if (list == NULL)
     {
-        return NULLPointerError;
+        return ListNULLPointerError;
     }
 
     ListElement* beingDeleted = list->head;
     if (list->head != NULL)
     {
         list->head = list->head->next;
-        stringValue = strdup(beingDeleted->stringValue);
+        key = strdup(beingDeleted->key);
         *intValue = beingDeleted->intValue;
     }
 
     freeListElement(beingDeleted);
+    --list->length;
 
-    return OK;
+    return ListOK;
 }
 
-static ListElement** find(const List* list, unsigned int index)
+static ListElement** find(const List* list, const char* key)
 {
     ListElement** pointerToElement = NULL;
-    for (pointerToElement = &(list->head); (*pointerToElement) != NULL && index != 0; pointerToElement = &((*pointerToElement)->next))
+    for (pointerToElement = &(list->head); (*pointerToElement) != NULL; pointerToElement = &((*pointerToElement)->next))
     {
-        if (index == 0)
+        if (strcmp(key, (*pointerToElement)->key) == 0)
         {
             break;
         }
-
-        --index;
     }
 
     return pointerToElement;
 }
 
-ErrorCode listRemove(const List* list, unsigned int index)
+ListErrorCode listRemove(const List* list, const char* key)
 {
     if (list == NULL)
     {
-        return NULLPointerError;
+        return ListNULLPointerError;
     }
 
-    ListElement** pointerToElement = find(list, index);
+    ListElement** pointerToElement = find(list, key);
     if (*pointerToElement == NULL)
     {
-        return ListIndexOutOfRange;
+        return ListElementDoesNotExist;
     }
 
     ListElement* beingDeleted = *pointerToElement;
     *pointerToElement = (*pointerToElement)->next;
     freeListElement(beingDeleted);
 
-    return OK;
+    return ListOK;
 }
 
-ErrorCode listGet(const List* list, unsigned int index, char* stringValue, int* intValue)
+ListElement* listFind(const List* list, char* key)
 {
-    if (list == NULL)
-    {
-        return NULLPointerError;
-    }
-
-    ListElement* listElement = list->head;
-    for (index; index != 0 && listElement != NULL; --index)
-    {
-        listElement = listElement->next;
-    }
-    if (index != 0 || listElement == NULL)
-    {
-        return ListIndexOutOfRange;
-    }
-
-    stringValue = strdup(listElement->stringValue);
-    (*intValue) = listElement->intValue;
-    return OK;
+    return list == NULL ? NULL : *find(list, key);
 }
 
-ErrorCode listExtend(const List* list1, List* list2)
+int listElementGetValue(ListElement* element)
+{
+    return element == NULL ? 0: element->intValue;
+}
+
+ListErrorCode listElementChangeValue(ListElement* element, const int value)
+{
+    if (element == NULL)
+    {
+        return ListNULLPointerError;
+    }
+
+    element->intValue = value;
+
+    return ListOK;
+}
+
+ListErrorCode listExtend(const List* list1, List* list2)
 {
     if (list1 == NULL || list2 == NULL)
     {
-        return NULLPointerError;
+        return ListNULLPointerError;
     }
 
-    ListElement* lastList1Element = getLast(list1);
+    ListElement* lastList1Element = list1->back;
     lastList1Element->next = list2->head;
 
-    return OK;
+    return ListOK;
 }
 
 size_t listSize(const List* list)
 {
-    if (list == NULL)
-    {
-        return 0;
-    }
-
-    ListElement* listElement = list->head;
-    int counter = 0;
-    while (listElement != NULL)
-    {
-        ++counter;
-    }
-
-    return counter;
+    return list == NULL ? 0 : list->length;
 }
 
-ErrorCode listPrint(const List* list)
+bool listIsEmpty(const List* list)
+{
+    return list == NULL ? ListNULLPointerError: list->head == NULL;
+}
+
+ListErrorCode listPrint(const List* list)
 {
     if (list == NULL)
     {
-        return NULLPointerError;
+        return ListNULLPointerError;
     }
 
     ListElement* head = list->head;
+    if (head == NULL)
+    {
+        return ListOK;
+    }
+
     while (head)
     {
-        printf("(%s, %d) ", head->stringValue, head->intValue);
+        printf("(%s, %d) ", head->key, head->intValue);
         head = head->next;
     }
     printf("\n");
 
-    return OK;
+    return ListOK;
 }
 
-ErrorCode listFree(List* list)
+ListErrorCode listFree(List* list)
 {
     if (list == NULL)
     {
-        return NULLPointerError;
+        return ListNULLPointerError;
     }
 
     ListElement* head = list->head;
@@ -250,5 +232,5 @@ ErrorCode listFree(List* list)
     freeListElement(head);
     free(list);
 
-    return OK;
+    return ListOK;
 }

@@ -1,37 +1,55 @@
 #pragma once
 
-#include "errorCodes.h"
-
 #include <stdlib.h>
+#include <stdbool.h>
 
+// List error codes
+typedef enum ListErrorCode
+{
+    ListOK = 0,
+    ListMemoryAllocationError = -1,
+    ListNULLPointerError = -2,
+    ListElementDoesNotExist = -3
+} ListErrorCode;
+
+typedef struct ListElement ListElement;
 typedef struct List List;
 
-// create list
+// Create list
 List* listCreate();
 
-// add element to list
-ErrorCode listPush(const char* stringValue, const int intValue, List* list);
+// Add element to list
+ListErrorCode listPush(const char* key, const int intValue, List* list);
 
-// add element to the end of list
-ErrorCode listPushBack(const char* stringValue, const int intValue, List* list);
+// Add element to the end of list
+ListErrorCode listPushBack(const char* key, const int intValue, List* list);
 
-// remove first list element
-ErrorCode listPop(List* list, char* stringValue, int* intValue);
+// Remove first list element
+ListErrorCode listPop(List* list, char* key, int* intValue);
 
-// remove element from list by index
-ErrorCode listRemove(List* list, unsigned int index);
+// Remove element from list by index
+ListErrorCode listRemove(const List* list, const char* key);
 
-// get element by index
-ErrorCode listGet(List* list, unsigned int index, char* stringValue, int* intValue);
+// Find element in list
+ListElement* listFind(const List* list, char* key);
 
-// extend list
-ErrorCode listExtend(List* list1, List* list2);
+// Get value of list element
+int listElementGetValue(ListElement* element);
 
-// get size of list
+// Change value of list element
+ListErrorCode listElementChangeValue(ListElement* element, const int value);
+
+// Extend list by another list
+ListErrorCode listExtend(List* list1, List* list2);
+
+// Get size of list
 size_t listSize(const List* list);
 
-// print list
-ErrorCode listPrint(const List* list);
+// Check if list is empty
+bool listIsEmpty(const List* list);
 
-// free list
-ErrorCode listFree(List* list);
+// Print list
+ListErrorCode listPrint(const List* list);
+
+// Free list
+ListErrorCode listFree(List* list);
