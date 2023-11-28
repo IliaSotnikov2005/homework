@@ -52,4 +52,4 @@ bool listIsEmpty(const List* list);
 ListErrorCode listPrint(const List* list);
 
 // Free list
-ListErrorCode listFree(List* list);
+ListErrorCode listFree(List** list);

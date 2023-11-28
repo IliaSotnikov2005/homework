@@ -214,14 +214,20 @@ ListErrorCode listPrint(const List* list)
     return ListOK;
 }
 
-ListErrorCode listFree(List* list)
+ListErrorCode listFree(List** list)
 {
-    if (list == NULL)
+    if ((*list) == NULL)
     {
         return ListNULLPointerError;
     }
 
-    ListElement* head = list->head;
+    ListElement* head = (*list)->head;
+    if (head == NULL)
+    {
+        free((*list));
+
+        return ListOK;
+    }
     ListElement* beingDeleted = NULL;
     while (head->next)
     {
@@ -230,7 +236,8 @@ ListErrorCode listFree(List* list)
         freeListElement(beingDeleted);
     }
     freeListElement(head);
-    free(list);
+    free((*list));
+    (*list) = NULL;
 
     return ListOK;
 }
