@@ -9,12 +9,10 @@ typedef enum HashTableErrorCode
 
 typedef struct HashTable HashTable;
 
-HashTable* hashTableCreate();
+HashTable* hashTableCreate(const size_t size);
 
 void hashTablePrint(HashTable* table);
 
-HashTableErrorCode hashTableAdd(const char* key, HashTable* hashTable);
-
-HashTableErrorCode hashTableGet(const char* key, int* value, HashTable* hashTable);
+HashTableErrorCode hashTableAdd(const char* key, HashTable** hashTable);
 
 HashTableErrorCode hashTableFree(HashTable** table);

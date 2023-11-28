@@ -15,7 +15,7 @@ HashTable* countWords(const char* filename)
         return NULL;
     }
 
-    HashTable* table = hashTableCreate();
+    HashTable* table = hashTableCreate(8);
     if (table == NULL)
     {
         return NULL;
@@ -27,8 +27,12 @@ HashTable* countWords(const char* filename)
         char* word = strtok(buffer, " ");
         while (word != NULL)
         {
+            for (char* i = word; *i; ++i)
+            {
+                *i = tolower(*i);
+            }
 
-            hashTableAdd(word, table);
+            hashTableAdd(word, &table);
             word = strtok(NULL, " ");
         }
     }

@@ -12,7 +12,7 @@ struct HashTable
     size_t itemsAmount;
 };
 
-HashTable* hashTableCreate()
+HashTable* hashTableCreate(const size_t size)
 {
     HashTable* table = calloc(1, sizeof(HashTable));
     if (table == NULL)
@@ -20,19 +20,19 @@ HashTable* hashTableCreate()
         return NULL;
     }
 
-    table->buckets = calloc(8, sizeof(List*));
+    table->buckets = calloc(size, sizeof(List*));
     if (table->buckets == NULL)
     {
         free(table);
         return NULL;
     }
 
-    for (size_t i = 0; i < 8; ++i)
+    for (size_t i = 0; i < size; ++i)
     {
         (table->buckets)[i] = listCreate();
     }
 
-    table->size = 8;
+    table->size = size;
     table->itemsAmount = 0;
 
     return table;
@@ -59,6 +59,59 @@ static float loadFactor(const HashTable* table)
     return (float)table->itemsAmount / (float)table->size;
 }
 
+static HashTableErrorCode hashTableInsert(const char* key, const int value, HashTable* hashTable)
+{
+    if (hashTable == NULL)
+    {
+        return HashTableNULLPointerError;
+    }
+
+    List** buckets = hashTable->buckets;
+
+    int bucketIndex = hash(key) % hashTable->size;
+
+    listPush(key, value, buckets[bucketIndex]);
+    ++hashTable->itemsAmount;
+
+    return HashTableOK;
+}
+
+static HashTableErrorCode extend(HashTable** table)
+{
+    if (table == NULL)
+    {
+        return HashTableNULLPointerError;
+    }
+    if (*table == NULL)
+    {
+        return HashTableNULLPointerError;
+    }
+
+    HashTable* newHashTable = hashTableCreate((*table)->size * 2);
+    for (size_t i = 0; i < (*table)->size; ++i)
+    {
+        List* bucket = (*table)->buckets[i];
+        if (!listIsEmpty(bucket))
+        {
+            char** keys = NULL;
+            int* values = NULL;
+            listItems(bucket, &keys, &values);
+            for (size_t i = 0; i < listSize(bucket); ++i)
+            {
+                hashTableInsert(keys[i], values[i], newHashTable);
+                free(keys[i]);
+            }
+            free(keys);
+            free(values);
+        }
+    }
+
+    hashTableFree(table);
+    (*table) = newHashTable;
+
+    return HashTableOK;
+}
+
 void hashTablePrint(HashTable* table)
 {
     if (table == NULL)
@@ -72,53 +125,35 @@ void hashTablePrint(HashTable* table)
     }
 }
 
-HashTableErrorCode hashTableAdd(const char* key, HashTable* hashTable)
+HashTableErrorCode hashTableAdd(const char* key, HashTable** hashTable)
 {
     if (hashTable == NULL)
     {
         return HashTableNULLPointerError;
     }
+    if (*hashTable == NULL)
+    {
+        return HashTableNULLPointerError;
+    }
 
-    List** buckets = hashTable->buckets;
+    if (loadFactor(*hashTable) > 0.75)
+    {
+        extend(hashTable);
+    }
+    List** buckets = (*hashTable)->buckets;
 
-    int bucketIndex = hash(key) % hashTable->size;
+    int bucketIndex = hash(key) % (*hashTable)->size;
 
     ListElement* element = listFind(buckets[bucketIndex], key);
     if (element == NULL)
     {
         listPush(key, 1, buckets[bucketIndex]);
-        ++hashTable->itemsAmount;
+        ++(*hashTable)->itemsAmount;
     }
 
     listElementChangeValue(element, listElementGetValue(element) + 1);
 
     return HashTableOK;
-}
-
-HashTableErrorCode hashTableGet(const char* key, int* value, HashTable* hashTable)
-{
-    if (hashTable == NULL)
-    {
-        return HashTableNULLPointerError;
-    }
-
-    List** buckets = hashTable->buckets;
-
-    int bucketIndex = hash(key) % hashTable->size;
-
-    if (listIsEmpty(buckets[bucketIndex]))
-    {
-        return -5;
-    }
-
-    int intValue = 0;
-    if (listFind(buckets[bucketIndex], key, &intValue) == HashTableOK)
-    {
-        *value = intValue;
-        return HashTableOK;
-    }
-
-    return -5;
 }
 
 HashTableErrorCode hashTableFree(HashTable** table)

@@ -191,6 +191,37 @@ bool listIsEmpty(const List* list)
     return list == NULL ? ListNULLPointerError: list->head == NULL;
 }
 
+ListErrorCode listItems(const List* list, char*** keys, int** values)
+{
+    if (list == NULL)
+    {
+        return ListNULLPointerError;
+    }
+
+    char** listKeys = calloc(list->length, sizeof(char*));
+    int* listValues = calloc(list->length, sizeof(int));
+
+    if (listKeys == NULL || listValues == NULL)
+    {
+        free(listKeys);
+        free(listValues);
+        return ListMemoryAllocationError;
+    }
+
+    ListElement* element = list->head;
+    for (size_t i = 0; i < list->length; ++i)
+    {
+        listKeys[i] = strdup(element->key);
+        listValues[i] = element->intValue;
+        element = element->next;
+    }
+
+    (*keys) = listKeys;
+    (*values) = listValues;
+
+    return ListOK;
+}
+
 ListErrorCode listPrint(const List* list)
 {
     if (list == NULL)

@@ -48,6 +48,8 @@ size_t listSize(const List* list);
 // Check if list is empty
 bool listIsEmpty(const List* list);
 
+ListErrorCode listItems(const List* list, char*** keys, int** values);
+
 // Print list
 ListErrorCode listPrint(const List* list);
 
