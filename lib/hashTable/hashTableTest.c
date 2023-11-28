@@ -4,21 +4,40 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
+
+HashTable* countWords(const char* filename)
+{
+    FILE* file = fopen(filename, "r");
+    if (file == NULL)
+    {
+        return NULL;
+    }
+
+    HashTable* table = hashTableCreate();
+    if (table == NULL)
+    {
+        return NULL;
+    }
+
+    char buffer[100] = { 0 };
+    while (fgets(buffer, 100, file) != NULL)
+    {
+        char* word = strtok(buffer, " ");
+        while (word != NULL)
+        {
+
+            hashTableAdd(word, table);
+            word = strtok(NULL, " ");
+        }
+    }
+
+    return table;
+}
 
 int main()
 {
-    HashTable* table = hashTableCreate();
-    hashTableAdd("bo", table);
-    hashTableAdd("bo", table);
-    hashTableAdd("rr", table);
-    hashTableAdd("bo", table);
-    hashTableAdd("dsao", table);
-    hashTablePrint(table);
-
-    hashTableFree(&table);
-    hashTablePrint(table);
-    table = hashTableCreate();
-    hashTableAdd("bo", table);
-    hashTableAdd("bo", table);
+    HashTable* table = countWords("text.txt");
     hashTablePrint(table);
 }

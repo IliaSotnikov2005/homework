@@ -49,6 +49,16 @@ static int hash(const char* key)
     return result;
 }
 
+static float loadFactor(const HashTable* table)
+{
+    if (table == NULL)
+    {
+        return 0;
+    }
+
+    return (float)table->itemsAmount / (float)table->size;
+}
+
 void hashTablePrint(HashTable* table)
 {
     if (table == NULL)
