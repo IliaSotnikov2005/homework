@@ -20,7 +20,7 @@
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
-    <ProjectGuid>{AE11DB9B-D61D-4ADA-8DC0-9EC41D8B8031}</ProjectGuid>
+    <ProjectGuid>{E07FB538-B509-4C73-B119-4E31FF1651B6}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -119,13 +119,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\list\list.c" />
-    <ClCompile Include="hashTable.c" />
-    <ClCompile Include="hashTableTest.c" />
+    <ClCompile Include="..\..\lib\hashTable\hashTable.c" />
+    <ClCompile Include="..\..\lib\hashTable\hashTableTest.c" />
+    <ClCompile Include="..\..\lib\list\list.c" />
+    <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\list\list.h" />
-    <ClInclude Include="hashTable.h" />
+    <ClInclude Include="..\..\lib\hashTable\hashTable.h" />
+    <ClInclude Include="..\..\lib\hashTable\hashTableTest.h" />
+    <ClInclude Include="..\..\lib\list\list.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="text.txt" />

@@ -112,19 +112,6 @@ static HashTableErrorCode extend(HashTable** table)
     return HashTableOK;
 }
 
-void hashTablePrint(HashTable* table)
-{
-    if (table == NULL)
-    {
-        return;
-    }
-
-    for (int i = 0; i < table->size; ++i)
-    {
-        listPrint(table->buckets[i]);
-    }
-}
-
 HashTableErrorCode hashTableAdd(const char* key, HashTable** hashTable)
 {
     if (hashTable == NULL)
@@ -156,6 +143,57 @@ HashTableErrorCode hashTableAdd(const char* key, HashTable** hashTable)
     return HashTableOK;
 }
 
+void hashTablePrint(HashTable* table)
+{
+    if (table == NULL)
+    {
+        return;
+    }
+
+    for (int i = 0; i < table->size; ++i)
+    {
+        listPrint(table->buckets[i]);
+    }
+}
+
+float hashTablefillFactor(const HashTable* table)
+{
+    List** buckets = table->buckets;
+    float notNULLBucketsCount = 0;
+    for (size_t i = 0; i < table->size; ++i)
+    {
+        listSize(buckets[i]) != 0 ? ++notNULLBucketsCount : 0;
+    }
+
+    return notNULLBucketsCount / (float)table->size;
+}
+
+int hashTableMaxListLenght(HashTable* table)
+{
+    List** buckets = table->buckets;
+    int result = 0;
+    for (size_t i = 0; i < table->size; ++i)
+    {
+        result = max(result, listSize(buckets[i]));
+    }
+
+    return result;
+}
+
+float hashTableAverageListLenght(HashTable* table)
+{
+    List** buckets = table->buckets;
+    float result = 0;
+    for (size_t i = 0; i < table->size; ++i)
+    {
+        result += listSize(buckets[i]);
+    }
+
+    result /= (float)table->size;
+
+    return result;
+}
+
 HashTableErrorCode hashTableFree(HashTable** table)
 {
     if ((*table) == NULL)
@@ -165,7 +203,7 @@ HashTableErrorCode hashTableFree(HashTable** table)
 
     for (int i = 0; i < (*table)->size; ++i)
     {
-        listFree(&(*table)->buckets[i]);
+        listFree(&((*table)->buckets[i]));
     }
 
     free(*table);

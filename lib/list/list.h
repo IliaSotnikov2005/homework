@@ -31,7 +31,7 @@ ListErrorCode listPop(List* list, char* key, int* intValue);
 ListErrorCode listRemove(const List* list, const char* key);
 
 // Find element in list
-ListElement* listFind(const List* list, char* key);
+ListElement* listFind(const List* list, const char* const key);
 
 // Get value of list element
 int listElementGetValue(ListElement* element);

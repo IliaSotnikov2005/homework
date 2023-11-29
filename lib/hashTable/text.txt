@@ -1,1 +1,4 @@
-The quick brown fox jumps over the lazy dog The lazy dog then barks at the brown fox The brown fox runs away quickly The quick brown fox is not lazy like the dog The dog is always lazy
+The quick. brown! fox, jumps
+over the lazy dog The lazy dog then barks at the brown
+fox The brown fox runs away quickly The quick brown fox
+is not lazy like the dog The dog is always lazy

@@ -112,7 +112,7 @@ ListErrorCode listPop(List* list, char* key, int* intValue)
     return ListOK;
 }
 
-static ListElement** find(const List* list, const char* key)
+static ListElement** find(const List* list, const char* const key)
 {
     ListElement** pointerToElement = NULL;
     for (pointerToElement = &(list->head); (*pointerToElement) != NULL; pointerToElement = &((*pointerToElement)->next))
@@ -146,7 +146,7 @@ ListErrorCode listRemove(const List* list, const char* key)
     return ListOK;
 }
 
-ListElement* listFind(const List* list, char* key)
+ListElement* listFind(const List* list, const char* key)
 {
     return list == NULL ? NULL : *find(list, key);
 }
@@ -168,7 +168,7 @@ ListErrorCode listElementChangeValue(ListElement* element, const int value)
     return ListOK;
 }
 
-ListErrorCode listExtend(const List* list1, List* list2)
+ListErrorCode listExtend(List* list1, List* list2)
 {
     if (list1 == NULL || list2 == NULL)
     {
@@ -256,6 +256,7 @@ ListErrorCode listFree(List** list)
     if (head == NULL)
     {
         free((*list));
+        (*list) = NULL;
 
         return ListOK;
     }
