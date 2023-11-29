@@ -1,4 +1,4 @@
 #pragma once
 
 // test hashTable.h
-int test();
+unsigned int test();

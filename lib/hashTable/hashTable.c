@@ -40,10 +40,10 @@ HashTable* hashTableCreate(const size_t size)
 
 static int hash(const char* key)
 {
-    int result = 0;
+    int result = 351512341234;
     for (int i = 0; key[i] != '\0'; ++i)
     {
-        result += key[i];
+        result += 37 * result + key[i];
     }
 
     return result;
@@ -131,11 +131,15 @@ HashTableErrorCode hashTableAdd(const char* key, HashTable** hashTable)
 
     int bucketIndex = hash(key) % (*hashTable)->size;
 
+    if (listIsEmpty(buckets[bucketIndex]))
+    {
+        ++(*hashTable)->itemsAmount;
+    }
+
     ListElement* element = listFind(buckets[bucketIndex], key);
     if (element == NULL)
     {
         listPush(key, 1, buckets[bucketIndex]);
-        ++(*hashTable)->itemsAmount;
     }
 
     listElementChangeValue(element, listElementGetValue(element) + 1);
@@ -158,14 +162,7 @@ void hashTablePrint(HashTable* table)
 
 float hashTablefillFactor(const HashTable* table)
 {
-    List** buckets = table->buckets;
-    float notNULLBucketsCount = 0;
-    for (size_t i = 0; i < table->size; ++i)
-    {
-        listSize(buckets[i]) != 0 ? ++notNULLBucketsCount : 0;
-    }
-
-    return notNULLBucketsCount / (float)table->size;
+    return (float)table->itemsAmount / (float)table->size;
 }
 
 int hashTableMaxListLenght(HashTable* table)
@@ -189,7 +186,7 @@ float hashTableAverageListLenght(HashTable* table)
         result += listSize(buckets[i]);
     }
 
-    result /= (float)table->size;
+    result /= (float)table->itemsAmount;
 
     return result;
 }

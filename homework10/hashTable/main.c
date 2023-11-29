@@ -45,6 +45,11 @@ HashTable* countWords(const char* filename)
 
 int main()
 {
+    unsigned int testResult = test();
+    if (testResult != 0)
+    {
+        printf("TEST %d FAILED\n", testResult);
+    }
     HashTable* table = countWords("text.txt");
 
     printf("Words and their number in the text: \n");
