@@ -31,5 +31,7 @@ unsigned int test()
         }
     }
 
+    hashTableFree(&table);
+
     return 0;
 }
