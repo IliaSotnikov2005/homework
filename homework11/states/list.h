@@ -24,15 +24,8 @@ ListErrorCode listPush(const int key, const int intValue, List* list);
 // Find element in list
 unsigned int listFind(const List* list, const int key);
 
-// Get value of list element
-int listElementGetValue(ListElement* element);
-
 // Get size of list
 size_t listSize(const List* list);
-
-// Check if list is empty
-bool listIsEmpty(const List* list);
-
 
 ListErrorCode listGetKeys(const List* list, int** keys);
 

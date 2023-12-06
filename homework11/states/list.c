@@ -7,7 +7,7 @@
 
 struct ListElement
 {
-    int town;
+    int city;
     int roadLength;
     ListElement* next;
 };
@@ -36,7 +36,7 @@ static ListErrorCode freeListElement(ListElement* listElement)
     return ListOK;
 }
 
-ListErrorCode listPush(const int town, const int roadLength, List* list)
+ListErrorCode listPush(const int city, const int roadLength, List* list)
 {
     ListElement* newElement = (ListElement*)calloc(1, sizeof(ListElement));
     if (newElement == NULL)
@@ -44,7 +44,7 @@ ListErrorCode listPush(const int town, const int roadLength, List* list)
         return ListMemoryAllocationError;
     }
 
-    newElement->town = town;
+    newElement->city = city;
     newElement->roadLength = roadLength;
     newElement->next = list->head;
     list->head = newElement;
@@ -57,14 +57,12 @@ ListErrorCode listPush(const int town, const int roadLength, List* list)
     return ListOK;
 }
 
-
-
 static unsigned int find(const List* list, const int key)
 {
     ListElement* pointerToElement = NULL;
     for (pointerToElement = list->head; pointerToElement != NULL; pointerToElement = pointerToElement->next)
     {
-        if (key == pointerToElement->town)
+        if (key == pointerToElement->city)
         {
             break;
         }
@@ -78,19 +76,9 @@ unsigned int listFind(const List* list, const int key)
     return list == NULL ? NULL : find(list, key);
 }
 
-int listElementGetValue(ListElement* element)
-{
-    return element == NULL ? 0: element->roadLength;
-}
-
 size_t listSize(const List* list)
 {
     return list == NULL ? 0 : list->length;
-}
-
-bool listIsEmpty(const List* list)
-{
-    return list == NULL ? ListNULLPointerError: list->head == NULL;
 }
 
 ListErrorCode listGetKeys(const List* list, int** keys)
@@ -111,7 +99,7 @@ ListErrorCode listGetKeys(const List* list, int** keys)
     ListElement* element = list->head;
     for (size_t i = 0; i < list->length; ++i)
     {
-        listKeys[i] = element->town;
+        listKeys[i] = element->city;
         element = element->next;
     }
 
@@ -135,7 +123,7 @@ ListErrorCode listPrint(const List* list)
 
     while (head)
     {
-        printf("%d ", head->town);
+        printf("%d ", head->city);
         head = head->next;
     }
     printf("\n");
