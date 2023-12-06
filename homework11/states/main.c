@@ -1,34 +1,21 @@
 #include "graph.h"
+#include "distributeCities.h"
+#include "test.h"
 
 #include <stdio.h>
 #include <stdbool.h>
 
-int distributeCities(Graph* graph)
-{
-    if (graph == NULL)
-    {
-        return - 1;
-    }
-
-    unsigned int remained = graphNumberOfTowns(graph) - graphNumberOfStates(graph);
-    unsigned int state = 0;
-    while (remained != 0)
-    {
-        if (graphAttachACity(state, graph)== GraphOK);
-        {
-            --remained;
-        }
-        state = (state + 1) % graphNumberOfStates(graph);
-    }
-
-    return 0;
-}
-
 int main()
 {
+    if (test() != 0)
+    {
+        return -33;
+    }
+
     Graph* graph = graphCreateFromFile("cities.txt");
     if (graph == NULL)
     {
+        printf("Failed to build a graph\n");
         return -1;
     }
 
@@ -36,7 +23,6 @@ int main()
     {
         return -2;
     }
-
-    graphFree(graph);
-    return;
+    printStates(graph);
+    graphFree(&graph);
 }

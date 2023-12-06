@@ -93,6 +93,33 @@ bool listIsEmpty(const List* list)
     return list == NULL ? ListNULLPointerError: list->head == NULL;
 }
 
+ListErrorCode listGetKeys(const List* list, int** keys)
+{
+    if (list == NULL || keys == NULL)
+    {
+        return ListNULLPointerError;
+    }
+
+    int* listKeys = calloc(list->length, sizeof(int));
+
+    if (listKeys == NULL)
+    {
+        free(listKeys);
+        return ListMemoryAllocationError;
+    }
+
+    ListElement* element = list->head;
+    for (size_t i = 0; i < list->length; ++i)
+    {
+        listKeys[i] = element->town;
+        element = element->next;
+    }
+
+    (*keys) = listKeys;
+
+    return ListOK;
+}
+
 ListErrorCode listPrint(const List* list)
 {
     if (list == NULL)
@@ -108,7 +135,7 @@ ListErrorCode listPrint(const List* list)
 
     while (head)
     {
-        printf("(%d, %d) ", head->town, head->roadLength);
+        printf("%d ", head->town);
         head = head->next;
     }
     printf("\n");
@@ -118,6 +145,10 @@ ListErrorCode listPrint(const List* list)
 
 ListErrorCode listFree(List** list)
 {
+    if (list == NULL)
+    {
+        return ListNULLPointerError;
+    }
     if ((*list) == NULL)
     {
         return ListNULLPointerError;

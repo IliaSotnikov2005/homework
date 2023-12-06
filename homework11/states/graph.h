@@ -1,7 +1,9 @@
 #pragma once
 
-#include "../../lib/list/list.h"
+#include <stdbool.h>
+#include <stdlib.h>
 
+// Graph error codes
 typedef enum GraphErrorCode
 {
     GraphOK = 0,
@@ -11,15 +13,25 @@ typedef enum GraphErrorCode
     GraphCouldntAttachTheCity = -4
 } GraphErrorCode;
 
-
 typedef struct Graph Graph;
 
-Graph* graphCreateFromFile(const char* filename);
+// Create graph from file
+Graph* graphCreateFromFile(const char const * filename);
 
-unsigned int graphNumberOfTowns(Graph* graph);
+// Get cities count
+unsigned int graphCitiesCount(const Graph const * graph);
 
-unsigned int graphNumberOfStates(Graph* graph);
+// Get states count
+unsigned int graphStatesCount(const Graph const * graph);
 
-GraphErrorCode graphAttachACity(unsigned int state, Graph* graph);
+// Link a nearest city to state
+GraphErrorCode graphLinkACity(const unsigned int state, Graph* graph);
 
-GraphErrorCode graphFree(Graph* graph);
+// Print states
+void printStates(const Graph const * graph);
+
+// Free graph
+GraphErrorCode graphFree(Graph** graph);
+
+// Check graph with your data
+bool graphCheck(const Graph* const graph, const unsigned int* states, const size_t statesCount);

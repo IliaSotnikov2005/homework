@@ -33,6 +33,9 @@ size_t listSize(const List* list);
 // Check if list is empty
 bool listIsEmpty(const List* list);
 
+
+ListErrorCode listGetKeys(const List* list, int** keys);
+
 // Print list
 ListErrorCode listPrint(const List* list);
 

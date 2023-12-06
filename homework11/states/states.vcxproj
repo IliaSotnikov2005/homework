@@ -119,16 +119,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="distributeCities.c" />
     <ClCompile Include="graph.c" />
     <ClCompile Include="list.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="test.c" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="distributeCities.h" />
     <ClInclude Include="graph.h" />
     <ClInclude Include="list.h" />
+    <ClInclude Include="test.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="cities.txt" />
+    <Text Include="test2.txt" />
+    <Text Include="test1.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
