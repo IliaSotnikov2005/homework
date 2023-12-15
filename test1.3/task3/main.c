@@ -55,7 +55,7 @@ char* readStringFromFile(const char const* filename, size_t* textSize)
 }
 
 
-int test()
+int test(void)
 {
     char input[3][7] = {"aaaaa", "", "a\n\n\nbb\n"};
     char expected[3][5] = { "a", "", "a\nb\n\0" };
@@ -80,6 +80,7 @@ int main()
     if (testFailed != 0)
     {
         printf("FAILED %d TEST\n", testFailed);
+        return -1;
     }
 
     size_t textSize = 0;
