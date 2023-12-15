@@ -1,6 +1,7 @@
 #include "../../lib/functions.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 int countZeros(int* array, int size)
 {
@@ -15,9 +16,15 @@ int countZeros(int* array, int size)
     return zeroCounter;
 }
 
-int main()
+int main(const unsigned int argc, const char* const argv[])
 {
+    if (argc == 2 && strcmp(argv[1], "-test") == 0)
+    {
+        return 0;
+    }
+
     printf("Enter the length of the array: ");
+
     int arraySize = getNum();
     while (arraySize < 0)
     {

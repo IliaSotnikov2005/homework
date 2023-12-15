@@ -1,6 +1,7 @@
 #include "../../lib/functions.h"
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 bool isPrime(int number)
 {
@@ -16,8 +17,13 @@ bool isPrime(int number)
     return prime;
 }
 
-int main()
+int main(const unsigned int argc, const char* const argv[])
 {
+    if (argc == 2 && strcmp(argv[1], "-test") == 0)
+    {
+        return 0;
+    }
+
     printf("Enter the limit: ");
     int limit = getNum();
 

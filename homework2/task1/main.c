@@ -61,7 +61,7 @@ void fibonacciTest(unsigned int (*fibonacciFunction)(unsigned int), bool* testRe
     }
 }
 
-int main()
+int main(const unsigned int argc, const char* const argv[])
 {
     bool testResult[9] = { 0 };
     fibonacciTest(&linearFibonacci, testResult);
@@ -69,9 +69,15 @@ int main()
     {
         if (!testResult[i])
         {
-            printf("LINEAR TEST %d FAILED\n", i + 1);
+            return -1;
         }
     }
+
+    if (argc == 2 && strcmp(argv[1], "-test") == 0)
+    {
+        return 0;
+    }
+
     fibonacciTest(&recursiveFibonacci, testResult);
     for (int i = 0; i < 9; ++i)
     {
