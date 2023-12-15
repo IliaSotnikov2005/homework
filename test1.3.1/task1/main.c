@@ -32,7 +32,7 @@ void printArray(const bool const* array, const size_t size)
     printf("\n");
 }
 
-int test()
+int test(void)
 {
     bool number1[] = {1, 0, 1};
     bool number2[] = {1, 1, 1};
