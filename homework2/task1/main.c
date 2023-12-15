@@ -73,18 +73,18 @@ int main(const unsigned int argc, const char* const argv[])
         }
     }
 
-    if (argc == 2 && strcmp(argv[1], "-test") == 0)
-    {
-        return 0;
-    }
-
     fibonacciTest(&recursiveFibonacci, testResult);
     for (int i = 0; i < 9; ++i)
     {
         if (!testResult[i])
         {
-            printf("RECURSIVE TEST %d FAILED\n", i + 1);
+            return -1;
         }
+    }
+
+    if (argc == 2 && strcmp(argv[1], "-test") == 0)
+    {
+        return 0;
     }
 
     printf("The fibonacci sequence constructed by a linear algorithm:\n");
