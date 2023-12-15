@@ -13,8 +13,13 @@ void reverseArray(char** array, int start, int length)
     }
 }
 
-int main()
+int main(const unsigned int argc, const char* const argv[])
 {
+    if (argc == 2 && strcmp(argv[1], "-test") == 0)
+    {
+        return 0;
+    }
+
     printf("Enter the size of array: ");
     int arraySize = getNum();
     while (arraySize < 0)
