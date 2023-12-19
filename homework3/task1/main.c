@@ -4,12 +4,13 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-enum ErrorCode
+typedef enum ErrorCode
 {
-    OK,
-    MEMORY_ALLOCATION_ERROR,
-    INVALID_INPUT
-};
+    ok = 0,
+    memoryAllocationError = -1,
+    invalidInput = -2,
+    testFailed = -3
+} ErrorCode;
 
 void swap(int* number1, int* number2)
 {
@@ -18,13 +19,28 @@ void swap(int* number1, int* number2)
     *number2 = temp;
 }
 
-void insertionSort(int* array, const unsigned int end)
+void insertionSort(int* array, const int start, const unsigned int end)
 {
-    for (unsigned int i = 1; i < end + 1; ++i)
+    for (unsigned int i = start + 1; i < end + 1; ++i)
     {
-        for (unsigned int j = i; j > 0 && array[j - 1] > array[j]; --j)
+        bool sorted = true;
+        for (unsigned int j = i; j > 0; --j)
         {
-            swap(&array[j], &array[j - 1]);
+            if (array[j - 1] > array[j])
+            {
+                swap(&array[j], &array[j - 1]);
+                sorted = false;
+            }
+
+            if (array[end - j] > array[end - j + 1])
+            {
+                swap(&array[end - j], &array[end - j + 1]);
+                sorted = false;
+            }
+        }
+        if (sorted)
+        {
+            break;
         }
     }
 }
@@ -33,7 +49,7 @@ void smartQSort(int* array, const unsigned int start, const unsigned int end)
 {
     if (end - start + 1 < 10)
     {
-        insertionSort(array, end);
+        insertionSort(array, start, end);
         return;
     }
     if (start < end)
@@ -43,8 +59,8 @@ void smartQSort(int* array, const unsigned int start, const unsigned int end)
         int right = end;
         while (left <= right)
         {
-            for (left; array[left] < separator; ++left);
-            for (right; array[right] > separator; --right);
+            for (; array[left] < separator; ++left);
+            for (; array[right] > separator; --right);
             if (left <= right)
             {
                 swap(&array[left], &array[right]);
@@ -57,14 +73,8 @@ void smartQSort(int* array, const unsigned int start, const unsigned int end)
     }
 }
 
-bool* test()
+unsigned int test(void)
 {
-    bool* testResults = calloc(4, sizeof(bool));
-    if (testResults == NULL)
-    {
-        return NULL;
-    }
-
     int arrayLess10[][9] = {
         {3, 7, 1, 9, 2, 34, 33, 3, -5},
         {-5, 0, 10, -2, -70, 67, 9, 17, -10}
@@ -74,10 +84,13 @@ bool* test()
         {-70, -10, -5, -2, 0, 9, 10, 17, 67}
     };
 
-    for (size_t i = 0; i < 2; ++i)
+    for (unsigned int i = 0; i < 2; ++i)
     {
         smartQSort(arrayLess10[i], 0, 8);
-        testResults[i] = memcmp(arrayLess10[i], expected1[i], sizeof(arrayLess10[i])) == 0;
+        if (memcmp(arrayLess10[i], expected1[i], sizeof(arrayLess10[i])) != 0)
+        {
+            return i + 1;
+        }
     }
 
     int arrayMore10[][15] = {
@@ -89,38 +102,33 @@ bool* test()
         {-19, 16, 17, 18, 20, 21, 22, 23, 24, 26, 27, 28, 29, 30, 31}
     };
 
-    for (size_t i = 2; i < 4; ++i)
+    for (unsigned int i = 2; i < 4; ++i)
     {
         smartQSort(arrayMore10[i - 2], 0, 14);
-        testResults[i] = memcmp(arrayMore10[i - 2], expected2[i - 2], sizeof(arrayMore10[i - 2])) == 0;
+        if (memcmp(arrayMore10[i - 2], expected2[i - 2], sizeof(arrayMore10[i - 2])) != 0)
+        {
+            return i + 1;
+        }
     }
 
-    return testResults;
+    return 0;
 }
 
 int main()
 {
-    bool* testResults = test();
-    if (testResults == NULL)
+    unsigned int testErrorCode = test();
+    if (testErrorCode != 0)
     {
-        printf("Memory allocation error");
-        return MEMORY_ALLOCATION_ERROR;
+        printf("Test %d failed", testErrorCode);
+        return testErrorCode;
     }
-    for (size_t i = 0; i < 4; ++i)
-    {
-        if (!testResults[i])
-        {
-            printf("TEST %d FAILED\n", (int)i);
-        }
-    }
-    free(testResults);
 
     printf("Enter the size of the array\n");
     int size = getNum();
     if (size < 0)
     {
         printf("The size must be greater than 0");
-        return INVALID_INPUT;
+        return invalidInput;
     }
 
     printf("Enter the numbers one by one\n");
@@ -128,7 +136,7 @@ int main()
     if (array == NULL)
     {
         printf("Memory allocation error");
-        return MEMORY_ALLOCATION_ERROR;
+        return memoryAllocationError;
     }
     for (int i = 0; i < size; ++i)
     {
