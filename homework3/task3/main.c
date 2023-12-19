@@ -1,103 +1,108 @@
-#include "../../lib/functions.h"
 #include <stdio.h>
 #include <stdlib.h>
 
-int findMostFrequent(int* array, const int size)
+int comparator(const int* a, const int* b)
 {
-    int max = array[0];
-    int min = array[0];
+    return (*a - *b);
+}
 
-    for (int i = 0; i < size; ++i)
+int findMostFrequent(int* array, const size_t size)
+{
+    qsort(array, size, sizeof(int), comparator);
+    int mostFrequent = 0;
+    int mostFrequentStreak = 0;
+    int current = array[0];
+    int currentStreak = 1;
+
+    for (size_t i = 1; i < size; ++i)
     {
-        if (array[i] > max)
+        if (array[i] == current)
         {
-            max = array[i];
+            ++currentStreak;
         }
-        if (array[i] < min)
+        else
         {
-            min = array[i];
-        }
-    }
-
-    if (min < 0)
-    {
-        min = -min;
-    }
-    else
-    {
-        min = 0;
-    }
-
-    int* countingArray = calloc(max + min + 1, sizeof(int));
-    for (int i = 0; i < size; ++i)
-    {
-        ++countingArray[array[i] + min];
-    }
-
-    int index = 0;
-    for (int i = 0; i < max + min + 1; ++i)
-    {
-        if (countingArray[i] > countingArray[index])
-        {
-            index = i;
+            if (mostFrequentStreak < currentStreak)
+            {
+                mostFrequent = current;
+                mostFrequentStreak = currentStreak;
+            }
+            current = array[i];
+            currentStreak = 1;
         }
     }
-    free(countingArray);
+    mostFrequentStreak < currentStreak ? mostFrequent = current : NULL;
 
-    return index - min;
+    return mostFrequent;
 }
 
 int test(void)
 {
-    int array1[] = { 1, 2, 3, 3, 3, 4, 4, 4, 4 };
-    int size1 = sizeof(array1) / sizeof(array1[0]);
+    int array1[] = { 2, 1, 3, 3, 3, 4, 4, 4, 4 };
+    int size1 = 9;
     int result1 = findMostFrequent(array1, size1);
     if (result1 != 4)
     {
-        return -1;
+        return 1;
     }
 
     int array2[] = { -5, -3, -5, -2, -3, -4, -3, -4 };
-    int size2 = sizeof(array2) / sizeof(array2[0]);
-    int result2 = findMostFrequent(array2, size2);
+
+    int size2 = 8;
+    int result2 = findMostFrequent(&array2, size2);
     if (result2 != -3)
     {
-        return -2;
+        return 2;
     }
 
     int array3[] = { 7, 7, 7, 7, 7, 7, 7 };
-    int size3 = sizeof(array3) / sizeof(array3[0]);
+    int size3 = 7;
     int result3 = findMostFrequent(array3, size3);
     if (result3 != 7)
     {
-        return -3;
+        return 3;
     }
     return 0;
 }
 
 int main()
 {
-    if (test() != 0)
+    int testErrorCode = test();
+    if (testErrorCode != 0)
     {
-        return -1;
+        printf("Test %d failed", testErrorCode);
+        return testErrorCode;
     }
+
     printf("Enter the size of the array:\n");
-    int size = getNum();
-    if (size < 0)
+
+    int size = 0;
+    if (scanf_s("%d", &size) == 0 || size < 0)
     {
-        printf("\nInvalid size value");
+        printf("\nInvalid input");
         return -1;
     }
 
     printf("\nEnter the elements of array one by one\n");
     int* array = calloc(size, sizeof(int));
-    for (int i = 0; i < size; ++i)
+    if (array == NULL)
     {
-        printf("array[%d] = ", i);
-        array[i] = getNum();
+        printf("Memory allocation error");
+        return -2;
+    }
+
+    for (size_t i = 0; i < size; ++i)
+    {
+        printf("array[%d] = ", (int)i);
+        if (scanf_s("%d", &array[i]) == 0)
+        {
+            printf("Invalid input");
+            return -1;
+        }
     }
 
     int mostFrequent = findMostFrequent(array, size);
+    free(array);
 
     printf("\nThe most frequent element is %d", mostFrequent);
 }
