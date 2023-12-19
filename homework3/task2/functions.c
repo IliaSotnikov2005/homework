@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-void randomIntArrayFill(int* array, size_t size)
+void randomIntArrayFill(int* array, const size_t size)
 {
     for (size_t i = 0; i < size; ++i)
     {
