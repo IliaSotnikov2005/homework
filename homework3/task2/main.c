@@ -1,16 +1,32 @@
-#include "../../lib/functions.h"
+#include "functions.h"
+
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
+
+typedef enum ErrorCode
+{
+    ok = 0,
+    invalidInput = -1,
+    memoryAllocationError = -2
+} ErrorCode;
 
 int compare(const int number1, const int number2)
 {
-    if (number1 == number2) return 0;
-    else if (number1 < number2) return -1;
-    else return 1;
+    if (number1 == number2)
+    {
+        return 0;
+    }
+    else if (number1 < number2)
+    {
+        return -1;
+    }
+    else
+    {
+        return 1;
+    }
 }
 
-int binarySearch(const int number, const int* array, const int size)
+int binarySearch(const int number, const int* array, const size_t size)
 {
     int leftIndex = 0;
     int rightIndex = size - 1;
@@ -23,93 +39,96 @@ int binarySearch(const int number, const int* array, const int size)
         {
             return mid;
         }
+
         if (array[mid] > number)
         {
             rightIndex = mid - 1;
         }
+
         else
         {
             leftIndex = mid + 1;
         }
     }
+
     return -1;
 }
 
-int test()
+int test(void)
 {
-    const int* array1[] = { 0, 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
-    const int size = 10;
-    if (binarySearch(0, array1, size) != 0)
+    const int array[] = { 0, 1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 };
+    const int input[] = {0, 9, 10, -2, 4, 7};
+    const int expected[] = { 0, 9, -1, -1, 4, 7 };
+    const size_t size = 10;
+    for (size_t i = 0; i < 6; ++i)
     {
-        return 1;
+        if (binarySearch(input[i], array, size) != expected[i])
+        {
+            return i + 1;
+        }
     }
-    if (binarySearch(9, array1, size) != 9)
-    {
-        return 2;
-    }
-    if (binarySearch(10, array1, size) != -1)
-    {
-        return 3;
-    }
-    if (binarySearch(-2, array1, size) != -1)
-    {
-        return 4;
-    }
-    if (binarySearch(4, array1, -2) != -1)
-    {
-        return 5;
-    }
-    if (binarySearch(7, array1, -2) != -1)
-    {
-        return 6;
-    }
-    const int array2[] = {0, 0, 0, 0};
-    if (binarySearch(0, array2, 4) == -1)
-    {
-        return 7;
-    }
+
     return 0;
 }
 
 int main()
 {
-    if (test() != 0)
+    int testErrorCode = test();
+    if (testErrorCode != 0)
     {
-        return -1;
+        printf("Test %d failed", testErrorCode);
+        return testErrorCode;
     }
+
     printf("Enter the size of the array: ");
-    const int size = getNum();
-    if (size < 0)
+    int arraySize = 0;
+    if (scanf_s("%d", &arraySize) == 0 || arraySize < 0)
     {
-        printf("\nThe length of the array must be greater or equal\n");
-        return -1;
+        printf("Invalid input");
+        return invalidInput;
     }
-    int* array = calloc(size, sizeof(int));
-    randomIntArrayFill(array, size);
+
+    int* array = calloc(arraySize, sizeof(int));
+    if (array == NULL)
+    {
+        printf("Memory allocations error");
+        return memoryAllocationError;
+    }
+
+    randomIntArrayFill(array, arraySize);
 
     printf("\nEnter the count or numbers: ");
-    const int numbersCount = getNum();
-    if (numbersCount < 0)
+    int numbersCount = 0;
+    if (scanf_s("%d", &numbersCount) == 0 || numbersCount < 0)
     {
-        printf("\nThe length of the array must be greater or equal\n");
-        return -1;
+        free(array);
+        printf("Invalid input");
+        return invalidInput;
     }
-    int* numberArray = calloc(size, sizeof(int));
+
+    int* numberArray = calloc(numbersCount, sizeof(int));
+    if (numberArray == NULL)
+    {
+        free(array);
+        printf("Memory allocations error");
+        return memoryAllocationError;
+    }
+
     randomIntArrayFill(numberArray, numbersCount);
 
-    numberArray[0] = array[0]; // ну чтобы хоть 1 элемент был
+    numberArray[rand() % numbersCount] = array[rand() % arraySize]; // let at least 1 element always be inside
 
     printf("\nArray:\n");
-    printIntArray(array, size);
+    printIntArray(array, arraySize);
 
     printf("\nNumbers to search for:\n");
     printIntArray(numberArray, numbersCount);
 
-    qsort(array, size, sizeof(int), compare);
+    qsort(array, arraySize, sizeof(int), compare);
 
     for (int i = 0; i < numbersCount; ++i)
     {
-        if (binarySearch(numberArray[i], array, size) != -1)
+        if (binarySearch(numberArray[i], array, arraySize) != -1)
         {
             printf("\n%d is in array", numberArray[i]);
         }
@@ -118,4 +137,7 @@ int main()
             printf("\n%d is not in array", numberArray[i]);
         }
     }
+
+    free(numberArray);
+    free(array);
 }
