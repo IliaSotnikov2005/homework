@@ -46,14 +46,15 @@ void sortingByCounting(int* array, const size_t size)
             ++index;
         }
     }
+
     free(countingArray);
 }
 
 void bubbleSorting(int* array, const size_t size)
 {
-    for (size_t i = 0; i < size; i++)
+    for (size_t i = 0; i < size; ++i)
     {
-        for (size_t j = i + 1; j < size; j++)
+        for (size_t j = i + 1; j < size; ++j)
         {
             if (array[i] > array[j])
             {
@@ -67,14 +68,13 @@ void bubbleSorting(int* array, const size_t size)
 
 void randomIntArrayFill(int* array, const size_t size)
 {
-    for (size_t i = 0; i < size; i++)
+    for (size_t i = 0; i < size; ++i)
     {
-        int value = rand();
-        array[i] = value;
+        array[i] = rand() - RAND_MAX / 2;
     }
 }
 
-void sortTest(void (*sortFunction)(int* array, const size_t size), bool* testResults)
+int sortTest(void (*sortFunction)(int* array, const size_t size))
 {
     int testBase[][5] = { { 3, 7, 1, 9, 2 }, { -5, 0, 10, -2, 7 }, { 5, 5, 5, 5, 5 } };
     int expectedResults[][5] = { { 1, 2, 3, 7, 9 }, { -5, -2, 0, 7, 10 }, { 5, 5, 5, 5, 5 } };
@@ -83,52 +83,53 @@ void sortTest(void (*sortFunction)(int* array, const size_t size), bool* testRes
     for (size_t i = 0; i < testsAmount; ++i)
     {
         sortFunction(testBase[i], 5);
-        testResults[i] = memcmp(testBase[i], expectedResults[i], sizeof(testBase[0])) == 0;
+        if (memcmp(testBase[i], expectedResults[i], sizeof(testBase[0])) != 0)
+        {
+            return i + 1;
+        }
     }
+
+    return 0;
 }
 
 int main()
 {
-    bool testResults[3] = { 0 };
-    sortTest(&bubbleSorting, testResults);
-    for (size_t i = 0; i * 2 < sizeof(testResults); ++i)
+    int testErrorCode = sortTest(&bubbleSorting);
+    if (testErrorCode != 0)
     {
-        if (!testResults[i])
-        {
-            printf("BUBBLE SORTING TEST %d FAILED\n", (int)i);
-        }
+        printf("Bubble sorting failed %d test", testErrorCode);
+        return -1;
     }
 
-    sortTest(&sortingByCounting, testResults);
-    for (size_t i = 0; i * 2 < sizeof(testResults); ++i)
+    testErrorCode = sortTest(&bubbleSorting);
+    if (testErrorCode != 0)
     {
-        if (!testResults[i])
-        {
-            printf("SORTING BY COUNTING TEST %d FAILED\n", (int)i);
-        }
+        printf("Sorting by counting failed %d test", testErrorCode);
+        return -1;
     }
-
-    printf("Now the algorithms are sorting the array, please wait\n\n");
 
     int* array1 = calloc(ARRAY_SIZE, sizeof(int));
     if (array1 == NULL)
     {
         printf("Memory allocation error");
-        return -1;
+        return -2;
     }
+
     int* array2 = calloc(ARRAY_SIZE, sizeof(int));
     if (array2 == NULL)
     {
         free(array1);
         printf("Memory allocation error");
-        return -1;
+        return -2;
     }
-    randomIntArrayFill(array1, ARRAY_SIZE);
 
+    randomIntArrayFill(array1, ARRAY_SIZE);
     for (size_t i = 0; i < ARRAY_SIZE; ++i)
     {
         array2[i] = array1[i];
     }
+
+    printf("Now the algorithms are sorting the array, please wait\n\n");
 
     clock_t start = clock();
     bubbleSorting(array1, ARRAY_SIZE);
