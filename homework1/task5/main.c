@@ -2,8 +2,13 @@
 #include <string.h>
 #include <stdbool.h>
 
-int main()
+int main(const unsigned int argc, const char* const argv[])
 {
+    if (argc == 2 && strcmp(argv[1], "-test") == 0)
+    {
+        return 0;
+    }
+
     char string[80] = { 0 };
     printf("Enter a bracket sequence of no more than 80 characters long: ");
     scanf_s("%s", string, 80);
