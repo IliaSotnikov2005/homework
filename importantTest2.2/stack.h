@@ -7,7 +7,7 @@
 typedef struct Stack Stack;
 
 // Create stack
-Stack* stackCreate();
+Stack* stackCreate(void);
 
 // Add an element to stack
 ErrorCode stackPush(Stack* stack, const int value);
