@@ -1,4 +1,5 @@
 #pragma once
+
 #include "errorCodes.h"
 
 typedef struct Queue Queue;
