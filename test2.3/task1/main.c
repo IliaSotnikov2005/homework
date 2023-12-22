@@ -15,7 +15,7 @@ int test(void)
     int number = 0;
     for (size_t i = 0; i < 19; ++i)
     {
-        if (fscanf(output, "%d", &number) == -1)
+        if (fscanf_s(output, "%d", &number) == -1)
         {
             return 2;
         }
@@ -37,5 +37,12 @@ int main()
         return errorCode;
     }
 
-    //rewrite("text.txt", 4, 10);
+    errorCode = rewrite("text.txt", 4, 10);
+    if (errorCode != 0)
+    {
+        printf("An error occured");
+        return errorCode;
+    }
+    
+    printf("Success! Result is in output.txt");
 }

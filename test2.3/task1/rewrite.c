@@ -56,6 +56,7 @@ int rewrite(const char* inputFilename, const int lowerBound, const int upperBoun
         fprintf(outputFile, "%d ", array[i - 1]);
     }
     free(array);
+
     array = stackToArray(withinBorders);
     arraySize = stackSize(withinBorders);
     for (size_t i = arraySize; i >= 1; --i)
@@ -63,18 +64,19 @@ int rewrite(const char* inputFilename, const int lowerBound, const int upperBoun
         fprintf(outputFile, "%d ", array[i - 1]);
     }
     free(array);
+
     array = stackToArray(aboveUpperLimit);
     arraySize = stackSize(aboveUpperLimit);
     for (size_t i = arraySize; i >= 1; --i)
     {
         fprintf(outputFile, "%d ", array[i - 1]);
     }
+    fprintf(outputFile, "\n");
     free(array);
 
     stackFree(&aboveUpperLimit);
     stackFree(&aboveUpperLimit);
     stackFree(&belowLowerLimit);
-    fprintf(outputFile, "\n");
 
     fclose(outputFile);
 
