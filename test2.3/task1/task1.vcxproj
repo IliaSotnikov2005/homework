@@ -125,6 +125,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="output.txt" />
+    <Text Include="test.txt" />
     <Text Include="text.txt" />
   </ItemGroup>
   <ItemGroup>
