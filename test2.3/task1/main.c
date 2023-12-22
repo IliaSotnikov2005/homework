@@ -1,10 +1,10 @@
-#include "rewrite.h"
+#include "rearrangeNumbers.h"
 
 #include <stdio.h>
 
 int test(void)
 {
-    rewrite("test.txt", -4, 6);
+    rearrangeNumbers("test.txt", -4, 6);
     int expected[] = { -12, -5, -6, 6, 5, 4, 3, 2, 1, 0, -4, 3, 4, 3, 10, 9, 8, 7, 7 };
     FILE* output = fopen("output.txt", "r");
     if (output == NULL)
@@ -37,7 +37,7 @@ int main()
         return errorCode;
     }
 
-    errorCode = rewrite("text.txt", 4, 10);
+    errorCode = rearrangeNumbers("text.txt", 4, 10);
     if (errorCode != 0)
     {
         printf("An error occured");

@@ -120,7 +120,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
-    <ClCompile Include="rewrite.c" />
+    <ClCompile Include="rearrangeNumbers.c" />
     <ClCompile Include="stack.c" />
   </ItemGroup>
   <ItemGroup>
@@ -129,6 +129,7 @@
     <Text Include="text.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="rearrangeNumbers.h" />
     <ClInclude Include="rewrite.h" />
     <ClInclude Include="stack.h" />
   </ItemGroup>

@@ -1,9 +1,9 @@
-#include "rewrite.h"
+#include "rearrangeNumbers.h"
 #include "stack.h"
 
 #include <stdio.h>
 
-int rewrite(const char* inputFilename, const int lowerBound, const int upperBound)
+int rearrangeNumbers(const char* inputFilename, const int lowerBound, const int upperBound)
 {
     FILE* inputFile = fopen(inputFilename, "r");
     if (inputFile == NULL)
