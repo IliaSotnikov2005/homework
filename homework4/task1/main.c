@@ -5,131 +5,92 @@
 #include <stdlib.h>
 #include <string.h>
 
-int getNum(void)
+enum ErrorCode
 {
-    int number = 0;
-    while (true)
-    {
-        int input = scanf_s("%d", &number);
-        char symbol = 0;
-        int input2 = scanf_s("%c", &symbol);
-        if (input == 1 && input2 == 1 && symbol == '\n')
-        {
-            break;
-        }
-        else
-        {
-            printf("\nНеправильный формат ввода\nПопробуйте снова: ");
-        }
-        while ((symbol = getchar()) != '\n' && symbol != EOF);
-    }
-    return number;
-}
+    ok = 0,
+    invalidInput = -1,
+    memoryAllocationError = -2
+};
 
-void sumBin(int* bin1, int* bin2, int* result, const int size)
+bool* sumBinary(const bool* number1, const bool* number2)
 {
+    bool* result = calloc(sizeof(int) * 8, sizeof(bool));
+    if (result == NULL)
+    {
+        return NULL;
+    }
+
     int carry = 0;
-    for (int i = size - 1; i >= 0; --i)
+    for (int i = sizeof(int) * 8 - 1; i >= 0; --i)
     {
-        result[i] = (bin1[i] + bin2[i] + carry) % 2;
-        carry = (bin1[i] + bin2[i] + carry > 1) ? 1 : 0;
+        result[i] = (number1[i] + number2[i] + carry) % 2;
+        carry = (number1[i] + number2[i] + carry > 1) ? 1 : 0;
     }
+
+    return result;
 }
 
-void printBin(const int* bin, const int size)
+void printBinary(const bool* bin)
 {
-    for (int i = 0; i < size; ++i)
+    for (size_t i = 0; i < sizeof(int) * 8; ++i)
     {
         printf("%d", bin[i]);
     }
+
     printf("\n");
 }
 
-int binToDecimal(int* bin, int size)
+int toDecimal(const bool* binaryNumber)
 {
-    int negative = (bin[0] == 1) ? -1 : 1;
-    if (bin[0] == 1)
+    int decimal = 0;
+
+    for (size_t i = 0; i < sizeof(int) * 8; ++i)
     {
-        for (int i = size - 1; i >= 0; --i)
-        {
-            if (bin[i] == 1)
-            {
-                for (int j = i + 1; j < size; ++j)
-                {
-                    bin[j] = 1;
-                }
-                bin[i] = 0;
-                break;
-            }
-        }
-        for (int i = 0; i < size; ++i)
-        {
-            bin[i] = !bin[i];
-        }
+        decimal += binaryNumber[31 - i] * (1 << i);
     }
-    int result = 0;
-    for (int i = 1; i <= size; ++i)
-    {
-        result += bin[size - i] * (1 << (i - 1));
-    }
-    return negative * result;
+
+    return decimal;
 }
 
-void toTwosComplement(int number, int* bin, int size) {
-    for (int i = size - 1; i >= 0; i--) {
-        bin[i] = number & 1;
+bool* toBinary(int number)
+{
+    bool* binaryNumber = calloc(sizeof(number) * 8, sizeof(bool));
+    if (binaryNumber == NULL)
+    {
+        return NULL;
+    }
+
+    for (int i = sizeof(number) * 8 - 1; i >= 0; --i)
+    {
+        binaryNumber[i] = number & 1;
         number >>= 1;
     }
+
+    return binaryNumber;
 }
 
-int test()
+int test(void)
 {
-    int bin1[8] = { 0 };
-    int bin2[8] = { 0 };
-    int binSum[8] = { 0 };
-    int decimalSum = 0;
+    int inputNumbers1[] = { 0, 10, -50, -127 };
+    int inputNumbers2[] = { 10, -5, -77, 127 };
+    int expected[] = { 10, 5, -127, 0 };
 
-    int num1 = 0, num2 = 10;
-    toTwosComplement(num1, bin1, 8);
-    toTwosComplement(num2, bin2, 8);
-    sumBin(bin1, bin2, binSum, 8);
-    decimalSum = binToDecimal(binSum, 8);
-    if (decimalSum != 10)
+    for (size_t i = 0; i < 4; ++i)
     {
-        return -1;
-    }
+        bool* binaryNumber1 = toBinary(inputNumbers1[i]);
+        bool* binaryNumber2 = toBinary(inputNumbers2[i]);
+        bool* binarySum = sumBinary(binaryNumber1, binaryNumber2);
+        if (toDecimal(binarySum) != expected[i])
+        {
+            free(binaryNumber1);
+            free(binaryNumber2);
+            free(binarySum);
+            return i;
+        }
 
-    num1 = 10;
-    num2 = -5;
-    toTwosComplement(num1, bin1, 8);
-    toTwosComplement(num2, bin2, 8);
-    sumBin(bin1, bin2, binSum, 8);
-    decimalSum = binToDecimal(binSum, 8);
-    if (decimalSum != 5)
-    {
-        return -2;
-    }
-
-    num1 = -50;
-    num2 = -77;
-    toTwosComplement(num1, bin1, 8);
-    toTwosComplement(num2, bin2, 8);
-    sumBin(bin1, bin2, binSum, 8);
-    decimalSum = binToDecimal(binSum, 8);
-    if (decimalSum != -127)
-    {
-        return -3;
-    }
-
-    num1 = -127;
-    num2 = 127;
-    toTwosComplement(num1, bin1, 8);
-    toTwosComplement(num2, bin2, 8);
-    sumBin(bin1, bin2, binSum, 8);
-    decimalSum = binToDecimal(binSum, 8);
-    if (decimalSum != 0)
-    {
-        return -4;
+        free(binaryNumber1);
+        free(binaryNumber2);
+        free(binarySum);
     }
 
     return 0;
@@ -139,66 +100,66 @@ int main()
 {
     setlocale(LC_ALL, "RU");
 
-    if (test() != 0)
+    int errorCode = test();
+    if (errorCode != 0)
     {
-        return 1 - ;
+        printf("Test %d failed", errorCode);
+        return errorCode;
     }
 
-    printf("Введите желаемое число двоичных разрядов: ");
-    int bitDepth = getNum();
-    int lowLimit = -(1 << (bitDepth - 1)), highLimit = (1 << (bitDepth - 1)) - 1;
-    printf("\nСейчас вы работаете с числами в промежутке от %d до %d\n", lowLimit, highLimit);
+    printf("Введите первое число: ");
+    int number1 = 0;
+    if (scanf_s("%d", &number1) == 0)
+    {
+        printf("Invalid input");
+        return invalidInput;
+    }
 
-    printf("\nВведите первое число: ");
-    int number1 = getNum();
-    if (number1 < lowLimit || number1 > highLimit)
+    bool* binaryNumber1 = toBinary(number1);
+    if (binaryNumber1 == NULL)
     {
-        printf("Неверный ввод данных\n");
-        return -1;
+        printf("Memory allocation error");
+        return memoryAllocationError;
     }
-    int* binNumber1 = calloc(bitDepth, sizeof(int));
-    if (binNumber1 == NULL)
-    {
-        return -1;
-    }
-    toTwosComplement(number1, binNumber1, bitDepth);
-    printf("\nПервое число в дополнительном коде: ");
-    printBin(binNumber1, bitDepth);
+
+    printf("\nПервое число в двоичной системе счисления: ");
+    printBinary(binaryNumber1);
 
     printf("\nВведите второе число: ");
-    int number2 = getNum();
-    if (number2 < lowLimit || number2 > highLimit)
+    int number2 = 0;
+    if (scanf_s("%d", &number2) == 0)
     {
-        printf("Неверный ввод данных\n");
-        return -1;
-    }
-    int* binNumber2 = calloc(bitDepth, sizeof(int));
-    if (binNumber2 == NULL)
-    {
-        return -1;
-    }
-    toTwosComplement(number2, binNumber2, bitDepth);
-    printf("\nВторое число в дополнительном коде: ");
-    printBin(binNumber2, bitDepth);
-
-    if (number1 + number2 < lowLimit || number1 + number2 > highLimit)
-    {
-        printf("\nРезультат вычисления суммы вышел за рамки указанного выше диапазона\n");
-        return -1;
+        printf("Invalid input");
+        return invalidInput;
     }
 
-    int* binNumberSum = calloc(bitDepth, sizeof(int));
-    if (binNumberSum == NULL)
+    bool* binaryNumber2 = toBinary(number2);
+    if (binaryNumber2 == NULL)
     {
-        return -1;
+        free(binaryNumber1);
+        printf("Memory allocation error");
+        return memoryAllocationError;
     }
-    sumBin(binNumber1, binNumber2, binNumberSum, bitDepth);
-    free(binNumber1);
-    free(binNumber2);
+
+    printf("\nВторое число в двоичной системе счисления: ");
+    printBinary(binaryNumber2);
+
+    bool* binaryNumbersSum = sumBinary(binaryNumber1, binaryNumber2);
+    if (binaryNumbersSum == NULL)
+    {
+        free(binaryNumber1);
+        free(binaryNumber2);
+        printf("Memory allocation error");
+        return memoryAllocationError;
+    }
+
     printf("\nСумма двух чисел в бинарной системе: ");
-    printBin(binNumberSum, bitDepth);
+    printBinary(binaryNumbersSum);
 
-    int result = binToDecimal(binNumberSum, bitDepth);
-    free(binNumberSum);
-    printf("\nВ десятичной системе: %d\n", result);
+    int decimalSum = toDecimal(binaryNumbersSum);
+    printf("\nВ десятичной системе: %d\n", decimalSum);
+
+    free(binaryNumber1);
+    free(binaryNumber2);
+    free(binaryNumbersSum);
 }
