@@ -138,6 +138,7 @@ int main()
         printf("Memory allocation error");
         return memoryAllocationError;
     }
+
     for (int i = 0; i < size; ++i)
     {
         printf("array[%d] = ", i);
@@ -151,4 +152,6 @@ int main()
 
     printf("\nThe result:\n");
     printIntArray(array, size);
+
+    free(array);
 }
