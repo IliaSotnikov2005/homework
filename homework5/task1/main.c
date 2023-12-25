@@ -39,15 +39,15 @@ int main()
 
     printf("Enter the name of file: ");
 
-    char name[101] = { 0 };
-    if (scanf_s("%[^\n]", name, 101) == 0)
+    char filename[101] = { 0 };
+    if (scanf_s("%[^\n]", filename, 101) == 0)
     {
         printf("Invalid name");
         return invalidName;
     }
 
     findMostFrequentErrorCode exitCode = 0;
-    int mostFrequent = findMostFrequent(name, &exitCode);
+    int mostFrequent = findMostFrequent(filename, &exitCode);
 
     switch (exitCode)
     {
