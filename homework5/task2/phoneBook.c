@@ -80,7 +80,7 @@ static phoneBookErrorCode read(PhoneBook* phoneBook)
 
         ++phoneBook->usersCount;
     }
-    --phoneBook->usersCount;
+    phoneBook->usersCount > 0 ? --phoneBook->usersCount : 0;
 
     fclose(database);
 
@@ -183,6 +183,8 @@ phoneBookErrorCode phoneBookPhoneSearch(const char* name, char* phoneNumber, con
         if (strcmp(phoneBook->database[i]->name, name) == 0)
         {
             strcat(phoneNumber, phoneBook->database[i]->phoneNumber);
+
+            return phoneBookOk;
         }
     }
 
@@ -201,6 +203,8 @@ phoneBookErrorCode phoneBookNameSearch(const char* phoneNumber, char* name, cons
         if (strcmp(phoneBook->database[i]->phoneNumber, phoneNumber) == 0)
         {
             strcat(name, phoneBook->database[i]->name);
+
+            return phoneBookOk;
         }
     }
 

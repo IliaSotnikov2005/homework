@@ -21,6 +21,9 @@
     <ClCompile Include="phoneBook.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="testPhoneBook.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Text Include="database.txt">
@@ -35,6 +38,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="phoneBook.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="testPhoneBook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

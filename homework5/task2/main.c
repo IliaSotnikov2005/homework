@@ -1,4 +1,5 @@
 #include "phoneBook.h"
+#include "testPhoneBook.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -14,7 +15,12 @@ enum ErrorCode
 
 int main()
 {
-    // do tests
+    phoneBookErrorCode errorCode = test();
+    if (errorCode != phoneBookOk)
+    {
+        printf("Test %d failed", errorCode);
+        return errorCode;
+    }
 
     PhoneBook* phoneBook = phoneBookCreate();
     if (phoneBook == NULL)

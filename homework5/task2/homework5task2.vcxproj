@@ -121,6 +121,7 @@
   <ItemGroup>
     <ClCompile Include="main.c" />
     <ClCompile Include="phoneBook.c" />
+    <ClCompile Include="testPhoneBook.c" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="database.txt" />
@@ -129,6 +130,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="phoneBook.h" />
+    <ClInclude Include="testPhoneBook.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
