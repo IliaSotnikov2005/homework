@@ -1,61 +1,78 @@
-#include "module.h"
+#include "findMostFrequentFunction.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
+enum ErrorCode
+{
+    ok = 0,
+    invalidName = -1,
+    fileNotFound = -2
+};
+
 int test(void)
 {
-    int exitCode = 0;
-    int result = 0;
-    result = findMostFrequent("test1.txt", &exitCode);
-    if (result != 4 || exitCode != 0)
+    char inputFiles[5][10] = {"test1.txt", "test2.txt", "test3.txt", "test4.txt", "frgtd.txt"};
+    int expected[5][2] = { {4, 0}, {-3, 0}, {7, 0}, {1, 0}, {0, -1} };
+
+    for (size_t i = 0; i < 5; ++i)
     {
-        return -1;
+        findMostFrequentErrorCode errorCode = 0;
+        int result = findMostFrequent(inputFiles[i], &errorCode);
+        if (result != expected[i][0] || errorCode != expected[i][1])
+        {
+            return i + 1;
+        }
     }
-    result = findMostFrequent("test2.txt", &exitCode);
-    if (result != -3 || exitCode != 0)
-    {
-        return -2;
-    }
-    result = findMostFrequent("test3.txt", &exitCode);
-    if (result != 7 || exitCode != 0)
-    {
-        return -3;
-    }
-    result = findMostFrequent("test4.txt", &exitCode);
-    if ((result != 1 && result != 2) || exitCode != 0)
-    {
-        return -4;
-    }
-    result = findMostFrequent("asfawfawfewaweafev.txt", &exitCode);
-    if (exitCode != -1)
-    {
-        return exitCode;
-    }
+
     return 0;
 }
 
 int main()
 {
-    if (test() != 0)
+    int errorCode = test();
+    if (errorCode != 0)
     {
-        return -1;
+        printf("Failed %d test", errorCode);
+        return errorCode;
     }
 
-    printf("Enter the name of file:\n");
-    char name[100];
-    if (scanf_s("%[^\n]", name, 100) == NULL)
+    printf("Enter the name of file: ");
+
+    char name[101] = { 0 };
+    if (scanf_s("%[^\n]", name, 101) == 0)
     {
-        printf("\nInvalid name\n");
-        return -1;
+        printf("Invalid name");
+        return invalidName;
     }
 
-    int exitCode = 0;
+    findMostFrequentErrorCode exitCode = 0;
     int mostFrequent = findMostFrequent(name, &exitCode);
-    if (exitCode == -1)
+
+    switch (exitCode)
     {
-        printf("\nFile not found");
-        return -1;
+    case findMostFrequentOk:
+    {
+        break;
+    }
+    case findMostFrequentFileNotFound:
+    {
+        printf("File not found");
+        return findMostFrequentFileNotFound;
+    }
+    case findMostFrequentInvalidInput:
+    {
+        printf("Invalid input");
+        return findMostFrequentInvalidInput;
+    }
+    case findMostFrequentMemoryAllocationError:
+    {
+        printf("Memory allocation error");
+        return findMostFrequentMemoryAllocationError;
+    }
+    default:
+        break;
     }
 
-    printf("\nThe most frequent element is %d", mostFrequent);
+    printf("\nThe most frequent element is %d\n", mostFrequent);
 }

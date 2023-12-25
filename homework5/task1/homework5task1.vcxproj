@@ -120,10 +120,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
-    <ClCompile Include="module.c" />
+    <ClCompile Include="findMostFrequentFunction.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="module.h" />
+    <ClInclude Include="findMostFrequentFunction.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="input.txt" />
