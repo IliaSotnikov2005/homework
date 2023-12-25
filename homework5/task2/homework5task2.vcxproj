@@ -119,8 +119,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\lib\functions.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="phoneBook.c" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="database.txt" />
@@ -128,7 +128,7 @@
     <Text Include="testSave.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\functions.h" />
+    <ClInclude Include="phoneBook.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

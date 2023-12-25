@@ -18,8 +18,8 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\lib\functions.c">
-      <Filter>Header Files</Filter>
+    <ClCompile Include="phoneBook.c">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -34,7 +34,7 @@
     </Text>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\functions.h">
+    <ClInclude Include="phoneBook.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
