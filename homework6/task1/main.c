@@ -3,20 +3,24 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
+typedef enum ErrorCode
+{
+    divisionByZeroError = -1
+} ErrorCode;
+
 #define EXPRESSION_LENGTH 100
 
-int postfixCalculator(char *expression)
+int calculatePostfixExpression(char *expression, ErrorCode* errorCode)
 {
     Stack* stack = NULL;
-    int operand1 = 0;
-    int operand2 = 0;
     int result = 0;
 
-    int i = 0;
-    while (expression[i] != '\0')
+    for (size_t i = 0; expression[i] != '\0'; ++i)
     {
+        int operand1 = 0;
+        int operand2 = 0;
         char symbol = expression[i];
-        ++i;
+
         if (symbol == ' ' || symbol == '\n')
         {
             continue;
@@ -49,7 +53,14 @@ int postfixCalculator(char *expression)
             }
             case '/':
             {
-                result = operand1 / operand2;
+                if (operand2 != 0)
+                {
+                    result = operand1 / operand2;
+                }
+                else
+                {
+                    *errorCode = divisionByZeroError;
+                }
                 break;
             }
 
@@ -63,6 +74,9 @@ int postfixCalculator(char *expression)
 
     while (stackSize(stack) > 1)
     {
+        int operand1 = 0;
+        int operand2 = 0;
+
         operand2 = pop(&stack);
         operand1 = pop(&stack);
         result = operand1 * operand2;
@@ -75,50 +89,45 @@ int postfixCalculator(char *expression)
     return result;
 }
 
-void testCalculator(bool *testResults) {
-    char expressions[5][20] = {
+int test(void)
+{
+    char expressions[6][20] =
+    {
         "5 3 +",
         "9 2 - 3 *",
         "7 2 / 4 *",
         "1 2 + 3 * 4 -",
-        "9 3 / 2 + 5 *"
+        "9 3 / 2 + 5 *",
+        "1 0 /"
     };
 
-    if (postfixCalculator(expressions[0]) == 8) {
-        testResults[0] = true;
+    int expected[] = { 8, 21, 12, 5, 25, 0 };
+    int expectedErrorCode[] = { 0, 0, 0, 0, 0, -1 };
+
+    for (size_t i = 0; i < 6; ++i)
+    {
+        ErrorCode errorCode = 0;
+        int result = calculatePostfixExpression(expressions[i], &errorCode);
+        if (result != expected[i] || errorCode != expectedErrorCode[i])
+        {
+            return i + 1;
+        }
     }
 
-    if (postfixCalculator(expressions[1]) == 21) {
-        testResults[1] = true;
-    }
-
-    if (postfixCalculator(expressions[2]) == 12) {
-        testResults[2] = true;
-    }
-
-    if (postfixCalculator(expressions[3]) == 5) {
-        testResults[3] = true;
-    }
-
-    if (postfixCalculator(expressions[4]) == 25) {
-        testResults[4] = true;
-    }
+    return 0;
 }
 
 int main()
 {
-    bool testResults[5] = { 0 };
-    testCalculator(&testResults);
-    for (int i = 0; i < 5; ++i)
+    int errorCode = test();
+    if (errorCode != 0)
     {
-        if (!testResults[i])
-        {
-            printf("TEST %d FAILED", i);
-        }
+        printf("Test %d failed", errorCode);
+        return errorCode;
     }
 
     char expression[EXPRESSION_LENGTH] = { 0 };
     fgets(expression, EXPRESSION_LENGTH, stdin);
 
-    printf("Result is %d", postfixCalculator(expression));
+    printf("Result is %d", calculatePostfixExpression(expression));
 }
