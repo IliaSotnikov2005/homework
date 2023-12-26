@@ -1,18 +1,31 @@
-#include "../../lib/stack.h"
+#include "stack.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
 typedef enum ErrorCode
 {
-    divisionByZeroError = -1
+    ok = 0,
+    divisionByZeroError = -1,
+    memoryAllocationError = -2,
+    operandFindingError = -3,
+    incorrectPostfixExpressionError = -4,
+    invalidOperatorError = -5
 } ErrorCode;
 
 #define EXPRESSION_LENGTH 100
 
 int calculatePostfixExpression(char *expression, ErrorCode* errorCode)
 {
-    Stack* stack = NULL;
+    *errorCode = ok;
+
+    Stack* stack = stackCreate();
+    if (stack == NULL)
+    {
+        *errorCode = memoryAllocationError;
+        return 0;
+    }
+
     int result = 0;
 
     for (size_t i = 0; expression[i] != '\0'; ++i)
@@ -25,14 +38,22 @@ int calculatePostfixExpression(char *expression, ErrorCode* errorCode)
         {
             continue;
         }
+
         if (symbol >= '0' && symbol <= '9')
         {
-            push(&stack, symbol - '0');
+            stackPush(stack, symbol - '0');
         }
         else
         {
-            operand2 = pop(&stack);
-            operand1 = pop(&stack);
+            operand2 = 0;
+            operand1 = 0;
+
+            if (stackPop(stack, &operand2) != stackOk || stackPop(stack, &operand1) != stackOk)
+            {
+                *errorCode = operandFindingError;
+                stackFree(&stack);
+                return 0;
+            }
 
             switch (symbol)
             {
@@ -60,31 +81,36 @@ int calculatePostfixExpression(char *expression, ErrorCode* errorCode)
                 else
                 {
                     *errorCode = divisionByZeroError;
+                    stackFree(&stack);
+                    return 0;
                 }
                 break;
             }
-
             default:
+                *errorCode = invalidOperatorError;
+                return 0;
                 break;
             }
 
-            push(&stack, result);
+            stackPush(stack, result);
         }
     }
 
     while (stackSize(stack) > 1)
     {
-        int operand1 = 0;
-        int operand2 = 0;
-
-        operand2 = pop(&stack);
-        operand1 = pop(&stack);
-        result = operand1 * operand2;
-        push(&stack, result);
+        *errorCode = incorrectPostfixExpressionError;
+        stackFree(&stack);
+        return 0;
     }
 
-    result = top(stack);
-    freeStack(&stack);
+    if (stackPop(stack, &result) != stackOk)
+    {
+        *errorCode = operandFindingError;
+        stackFree(&stack);
+        return 0;
+    }
+
+    stackFree(&stack);
 
     return result;
 }
@@ -106,7 +132,7 @@ int test(void)
 
     for (size_t i = 0; i < 6; ++i)
     {
-        ErrorCode errorCode = 0;
+        StackErrorCode errorCode = 0;
         int result = calculatePostfixExpression(expressions[i], &errorCode);
         if (result != expected[i] || errorCode != expectedErrorCode[i])
         {
@@ -127,7 +153,16 @@ int main()
     }
 
     char expression[EXPRESSION_LENGTH] = { 0 };
+    printf("Enter the postfix expression: ");
     fgets(expression, EXPRESSION_LENGTH, stdin);
 
-    printf("Result is %d", calculatePostfixExpression(expression));
+    errorCode = ok;
+    int result = calculatePostfixExpression(expression, &errorCode);
+    if (errorCode != ok)
+    {
+        printf("An error occured %d", errorCode);
+        return errorCode;
+    }
+    
+    printf("Result is %d", result);
 }
