@@ -32,18 +32,14 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
         return converterMemoryAllocationError;
     }
 
-    Stack* outputStack = stackCreate();
-    if (outputStack == NULL)
-    {
-        stackFree(&inputStack);
-        return converterMemoryAllocationError;
-    }
+    size_t index = 0;
 
     for (size_t i = 0; expression[i] != '\0'; ++i)
     {
         if ('0' <= expression[i] && expression[i] <= '9')
         {
-            stackPush(outputStack, expression[i]);
+            expression[index] = expression[i];
+            ++index;
         }
         else if ('(' == expression[i])
         {
@@ -55,8 +51,9 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
             stackPop(inputStack, &item);
             while (item != '(')
             {
-                stackPush(outputStack, item);
+                expression[index] = item;
                 stackPop(inputStack, &item);
+                ++index;
             }
         }
         else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '/' || expression[i] == '*')
@@ -65,7 +62,8 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
             {
                 char value = '\0';
                 stackPop(inputStack, &value);
-                stackPush(outputStack, value);
+                expression[index] = value;
+                ++index;
             }
             stackPush(inputStack, expression[i]);
         }
@@ -76,18 +74,11 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
     {
         char value = '\0';
         stackPop(inputStack, &value);
-        stackPush(outputStack, value);
+        expression[index] = value;
+        ++index;
     }
-
-    for (int i = (stackSize(outputStack) - 1) * 2; i > 0; i -= 2)
-    {
-        stackPop(outputStack, &expression[i]);
-        expression[i - 1] = ' ';
-    }
-    stackPop(outputStack, &expression[0]);
 
     stackFree(&inputStack);
-    stackFree(&outputStack);
 
     return converterOk;
 }
