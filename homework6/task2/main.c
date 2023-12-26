@@ -1,88 +1,49 @@
-#include "../../lib/stack.h"
+#include "bracketSequenceChecker.h"
+
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
 
 #define MAX_LENGTH 100
 
-char findLeftPair(char rightBracket)
+enum ErrorCode
 {
-    if (rightBracket == ')')
-    {
-        return '(';
-    }
-    if (rightBracket == '}')
-    {
-        return '{';
-    }
-    if (rightBracket == ']')
-    {
-        return '[';
-    }
-}
+    ok = 0,
+    invalidInput = -1
+};
 
-bool isCorrect(const char* string, const size_t size)
+int test(void)
 {
-    Stack* stack = createStack();
-    for (int i = 0; i < size; ++i)
-    {
-        if (strchr("({[", string[i]))
-        {
-            push(&stack, string[i]);
-        }
-        else if (strchr(")]}", string[i]))
-        {
-            if (stackSize(stack) == 0)
-            {
-                return false;
-            }
-            else
-            {
-                if (!(findLeftPair(string[i]) == pop(&stack)))
-                {
-                    return false;
-                }
-            }
-        }
-    }
-    if (stackSize(stack) == 0)
-    {
-        freeStack(&stack);
-        return true;
-    }
-    freeStack(&stack);
-    return false;
-}
-
-bool* test(bool* testResults)
-{
-    const char* testStrings[] = { "()", "{[]}", "(]", "({})", "{[()]}", "{[(])}", "{[()]}{}()" };
-    const bool expectedResults[] = { true, true, false, true, true, false, true };
+    char* testStrings[] = { "()", "{[]}", "(]", "({})", "{[()]}", "{[(])}", "{[()]}{}()" };
+    bool expectedResults[] = { true, true, false, true, true, false, true };
 
     for (size_t i = 0; i < 7; ++i)
     {
-        testResults[i] = isCorrect(testStrings[i], strlen(testStrings[i])) == expectedResults[i];
+        if (isCorrectBracketSequence(testStrings[i]) != expectedResults[i])
+        {
+            return i + 1;
+        }
     }
+
+    return 0;
 }
 
 int main()
 {
-    bool testResults[7] = { 0 };
-    test(testResults);
-    for (int i = 0; i < 7; ++i)
+    int errorCode = test();
+    if (errorCode != 0)
     {
-        if (!testResults[i])
-        {
-            printf("TEST %d FAILED\n");
-        }
+        printf("TEST %d FAILED\n", errorCode);
+        return errorCode;
     }
 
     printf("Enter the bracket sequence: ");
     char string[MAX_LENGTH] = { 0 };
-    if (scanf_s("%s", string, MAX_LENGTH) == NULL)
+    if (scanf_s("%s", string, MAX_LENGTH) == 0)
     {
-        return -1;
+        return invalidInput;
     }
 
-    printf(isCorrect(string, strlen(string)) ? "\nCorrect" : "\nIncorrect");
+    printf("\nThis sequence is ");
+    printf(isCorrectBracketSequence(string) ? "correct" : "incorrect");
 }

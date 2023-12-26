@@ -119,13 +119,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\lib\functions.c" />
-    <ClCompile Include="..\..\lib\stack.c" />
+    <ClCompile Include="bracketSequenceChecker.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="stack.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\functions.h" />
-    <ClInclude Include="..\..\lib\stack.h" />
+    <ClInclude Include="bracketSequenceChecker.h" />
+    <ClInclude Include="stack.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
