@@ -12,7 +12,7 @@ typedef enum sortedListErrorCode
 typedef struct SortedList SortedList;
 
 // Create list.
-SortedList* createList(void);
+SortedList* createSortedList(void);
 
 // Add element to list.
 sortedListErrorCode sortedListPush(SortedList* list, const int value);

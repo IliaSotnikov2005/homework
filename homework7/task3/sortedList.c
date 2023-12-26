@@ -1,4 +1,4 @@
-#include "list.h"
+#include "sortedList.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -15,7 +15,7 @@ struct SortedList
     size_t length;
 };
 
-SortedList* createList(void)
+SortedList* createSortedList(void)
 {
     return calloc(1, sizeof(SortedList));
 }
@@ -40,6 +40,7 @@ sortedListErrorCode sortedListPush(SortedList* list, const int value)
     {
         newElement->next = element;
         list->head = newElement;
+        ++list->length;
 
         return sortedListOk;
     }
@@ -52,13 +53,23 @@ sortedListErrorCode sortedListPush(SortedList* list, const int value)
         {
             previous->next = newElement;
             newElement->next = NULL;
+            ++list->length;
 
             return sortedListOk;
         }
     }
 
-    newElement->next = list->head;
-    list->head = newElement;
+    if (previous == NULL)
+    {
+        newElement->next = list->head;
+        list->head = newElement;
+    }
+    else
+    {
+        newElement->next = element;
+        previous->next = newElement;
+    }
+
     ++list->length;
 
     return sortedListOk;

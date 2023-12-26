@@ -1,4 +1,4 @@
-#include "list.h"
+#include "sortedList.h"
 
 #include <stdio.h>
 #include <stdbool.h>
@@ -11,11 +11,68 @@ enum ErrorCode
     invalidInput = -2
 };
 
+bool arraysIsEqual(int* array1, int* array2, size_t arraySize)
+{
+    for (size_t i = 0; i < arraySize; ++i)
+    {
+        if (array1[i] != array2[i])
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+int test(void)
+{
+    SortedList* list = createSortedList();
+    if (list == NULL)
+    {
+        return 1;
+    }
+
+    int input[5] = { 2, 1, 3, 6, 4 };
+    int expected[5][5] = {{ 2 }, { 1, 2 }, { 1, 2, 3 }, { 1, 2, 3, 6 }, { 1, 2, 3, 4, 6 }};
+    for (size_t i = 0; i < 5; ++i)
+    {
+        sortedListPush(list, input[i]);
+        int* listArray = sortedListToArray(list);
+        if (!arraysIsEqual(listArray, expected[i], i + 1) != 0)
+        {
+            free(listArray);
+            sortedListFree(&list);
+            return i + 1;
+        }
+        free(listArray);
+    }
+
+    sortedListRemove(list, 3);
+    int expected1[] = {1, 2, 4, 6};
+    int* listArray = sortedListToArray(list);
+    if (memcmp(listArray, expected1, sizeof(expected1)) != 0)
+    {
+        free(listArray);
+        sortedListFree(&list);
+        return 6;
+    }
+
+    free(listArray);
+    sortedListFree(&list);
+
+    return 0;
+}
+
 int main()
 {
-    // do tests
+    int errorCode = test();
+    if (errorCode != 0)
+    {
+        printf("Test %d failed", errorCode);
+        return errorCode;
+    }
 
-    SortedList* list = createList();
+    SortedList* list = createSortedList();
     if (list == NULL)
     {
         printf("Memory allocation error");
