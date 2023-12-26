@@ -35,10 +35,9 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
     Stack* outputStack = stackCreate();
     if (outputStack == NULL)
     {
+        stackFree(&inputStack);
         return converterMemoryAllocationError;
     }
-
-    size_t expressionSize = strlen(expression);
 
     for (size_t i = 0; expression[i] != '\0'; ++i)
     {
@@ -75,17 +74,20 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
 
     while (stackSize(inputStack) != 0)
     {
-        char value = pop(&inputStack);
-        push(&outputStack, value);
+        char value = '\0';
+        stackPop(inputStack, &value);
+        stackPush(outputStack, value);
     }
 
     for (int i = (stackSize(outputStack) - 1) * 2; i > 0; i -= 2)
     {
-        expression[i] = pop(&outputStack);
+        stackPop(outputStack, &expression[i]);
         expression[i - 1] = ' ';
     }
-    expression[0] = pop(&outputStack);
+    stackPop(outputStack, &expression[0]);
 
-    freeStack(&inputStack);
-    freeStack(&outputStack);
+    stackFree(&inputStack);
+    stackFree(&outputStack);
+
+    return converterOk;
 }

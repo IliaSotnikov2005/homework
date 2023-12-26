@@ -107,5 +107,10 @@ size_t stackSize(const Stack* stack)
 
 char stackTop(const Stack* stack)
 {
-    return stack != NULL ? stack->top->value : '\0';
+    if (stack == NULL)
+    {
+        return '\0';
+    }
+
+    return stack->top != NULL ? stack->top->value : '\0';
 }
