@@ -1,7 +1,6 @@
-#include "stack.h"
+#include "infixToPostfixConverter.h"
 
 #include <stdio.h>
-#include <stdbool.h>
 #include <string.h>
 
 #define MAX_EXPRESSION_LENGTH 100
@@ -12,37 +11,42 @@ enum ErrorCode
     invalidInput = -1
 };
 
-int test()
+int test(void)
 {
-    char expression1[] = "2 + 2 * 2";
-    char expected1[] = "2 2 2 * +";
-    convertInfixToPostfix(expression1);
-    strcmp(expression1, expected1) == 0;
+    char inputs[6][18] =
+    {
+        "2 + 2 * 2",
+        "9 / (5 - 3)",
+        "(7 + 3) * (4 - 2)",
+        "8 / 4 / 2",
+        "1 + 2 + 3 + 4 + 5",
+        "fqko 2 9 4 -"
+    };
+    char expected[6][17] =
+    {
+        "2 2 2 * +",
+        "9 5 3 - /",
+        "7 3 + 4 2 - *",
+        "8 4 / 2 /",
+        "1 2 + 3 + 4 + 5 +",
+        ""
+    };
 
-    char expression2[] = "9 / (5 - 3)";
-    char expected2[] = "9 5 3 - /";
-    convertInfixToPostfix(expression2);
-    strcmp(expression2, expected2) == 0;
+    for (size_t i = 0; i < 6; ++i)
+    {
+        convertInfixToPostfix(inputs[i]);
+        if (strcmp(inputs[i], expected[i]) != 0)
+        {
+            return i + 1;
+        }
+    }
 
-    char expression3[] = "(7 + 3) * (4 - 2)";
-    char expected3[] = "7 3 + 4 2 - *";
-    convertInfixToPostfix(expression3);
-    strcmp(expression3, expected3) == 0;
-
-    char expression4[] = "8 / 4 / 2";
-    char expected4[] = "8 4 / 2 /";
-    convertInfixToPostfix(expression4);
-    strcmp(expression4, expected4) == 0;
-
-    char expression5[] = "1 + 2 + 3 + 4 + 5";
-    char expected5[] = "1 2 + 3 + 4 + 5 +";
-    convertInfixToPostfix(expression5);
-    strcmp(expression5, expected5) == 0;
+    return 0;
 }
 
 int main()
 {
-    int errorCode = 0;
+    int errorCode = test();
     if (errorCode != 0)
     {
         printf("Test %d failed", errorCode);

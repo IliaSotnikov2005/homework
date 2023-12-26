@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 static int getPriority(const char sign)
 {
@@ -33,21 +34,45 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
     }
 
     size_t index = 0;
+    bool numberExpected = true;
 
     for (size_t i = 0; expression[i] != '\0'; ++i)
     {
+        bool allowed—har = expression[i] == ' ' || expression[i] == '\n';
+
         if ('0' <= expression[i] && expression[i] <= '9')
         {
+            if (!numberExpected)
+            {
+                stackFree(&inputStack);
+                return converterIncorrectExpressionFormat;
+            }
+            numberExpected = false;
+            allowed—har = true;
             expression[index] = expression[i];
             expression[index + 1] = ' ';
             index += 2;
         }
         else if ('(' == expression[i])
         {
+            if (numberExpected)
+            {
+                stackFree(&inputStack);
+                return converterIncorrectExpressionFormat;
+            }
+            numberExpected = true;
+            allowed—har = true;
             stackPush(inputStack, '(');
         }
         else if (')' == expression[i])
         {
+            if (numberExpected)
+            {
+                stackFree(&inputStack);
+                return converterIncorrectExpressionFormat;
+            }
+            numberExpected = true;
+            allowed—har = true;
             char item = '\0';
             stackPop(inputStack, &item);
             while (item != '(')
@@ -60,6 +85,13 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
         }
         else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '/' || expression[i] == '*')
         {
+            if (numberExpected)
+            {
+                stackFree(&inputStack);
+                return converterIncorrectExpressionFormat;
+            }
+            numberExpected = true;
+            allowed—har = true;
             while (getPriority(expression[i]) <= getPriority(stackTop(inputStack)))
             {
                 char value = '\0';
@@ -70,7 +102,14 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
             }
             stackPush(inputStack, expression[i]);
         }
-        if (index - 1 < i)
+        if (!allowed—har)
+        {
+            expression[0] = '\0';
+            stackFree(&inputStack);
+            return converterIncorrectExpressionFormat;
+        }
+
+        if (index < i)
         {
             expression[i] = '\0';
         }
@@ -81,7 +120,10 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
         char value = '\0';
         stackPop(inputStack, &value);
         expression[index] = value;
+        expression[index + 1] = ' ';
+        index += 2;
     }
+    expression[index - 1] = '\0';
 
     stackFree(&inputStack);
 

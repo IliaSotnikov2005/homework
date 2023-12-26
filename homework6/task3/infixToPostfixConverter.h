@@ -4,7 +4,8 @@
 typedef enum ConverterErrorCode
 {
     converterOk = 0,
-    converterMemoryAllocationError = -1
+    converterMemoryAllocationError = -1,
+    converterIncorrectExpressionFormat = -2
 } ConverterErrorCode;
 
 // Convert infix to postfix.
