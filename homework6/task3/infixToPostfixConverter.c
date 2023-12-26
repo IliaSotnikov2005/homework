@@ -45,6 +45,7 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
             if (!numberExpected)
             {
                 stackFree(&inputStack);
+                expression[0] = '\0';
                 return converterIncorrectExpressionFormat;
             }
             numberExpected = false;
@@ -55,23 +56,11 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
         }
         else if ('(' == expression[i])
         {
-            if (numberExpected)
-            {
-                stackFree(&inputStack);
-                return converterIncorrectExpressionFormat;
-            }
-            numberExpected = true;
             allowed—har = true;
             stackPush(inputStack, '(');
         }
         else if (')' == expression[i])
         {
-            if (numberExpected)
-            {
-                stackFree(&inputStack);
-                return converterIncorrectExpressionFormat;
-            }
-            numberExpected = true;
             allowed—har = true;
             char item = '\0';
             stackPop(inputStack, &item);
@@ -88,6 +77,7 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
             if (numberExpected)
             {
                 stackFree(&inputStack);
+                expression[0] = '\0';
                 return converterIncorrectExpressionFormat;
             }
             numberExpected = true;

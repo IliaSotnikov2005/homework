@@ -61,6 +61,11 @@ int main()
         return invalidInput;
     }
 
-    convertInfixToPostfix(expression);
+    ConverterErrorCode exitCode = convertInfixToPostfix(expression);
+    if (exitCode != converterOk)
+    {
+        printf("A convertation error %d occured", exitCode);
+        return exitCode;
+    }
     printf("\nThe result: %s", expression);
 }
