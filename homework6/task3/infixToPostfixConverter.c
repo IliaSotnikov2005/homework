@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-static int getPriority(const char c)
+static int getPriority(const char sign)
 {
-    switch (c)
+    switch (sign)
     {
     case '*':
     case '/':
@@ -39,7 +39,8 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
         if ('0' <= expression[i] && expression[i] <= '9')
         {
             expression[index] = expression[i];
-            ++index;
+            expression[index + 1] = ' ';
+            index += 2;
         }
         else if ('(' == expression[i])
         {
@@ -52,8 +53,9 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
             while (item != '(')
             {
                 expression[index] = item;
+                expression[index + 1] = ' ';
+                index += 2;
                 stackPop(inputStack, &item);
-                ++index;
             }
         }
         else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '/' || expression[i] == '*')
@@ -63,11 +65,15 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
                 char value = '\0';
                 stackPop(inputStack, &value);
                 expression[index] = value;
-                ++index;
+                expression[index + 1] = ' ';
+                index += 2;
             }
             stackPush(inputStack, expression[i]);
         }
-        expression[i] = 0;
+        if (index - 1 < i)
+        {
+            expression[i] = '\0';
+        }
     }
 
     while (stackSize(inputStack) != 0)
@@ -75,7 +81,6 @@ ConverterErrorCode convertInfixToPostfix(char* expression)
         char value = '\0';
         stackPop(inputStack, &value);
         expression[index] = value;
-        ++index;
     }
 
     stackFree(&inputStack);
