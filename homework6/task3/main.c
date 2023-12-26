@@ -1,80 +1,16 @@
-#include "../../lib/stack.h"
+#include "stack.h"
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
 
 #define MAX_EXPRESSION_LENGTH 100
 
-int priority(const char c)
+enum ErrorCode
 {
-    switch (c)
-    {
-    case '*':
-    case '/':
-    case '%':
-        return 2;
-
-    case '+':
-    case '-':
-        return 1;
-    }
-    return 0;
-}
-
-char* fromInfixToPostfix(char* expression)
-{
-    Stack* inputStack = createStack();
-    Stack* outputStack = createStack();
-
-    size_t expressionSize = strlen(expression);
-
-    for (int i = 0; i < expressionSize; ++i)
-    {
-        if ('0' <= expression[i] && expressionSize <= '9')
-        {
-            push(&outputStack, expression[i]);
-        }
-        else if ('(' == expression[i])
-        {
-            push(&inputStack, '(');
-        }
-        else if (')' == expression[i])
-        {
-            char item = pop(&inputStack);
-            while (item != '(')
-            {
-                push(&outputStack, item);
-                item = pop(&inputStack);
-            }
-        }
-        else if (expression[i] == '+' || expression[i] == '-' || expression[i] == '/' || expression[i] == '*')
-        {
-            while (priority(expression[i]) <= priority(top(inputStack)))
-            {
-                char value = pop(&inputStack);
-                push(&outputStack, value);
-            }
-            push(&inputStack, expression[i]);
-        }
-        expression[i] = 0;
-    }
-
-    while (stackSize(inputStack) != 0)
-    {
-        char value = pop(&inputStack);
-        push(&outputStack, value);
-    }
-
-    for (int i = (stackSize(outputStack) - 1) * 2; i > 0; i -= 2)
-    {
-        expression[i] = pop(&outputStack);
-        expression[i - 1] = ' ';
-    }
-    expression[0] = pop(&outputStack);
-
-    freeStack(&inputStack);
-    freeStack(&outputStack);
-}
+    ok = 0,
+    invalidInput = -1
+};
 
 bool* test(bool* testResults)
 {
@@ -106,24 +42,21 @@ bool* test(bool* testResults)
 
 int main()
 {
-    bool testResults[5] = { 0 };
-    test(testResults);
-    for (int i = 0; i < 5; ++i)
+    int errorCode = test();
+    if (errorCode != 0)
     {
-        if (!testResults[i])
-        {
-            printf("TEST %d FAILED\n", i + 1);
-        }
+        printf("Test %d failed", errorCode);
+        return errorCode;
     }
 
     printf("Enter the expression: ");
 
     char expression[MAX_EXPRESSION_LENGTH] = { 0 };
-    if (fgets(expression, MAX_EXPRESSION_LENGTH, stdin) == NULL)
+    if (fgets(expression, MAX_EXPRESSION_LENGTH, stdin) == 0)
     {
-        return -1;
+        return invalidInput;
     }
 
-    fromInfixToPostfix(expression);
+    convertInfixToPostfix(expression);
     printf("\nThe result: %s", expression);
 }
