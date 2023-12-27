@@ -1,0 +1,9 @@
+/* This is the correct comment */
+/* This
+is
+the correct
+comment too */
+/* This is not the correct comment
+/* This is not the correct comment too
+This is not the correct comment again */
+/* Start of a comment without closing
