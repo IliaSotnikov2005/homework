@@ -5,12 +5,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define LENGTH 100
+
 int main()
 {
     int failedTest = test();
     if (failedTest != -1)
     {
         printf("TEST %d FAILED\n", failedTest);
+        return failedTest;
     }
 
     AVLTree* tree = createAVLTree();
@@ -39,30 +42,20 @@ int main()
         {
             printf("\nAdding a new element");
 
-            char* key = (char*)calloc(100, sizeof(char));
-            char* value = (char*)calloc(100, sizeof(char));
-            if (key == NULL || value == NULL)
-            {
-                free(key);
-                free(value);
-                freeAVLTree(tree);
-                printf("Memory allocation error");
-                return MemoryAllocationError;
-            }
+            char key[LENGTH] = { 0 };
+            char value[LENGTH] = { 0 };
 
             printf("\nEnter a key: ");
-            if (scanf_s("%s", key, 100) == 0)
+            if (scanf_s("%s", key, LENGTH) == 0)
             {
-                free(key);
                 freeAVLTree(tree);
                 printf("Invalid input");
                 return InvalidInput;
             }
 
             printf("Enter a value: ");
-            if (scanf_s("%s", value, 100) == 0)
+            if (scanf_s("%s", value, LENGTH) == 0)
             {
-                free(key);
                 freeAVLTree(tree);
                 printf("Invalid input");
                 return InvalidInput;
@@ -70,6 +63,7 @@ int main()
 
             if (addElement(key, value, tree) == MemoryAllocationError)
             {
+                freeAVLTree(tree);
                 printf("Memory allocation error");
                 return MemoryAllocationError;
             }
@@ -78,14 +72,10 @@ int main()
         case 2:
         {
             printf("\nEnter key to find value: ");
-            char* key = calloc(100, sizeof(char));
-            if (key == NULL)
+            char key[LENGTH] = { 0 };
+            if (scanf_s("%s", key, LENGTH) == 0)
             {
-                printf("Memory allocation error");
-                return MemoryAllocationError;
-            }
-            if (scanf_s("%s", key) == 0)
-            {
+                freeAVLTree(tree);
                 printf("Invalid input");
                 return InvalidInput;
             }
@@ -93,20 +83,15 @@ int main()
             char* result = get(key, tree);
             printf(result ? "\nResult: %s\n" : "\n%s is not in dictionary\n", result ? result : key);
 
-            free(key);
             break;
         }
         case 3:
         {
             printf("Enter the key to verify that it is inside: ");
-            char* key = calloc(100, sizeof(char));
-            if (key == NULL)
+            char key[LENGTH] = { 0 };
+            if (scanf_s("%s", key, LENGTH) == 0)
             {
-                printf("Memory allocation error");
-                return MemoryAllocationError;
-            }
-            if (scanf_s("%s", key) == 0)
-            {
+                freeAVLTree(tree);
                 printf("Invalid input");
                 return InvalidInput;
             }
@@ -114,19 +99,15 @@ int main()
             char* result = get(key, tree);
             printf(result ? "\nKey is inside\n" : "\nKey is not inside\n");
 
-            free(key);
             break;
         }
         case 4:
+        {
             printf("\nEnter the key to delete element: ");
-            char* key = calloc(100, sizeof(char));
-            if (key == NULL)
+            char key[LENGTH] = { 0 };
+            if (scanf_s("%s", key, LENGTH) == 0)
             {
-                printf("Memory allocation error");
-                return MemoryAllocationError;
-            }
-            if (scanf_s("%s", key) == 0)
-            {
+                freeAVLTree(tree);
                 printf("Invalid input");
                 return InvalidInput;
             }
@@ -134,11 +115,12 @@ int main()
             deleteElement(key, tree);
             printf("\nSuccessful\n");
 
-            free(key);
             break;
-
+        }
         default:
+        {
             break;
+        }
         }
         printf("\nEnter your command: ");
         if (scanf_s("%d", &command) == 0)
