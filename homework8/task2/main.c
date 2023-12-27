@@ -1,8 +1,11 @@
-#include "../../lib/ADT-dictionary/dictionaty.h"
-#include "../../lib/ADT-dictionary/testDictionary.h"
+#include "dictionary.h"
+#include "testDictionary.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+
+#define VALUE_SIZE 50
 
 int main()
 {
@@ -11,9 +14,12 @@ int main()
     {
         if (!testResults[i])
         {
+            free(testResults);
             printf("TEST %d FAILED\n", (int)i);
+            return i;
         }
     }
+    free(testResults);
 
     Node* tree = createTree();
 
@@ -28,6 +34,7 @@ int main()
     printf("\nEnter command: ");
     if (scanf_s("%d", &command) == NULL)
     {
+        freeTree(&tree);
         return -1;
     }
 
@@ -41,13 +48,15 @@ int main()
             int key = 0;
             if (scanf_s("%d", &key) == NULL)
             {
+                freeTree(&tree);
                 return -1;
             }
 
             printf("\nValue = ");
-            char* value = calloc(50, sizeof(char));
-            if (scanf_s("%s", value, 50) != 1)
+            char value[VALUE_SIZE] = { 0 };
+            if (scanf_s("%s", value, VALUE_SIZE) != 1)
             {
+                freeTree(&tree);
                 return -1;
             }
 
@@ -60,12 +69,17 @@ int main()
             int key = 0;
             if (scanf_s("%d", &key) == NULL)
             {
+                freeTree(&tree);
                 return -1;
             }
 
-            char value[50] = { 0 };
-            strcpy(value, get(key, tree));
-            printf("\nThe value of this key: %s", value);
+            char* value = get(key, tree);
+            if (value == NULL)
+            {
+                printf("Not in dictionary\n");
+                break;
+            }
+            printf("\nThe value of this key: %s", get(key, tree));
             break;
         }
         case 3:
@@ -74,6 +88,7 @@ int main()
             int key = 0;
             if (scanf_s("%d", &key) == NULL)
             {
+                freeTree(&tree);
                 return -1;
             }
 
@@ -86,6 +101,7 @@ int main()
             int key = 0;
             if (scanf_s("%d", &key) == NULL)
             {
+                freeTree(&tree);
                 return -1;
             }
 
@@ -99,6 +115,7 @@ int main()
         printf("\nEnter command: ");
         if (scanf_s("%d", &command) == NULL)
         {
+            freeTree(&tree);
             return -1;
         }
     }

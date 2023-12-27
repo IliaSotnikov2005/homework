@@ -119,13 +119,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\lib\ADT-dictionary\dictionary.c" />
-    <ClCompile Include="..\..\lib\ADT-dictionary\testDictionary.c" />
+    <ClCompile Include="dictionary.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="testDictionary.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\ADT-dictionary\dictionaty.h" />
-    <ClInclude Include="..\..\lib\ADT-dictionary\testDictionary.h" />
+    <ClInclude Include="dictionary.h" />
+    <ClInclude Include="testDictionary.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
