@@ -33,17 +33,16 @@ Node* buildTree(char expression[100][100], int* pointer)
         }
         strcpy(operator->value, item);
 
-        Node* operand1 = calloc(1, sizeof(Node));
+        Node* operand1 = buildTree(expression, pointer);
         if (operand1 == NULL)
         {
             free(operator->value);
             free(operator);
             return NULL;
         }
-        operand1 = buildTree(expression, pointer);
         operator->leftChild = operand1;
 
-        Node* operand2 = calloc(1, sizeof(Node));
+        Node* operand2 = buildTree(expression, pointer);
         if (operand2 == NULL)
         {
             free(operator->value);
@@ -51,7 +50,6 @@ Node* buildTree(char expression[100][100], int* pointer)
             free(operand1);
             return NULL;
         }
-        operand2 = buildTree(expression, pointer);
         operator->rightChild = operand2;
 
         return operator;
@@ -167,12 +165,14 @@ void freeTree(Node** node)
     }
     if ((*node)->leftChild == NULL)
     {
+        free((*node)->value);
         free(*node);
     }
     else
     {
         freeTree(&((*node)->leftChild));
         freeTree(&((*node)->rightChild));
+        free((*node)->value);
         free(*node);
         *node = NULL;
     }
