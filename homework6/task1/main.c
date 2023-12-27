@@ -136,7 +136,7 @@ int test(void)
         int result = calculatePostfixExpression(expressions[i], &errorCode);
         if (result != expected[i] || errorCode != expectedErrorCode[i])
         {
-            return i + 1;
+            return (int)i + 1;
         }
     }
 
