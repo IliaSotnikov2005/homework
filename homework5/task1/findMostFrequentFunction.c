@@ -61,7 +61,6 @@ static int* createIntArrayFromFile(const char* filemane, size_t* arraySize, find
     int* array = calloc(numbersAmount, sizeof(int));
     if (array == NULL)
     {
-        free(array);
         fclose(file);
         *errorCode = findMostFrequentMemoryAllocationError;
         return NULL;
@@ -69,7 +68,7 @@ static int* createIntArrayFromFile(const char* filemane, size_t* arraySize, find
 
     for (size_t i = 0; i < numbersAmount; ++i)
     {
-        if (fscanf_s(file, "%d", &array[i]) == 0)
+        if (fscanf_s(file, "%d", &array[i]) != 1)
         {
             free(array);
             fclose(file);

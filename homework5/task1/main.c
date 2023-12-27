@@ -3,6 +3,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#define FILENAME_SIZE 101
+
 enum ErrorCode
 {
     ok = 0,
@@ -39,8 +41,8 @@ int main()
 
     printf("Enter the name of file: ");
 
-    char filename[101] = { 0 };
-    if (scanf_s("%[^\n]", filename, 101) == 0)
+    char filename[FILENAME_SIZE] = { 0 };
+    if (scanf_s("%[^\n]", filename, FILENAME_SIZE) == 0)
     {
         printf("Invalid name");
         return invalidName;
