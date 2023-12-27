@@ -12,7 +12,7 @@ typedef enum States
     atSymbol = 2,
     domainSymbol = 3,
     domainDigit = 4,
-    domainLetter = 5,
+    domainTopLevelLetter = 5,
     domainNotTopLevelLetter = 6,
     domainDot = 7
 } States;
@@ -118,7 +118,7 @@ bool isEmailAddress(const char* string)
 
             return false;
         }
-        case domainLetter:
+        case domainTopLevelLetter:
         {
             if (isalpha(current))
             {
@@ -170,7 +170,7 @@ bool isEmailAddress(const char* string)
         {
             if (isalpha(current))
             {
-                state = domainLetter;
+                state = domainTopLevelLetter;
                 break;
             }
 
@@ -191,5 +191,5 @@ bool isEmailAddress(const char* string)
         current = string[index];
     }
 
-    return state == domainLetter;
+    return state == domainTopLevelLetter;
 }
