@@ -119,15 +119,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\lib\hashTable\hashTable.c" />
-    <ClCompile Include="..\..\lib\hashTable\hashTableTest.c" />
-    <ClCompile Include="..\..\lib\list\list.c" />
+    <ClCompile Include="hashTable.c" />
+    <ClCompile Include="hashTableTest.c" />
+    <ClCompile Include="list.c" />
     <ClCompile Include="main.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\hashTable\hashTable.h" />
-    <ClInclude Include="..\..\lib\hashTable\hashTableTest.h" />
-    <ClInclude Include="..\..\lib\list\list.h" />
+    <ClInclude Include="hashTable.h" />
+    <ClInclude Include="hashTableTest.h" />
+    <ClInclude Include="list.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="text.txt" />

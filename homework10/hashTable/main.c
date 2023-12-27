@@ -1,5 +1,5 @@
-#include "../../lib/hashTable/hashTable.h"
-#include "../../lib/hashTable/hashTableTest.h"
+#include "hashTable.h"
+#include "hashTableTest.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -49,14 +49,15 @@ int main()
     if (testResult != 0)
     {
         printf("TEST %d FAILED\n", testResult);
+        return testResult;
     }
     HashTable* table = countWords("text.txt");
 
     printf("Words and their number in the text: \n");
     hashTablePrint(table);
     printf("\nFill factor: %f\n", hashTablefillFactor(table));
-    printf("\nMax length of list: %d\n", hashTableMaxListLenght(table));
-    printf("\nAverage length of list: %f\n", hashTableAverageListLenght(table));
+    printf("\nMax length of list: %d\n", hashTableMaxListLength(table));
+    printf("\nAverage length of list: %f\n", hashTableAverageListLength(table));
 
     hashTableFree(&table);
 }
