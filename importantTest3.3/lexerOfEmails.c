@@ -5,7 +5,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-typedef enum States
+typedef enum State
 {
     start = 0,
     nameSymbol = 1,
@@ -15,11 +15,11 @@ typedef enum States
     domainTopLevelLetter = 5,
     domainNotTopLevelLetter = 6,
     domainDot = 7
-} States;
+} State;
 
 bool isEmailAddress(const char* string)
 {
-    unsigned int state = start;
+    State state = start;
     size_t index = 0;
     char current = string[0];
 
