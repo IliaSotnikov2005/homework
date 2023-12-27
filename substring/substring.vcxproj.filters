@@ -21,10 +21,27 @@
     <ClCompile Include="main.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="readTextFromFile.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="test.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="findSubstring.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="readTextFromFile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="test.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="test1.txt" />
+    <Text Include="test2.txt" />
+    <Text Include="text.txt" />
   </ItemGroup>
 </Project>

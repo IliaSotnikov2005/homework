@@ -1,4 +1,4 @@
-#include "readFileFromText.h"
+#include "readTextFromFile.h"
 
 #include <stdio.h>
 #include <stdlib.h>

@@ -126,7 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="findSubstring.h" />
-    <ClInclude Include="readFileFromText.h" />
+    <ClInclude Include="readTextFromFile.h" />
     <ClInclude Include="test.h" />
   </ItemGroup>
   <ItemGroup>

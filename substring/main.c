@@ -1,5 +1,5 @@
 #include "findSubstring.h"
-#include "readFileFromText.h"
+#include "readTextFromFile.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -21,16 +21,11 @@ int main()
     }
 
     printf("Enter the pattern to find: ");
-    char* pattern = calloc(100, sizeof(char));
-    if (pattern == NULL)
-    {
-        return -1;
-    }
-    
+    char pattern[100] = { 0 };
     fgets(pattern, 100, stdin);
     pattern[strlen(pattern) - 1] = '\0';
 
-    int index = findSubstring(pattern, text);
+    int index = KMPSearch(pattern, text);
     free(text);
     if (index != -1)
     {

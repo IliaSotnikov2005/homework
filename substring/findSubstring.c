@@ -1,34 +1,71 @@
 #include "findSubstring.h"
 
+#include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
 
-int findSubstring(const char const * pattern, const char const * string)
+static void getLPSArray(const char* pattern, size_t patternLength, int* lps)
 {
-    if (string == NULL || pattern == NULL)
+    int length = 0;
+    lps[0] = 0;
+    for (size_t i = 1; i < patternLength;)
+    {
+        if (pattern[i] == pattern[length])
+        {
+            ++length;
+            lps[i] = length;
+            ++i;
+        }
+        else
+        {
+            if (length != 0)
+            {
+                length = lps[length - 1];
+            }
+            else
+            {
+                lps[i] = 0;
+                ++i;
+            }
+        }
+    }
+}
+
+int KMPSearch(const char* pattern, const char* text)
+{
+    size_t patternLength = strlen(pattern);
+    size_t textLength = strlen(text);
+    int* lpsArray = calloc(patternLength, sizeof(int));
+    if (lpsArray == NULL)
     {
         return -1;
     }
 
-    size_t prefixLength = 0;
-    for (int i = 0;; ++i)
+    getLPSArray(pattern, patternLength, lpsArray);
+    for (size_t i = 0, j = 0; i < textLength;)
     {
-        if (pattern[prefixLength] == '\0')
+        if (pattern[j] == text[i])
         {
-            return i - prefixLength;
+            ++j;
+            ++i;
         }
-
-        if (string[i] == '\0')
+        if (j == patternLength)
         {
-            return -1;
+            return i - j;
         }
-
-        if (string[i] == pattern[prefixLength])
+        else if (i < textLength && pattern[j] != text[i])
         {
-            ++prefixLength;
-        }
-        else
-        {
-            prefixLength = 0;
+            if (j != 0)
+            {
+                j = lpsArray[j - 1];
+            }
+            else
+            {
+                ++i;;
+            }
         }
     }
+
+    free(lpsArray);
+    return -1;
 }
