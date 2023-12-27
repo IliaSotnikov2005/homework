@@ -1,19 +1,17 @@
-#include "../../lib/binTree/parsingTree.h"
-#include "../../lib/binTree/test.h"
+#include "parsingTree.h"
+#include "test.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 
 int main()
 {
-    bool* testResult = test();
-    size_t testsAmount = sizeof(testResult) / 2;
-    for (size_t i = 0; i < testsAmount; ++i)
-    {
-        if (!testResult[i])
+    int testResult = test();
+    if (testResult != 0)
         {
-            printf("TEST %d FAILED", (int)i);
-        }
+            printf("TEST %d FAILED", testResult);
+            return testResult;
     }
 
     Node* root = buildTreeFromFile("text.txt");

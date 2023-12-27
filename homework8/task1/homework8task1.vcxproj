@@ -119,18 +119,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\lib\binTree\parsingTree.c" />
-    <ClCompile Include="..\..\lib\binTree\test.c" />
     <ClCompile Include="main.c" />
+    <ClCompile Include="parsingTree.c" />
+    <ClCompile Include="test.c" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\lib\binTree\parsingTree.h" />
-    <ClInclude Include="..\..\lib\binTree\test.h" />
+    <ClInclude Include="parsingTree.h" />
+    <ClInclude Include="test.h" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\lib\binTree\test1.txt" />
-    <Text Include="..\..\lib\binTree\test2.txt" />
-    <Text Include="..\..\lib\binTree\test3.txt" />
+    <Text Include="test1.txt" />
+    <Text Include="test2.txt" />
+    <Text Include="test3.txt" />
     <Text Include="text.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
