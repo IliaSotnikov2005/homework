@@ -12,7 +12,7 @@ struct List
 
 List* createList(void)
 {
-    return calloc(1, sizeof(List));
+    return NULL;
 }
 
 int push(List** head, int value)
@@ -24,7 +24,7 @@ int push(List** head, int value)
         return -1;
     }
     temp->value = value;
-    if ((*head)->next == NULL)
+    if (*head == NULL)
     {
         temp->next = temp;
         temp->previous = temp;
