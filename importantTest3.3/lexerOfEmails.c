@@ -11,8 +11,10 @@ typedef enum States
     nameSymbol = 1,
     atSymbol = 2,
     domainSymbol = 3,
-    domainDot = 4,
-    topLevelDomain = 5,
+    domainDigit = 4,
+    domainLetter = 5,
+    domainNotTopLevelLetter = 6,
+    domainDot = 7
 } States;
 
 bool isEmailAddress(const char* string)
@@ -51,9 +53,19 @@ bool isEmailAddress(const char* string)
         }
         case atSymbol:
         {
-            if (isdigit(current) || isalpha(current) || strchr("-.", current) != NULL)
+            if (isalpha(current))
+            {
+                state = domainNotTopLevelLetter;
+                break;
+            }
+            else if (strchr("-.", current) != NULL)
             {
                 state = domainSymbol;
+                break;
+            }
+            else if (isdigit(current))
+            {
+                state = domainDigit;
                 break;
             }
 
@@ -61,8 +73,18 @@ bool isEmailAddress(const char* string)
         }
         case domainSymbol:
         {
-            if (isalpha(current) || isdigit(current) || current == '-')
+            if (current == '-')
             {
+                break;
+            }
+            else if (isalpha(current))
+            {
+                state = domainNotTopLevelLetter;
+                break;
+            }
+            else if (isdigit(current))
+            {
+                state = domainDigit;
                 break;
             }
             else if (current == '.')
@@ -72,23 +94,92 @@ bool isEmailAddress(const char* string)
             }
             
             return false;
+        case domainDigit:
+        {
+            if (current == '-')
+            {
+                state = domainSymbol;
+                break;
+            }
+            else if (isalpha(current))
+            {
+                state = domainNotTopLevelLetter;
+                break;
+            }
+            else if (isdigit(current))
+            {
+                break;
+            }
+            else if (current == '.')
+            {
+                state = domainDot;
+                break;
+            }
+
+            return false;
+        }
+        case domainLetter:
+        {
+            if (isalpha(current))
+            {
+                break;
+            }
+            if (current == '-')
+            {
+                state = domainSymbol;
+                break;
+            }
+            else if (isdigit(current))
+            {
+                state = domainDigit;
+                break;
+            }
+            else if (current == '.')
+            {
+                state = domainDot;
+                break;
+            }
+
+            return false;
+        }
+        case domainNotTopLevelLetter:
+        {
+            if (isalpha(current))
+            {
+                break;
+            }
+            if (current == '-')
+            {
+                state = domainSymbol;
+                break;
+            }
+            else if (isdigit(current))
+            {
+                state = domainDigit;
+                break;
+            }
+            else if (current == '.')
+            {
+                state = domainDot;
+                break;
+            }
+
+            return false;
+        }
         case domainDot:
         {
             if (isalpha(current))
             {
-                state = topLevelDomain;
-                break;
-            }
-            
-            return false;
-        }
-        case topLevelDomain:
-        {
-            if (isalpha(current))
-            {
+                state = domainLetter;
                 break;
             }
 
+            else if (isdigit(current))
+            {
+                state = domainDigit;
+                break;
+            }
+            
             return false;
         }
         default:
@@ -100,5 +191,5 @@ bool isEmailAddress(const char* string)
         current = string[index];
     }
 
-    return state == topLevelDomain;
+    return state == domainLetter;
 }
