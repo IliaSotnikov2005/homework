@@ -4,17 +4,111 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-typedef enum States
+typedef enum State
 {
-    start = 0,
-    digit = 1,
-    point = 2,
-    afterPointDigit = 3,
-    exponent = 4,
-    exponentSign = 5,
-    afterExponentDigit = 6,
-    end = 7
-} States;
+    start,
+    digit,
+    point,
+    afterPointDigit,
+    exponent,
+    exponentSign,
+    afterExponentDigit,
+    end
+} State;
+
+static bool startState(State* state, const char current)
+{
+    if (isdigit(current))
+    {
+        *state = digit;
+        return true;
+    }
+
+    return false;
+}
+
+static bool digigtState(State* state, const char current)
+{
+    if (isdigit(current))
+    {
+        return true;
+    }
+    if (current == '.')
+    {
+        *state = point;
+        return true;
+    }
+    if (current == 'E')
+    {
+        *state = exponent;
+        return true;
+    }
+
+    return false;
+}
+
+static bool pointState(State* state, const char current)
+{
+    if (isdigit(current))
+    {
+        *state = afterPointDigit;
+        return true;
+    }
+
+    return false;
+}
+
+static bool afterPointDigitState(State* state, const char current)
+{
+    if (isdigit(current))
+    {
+        return true;
+    }
+    if (current == 'E')
+    {
+        *state = exponent;
+        return true;
+    }
+
+    return false;
+}
+
+static bool exponentState(State* state, const char current)
+{
+    if (current == '-' || current == '+')
+    {
+        *state = exponentSign;
+        return true;
+    }
+    if (isdigit(current))
+    {
+        *state = afterExponentDigit;
+        return true;
+    }
+
+    return false;
+}
+
+static bool exponentSignState(State* state, const char current)
+{
+    if (isdigit(current))
+    {
+        *state = afterExponentDigit;
+        return true;
+    }
+
+    return false;
+}
+
+static bool afterExponentDigitState(State* state, const char current)
+{
+    if (isdigit(current))
+    {
+        return true;
+    }
+
+    return false;
+}
 
 bool isRealNumber(const char* string)
 {
@@ -27,14 +121,8 @@ bool isRealNumber(const char* string)
         {
         case start:
         {
-            if (isspace(current))
+            if (startState(&state, current))
             {
-                state = end;
-                break;
-            }
-            if (isdigit(current))
-            {
-                state = digit;
                 break;
             }
 
@@ -42,23 +130,8 @@ bool isRealNumber(const char* string)
         }
         case digit:
         {
-            if (isdigit(current))
+            if (digigtState(&state, current))
             {
-                break;
-            }
-            if (current == '.')
-            {
-                state = point;
-                break;
-            }
-            if (current == 'E')
-            {
-                state = exponent;
-                break;
-            }
-            if (isspace(current))
-            {
-                state = end;
                 break;
             }
 
@@ -66,9 +139,8 @@ bool isRealNumber(const char* string)
         }
         case point:
         {
-            if (isdigit(current))
+            if (pointState(&state, current))
             {
-                state = afterPointDigit;
                 break;
             }
 
@@ -76,18 +148,8 @@ bool isRealNumber(const char* string)
         }
         case afterPointDigit:
         {
-            if (isdigit(current))
+            if (afterPointDigitState(&state, current))
             {
-                break;
-            }
-            if (current == 'E')
-            {
-                state = exponent;
-                break;
-            }
-            if (isspace(current))
-            {
-                state = end;
                 break;
             }
 
@@ -95,14 +157,8 @@ bool isRealNumber(const char* string)
         }
         case exponent:
         {
-            if (current == '-' || current == '+')
+            if (exponentState(&state, current))
             {
-                state = exponentSign;
-                break;
-            }
-            if (isdigit(current))
-            {
-                state = afterExponentDigit;
                 break;
             }
             
@@ -110,9 +166,8 @@ bool isRealNumber(const char* string)
         }
         case exponentSign:
         {
-            if (isdigit(current))
+            if (exponentSignState(&state, current))
             {
-                state = afterExponentDigit;
                 break;
             }
 
@@ -120,7 +175,7 @@ bool isRealNumber(const char* string)
         }
         case afterExponentDigit:
         {
-            if (isdigit(current))
+            if (afterExponentDigitState(&state, current))
             {
                 break;
             }
