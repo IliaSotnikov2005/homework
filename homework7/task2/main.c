@@ -1,4 +1,5 @@
 #include "../../lib/list.h"
+
 #include <stdio.h>
 #include <stdbool.h>
 
@@ -12,7 +13,7 @@ int findLastPeople(const int amount, const int step)
     shift(&list);
     int lastValue = 0;
     int killedNumber = 1;
-    while (killedNumber != NULL)
+    while (killedNumber != 0)
     {
         for (int i = 1; i < step; ++i)
         {
@@ -21,41 +22,46 @@ int findLastPeople(const int amount, const int step)
         lastValue = killedNumber;
         killedNumber = pop(&list);
     }
+
+    deleteList(&list);
     return lastValue;
 }
 
-
-bool* test(bool* testResults) {
-    const int testCases[][3] = {
+int test(void)
+{
+    const int testCases[][3] =
+    {
         {5, 2, 3},
         {10, 3, 4},
         {7, 1, 7},
         {1, 5, 1},
         {15, 4, 13}
     };
-    const int numTests = sizeof(testCases) / sizeof(testCases[0]);
+    size_t numTests = 5;
 
-    for (int i = 0; i < numTests; i++)
+    for (size_t i = 0; i < numTests; ++i)
     {
         int amount = testCases[i][0];
         int step = testCases[i][1];
         int expected = testCases[i][2];
 
         int result = findLastPeople(amount, step);
-        testResults[i] = (result == expected);
+        if (result != expected)
+        {
+            return i + 1;
+        }
     }
+
+    return 0;
 }
 
 int main()
 {
-    bool testResults[5] = { 0 };
-    test(testResults);
-    for (int i = 0; i < 5; ++i)
+    int errorCode = test();
+    if (errorCode != 0)
     {
-        if (!testResults[i])
-        {
-            printf("TEST %d FAILED\n", i);
-        }
+        printf("Test %d failed", errorCode);
+        return errorCode;
     }
 
     printf("Enter the number of soldiers: ");
