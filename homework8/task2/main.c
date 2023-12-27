@@ -32,7 +32,7 @@ int main()
 
     int command = 0;
     printf("\nEnter command: ");
-    if (scanf_s("%d", &command) == NULL)
+    if (scanf_s("%d", &command) != 1)
     {
         freeTree(&tree);
         return -1;

@@ -23,11 +23,5 @@ int deleteNode(const int key, Node** tree);
 // free tree
 void freeTree(Node** node);
 
-// find nearest element in left part of tree
-Node* findNearestElement(Node* tree);
-
 // convert tree to array
 int* toArray(const Node* tree, const size_t size);
-
-// tree traversal
-void inorderTraversal(const Node* node, int* array, int* index);

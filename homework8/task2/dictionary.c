@@ -70,24 +70,16 @@ char* get(const int key, Node* tree)
 
 bool isContained(const int key, Node* tree)
 {
-    if (tree == NULL)
-    {
-        return false;
-    }
-    if (tree->key == key)
-    {
-        return true;
-    }
-    else if (key > tree->key && tree->rightChild)
-    {
-        return isContained(key, tree->rightChild);
-    }
-    else if (key < tree->key && tree->leftChild)
-    {
-        return isContained(key, tree->leftChild);
-    }
+    return get(key, tree) != NULL;
+}
 
-    return false;
+static Node* findNearestElement(Node* tree)
+{
+    if (tree->rightChild == NULL)
+    {
+        return tree;
+    }
+    return findNearestElement(tree->rightChild);
 }
 
 int deleteNode(const int key, Node** tree)
@@ -140,29 +132,20 @@ int deleteNode(const int key, Node** tree)
     }
 }
 
-Node* findNearestElement(Node* tree)
-{
-    if (tree->rightChild == NULL)
-    {
-        return tree;
-    }
-    return findNearestElement(tree->rightChild);
-}
-
 void freeTree(Node** node)
 {
     if ((*node) == NULL)
     {
-        free(*node);
         return;
     }
 
     freeTree(&(*node)->leftChild);
     freeTree(&(*node)->rightChild);
     free((*node)->value);
+    free(*node);
 }
 
-void inorderTraversal(const Node* node, int* array, int* index)
+static void inorderTraversal(const Node* node, int* array, int* index)
 {
     if (node == NULL)
     {
