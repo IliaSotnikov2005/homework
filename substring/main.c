@@ -1,5 +1,6 @@
 #include "findSubstring.h"
 #include "readTextFromFile.h"
+#include "test.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -25,11 +26,11 @@ int main()
     fgets(pattern, 100, stdin);
     pattern[strlen(pattern) - 1] = '\0';
 
-    int index = KMPSearch(pattern, text);
+    size_t index = KMPSearch(pattern, text);
     free(text);
     if (index != -1)
     {
-        printf("First occurence: %d", index);
+        printf("First occurence: %d", (int)index);
     }
     else
     {

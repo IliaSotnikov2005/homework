@@ -31,7 +31,7 @@ static void getLPSArray(const char* pattern, size_t patternLength, int* lps)
     }
 }
 
-int KMPSearch(const char* pattern, const char* text)
+size_t KMPSearch(const char* pattern, const char* text)
 {
     size_t patternLength = strlen(pattern);
     size_t textLength = strlen(text);
@@ -51,6 +51,7 @@ int KMPSearch(const char* pattern, const char* text)
         }
         if (j == patternLength)
         {
+            free(lpsArray);
             return i - j;
         }
         else if (i < textLength && pattern[j] != text[i])
@@ -61,7 +62,7 @@ int KMPSearch(const char* pattern, const char* text)
             }
             else
             {
-                ++i;;
+                ++i;
             }
         }
     }
