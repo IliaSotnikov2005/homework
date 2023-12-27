@@ -26,5 +26,5 @@ int main()
         return invalidInput;
     }
 
-    printf(isEmailAddress(string) ? "Yes it is" : "No it is not");
+    printf(isEmailAddress(string) ? "Yes it is\n" : "No it is not\n");
 }
