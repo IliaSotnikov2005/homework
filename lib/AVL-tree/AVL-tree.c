@@ -16,17 +16,12 @@ struct Node
 struct AVLTree
 {
     Node* root;
+    size_t size;
 };
 
 AVLTree* createAVLTree()
 {
-    AVLTree* tree = calloc(1, sizeof(AVLTree));
-    if (tree == NULL)
-    {
-        return NULL;
-    }
-    tree->root = NULL;
-    return tree;
+    return calloc(1, sizeof(AVLTree));
 }
 
 static unsigned int height(Node* node)
@@ -34,7 +29,7 @@ static unsigned int height(Node* node)
     return (node != NULL) ? node->height : 0;
 }
 
-static fixHeight(Node* node)
+static void fixHeight(Node* node)
 {
     unsigned int heightLeft = height(node->leftChild);
     unsigned int heightRight = height(node->rightChild);
@@ -158,6 +153,7 @@ ErrorCode addElement(const char* key, const char* value, AVLTree* tree)
         return errorCode;
     }
     tree->root = balance(&(tree->root));
+    ++tree->size;
     return OK;
 }
 
@@ -253,7 +249,7 @@ ErrorCode deleteElement(const char* key, AVLTree* tree)
         return OK;
     }
     tree->root = deleteNode(key, tree->root);
-
+    --tree->size;
     return OK;
 }
 
@@ -270,9 +266,9 @@ static void inorderTraversal(const Node* node, char* array, int* index)
     inorderTraversal(node->rightChild, array, index);
 }
 
-char* toArray(const AVLTree* tree, const size_t size)
+char* toArray(const AVLTree* tree)
 {
-    char* array = calloc(size, sizeof(char));
+    char* array = calloc(tree->size, sizeof(char));
     if (array == NULL)
     {
         return NULL;
