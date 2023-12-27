@@ -124,7 +124,7 @@ bool isEmailAddress(const char* string)
             {
                 break;
             }
-            if (current == '-')
+            else if (current == '-')
             {
                 state = domainSymbol;
                 break;
@@ -148,7 +148,7 @@ bool isEmailAddress(const char* string)
             {
                 break;
             }
-            if (current == '-')
+            else if (current == '-')
             {
                 state = domainSymbol;
                 break;
@@ -173,7 +173,6 @@ bool isEmailAddress(const char* string)
                 state = domainTopLevelLetter;
                 break;
             }
-
             else if (isdigit(current))
             {
                 state = domainDigit;
