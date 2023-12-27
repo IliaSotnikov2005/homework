@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 
 enum ErrorCode
 {
@@ -42,7 +43,7 @@ int test(void)
         {
             free(listArray);
             sortedListFree(&list);
-            return i + 1;
+            return (int)i + 1;
         }
         free(listArray);
     }
