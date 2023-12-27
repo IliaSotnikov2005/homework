@@ -67,7 +67,7 @@ static Node* rotateLeft(Node* node)
 
 static Node* balance(Node** node)
 {
-    if ((*node) == NULL)
+    if (*node == NULL)
     {
         return NULL;
     }
@@ -95,7 +95,7 @@ static Node* balance(Node** node)
 
 static ErrorCode insertElement(Node** node, const char* key, const char* value)
 {
-    if ((*node) == NULL)
+    if (*node == NULL)
     {
         Node* newNode = (Node*)calloc(1, sizeof(Node));
         if (newNode == NULL)
@@ -114,7 +114,7 @@ static ErrorCode insertElement(Node** node, const char* key, const char* value)
         }
         strcpy(newNode->key, key);
         strcpy(newNode->value, value);
-        (*node) = newNode;
+        *node = newNode;
         return OK;
     }
 
@@ -141,7 +141,7 @@ static ErrorCode insertElement(Node** node, const char* key, const char* value)
         insertElement(&(*node)->rightChild, key, value);
     }
 
-    fixHeight((*node));
+    fixHeight(*node);
     return OK;
 }
 
