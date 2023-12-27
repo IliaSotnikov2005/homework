@@ -17,8 +17,8 @@ int test(void)
     
     for (size_t i = 0; i < 5; ++i)
     {
-        phoneBookErrorCode errorCode = phoneBookAdd(names[i], phoneNumbers[i], phoneBook);
-        if (errorCode != phoneBookOk)
+        PhoneBookErrorCode errorCode = phoneBookAdd(names[i], phoneNumbers[i], phoneBook);
+        if (errorCode != phoneBookOk && errorCode != userIsAlreadyInPhoneBook)
         {
             phoneBookFree(&phoneBook);
             return i + 2;
@@ -28,7 +28,7 @@ int test(void)
     for (size_t i = 0; i < 5; ++i)
     {
         char phone[MAX_PHONE_LENGTH] = { 0 };
-        phoneBookErrorCode errorCode = phoneBookPhoneSearch(names[i], phone, phoneBook);
+        PhoneBookErrorCode errorCode = phoneBookPhoneSearch(names[i], phone, phoneBook);
         if (errorCode != phoneBookOk || strcmp(phone, phoneNumbers[i]) != 0)
         {
             phoneBookFree(&phoneBook);
@@ -39,7 +39,7 @@ int test(void)
     for (size_t i = 0; i < 5; ++i)
     {
         char name[MAX_NAME_LENGTH] = { 0 };
-        phoneBookErrorCode errorCode = phoneBookNameSearch(phoneNumbers[i], name, phoneBook);
+        PhoneBookErrorCode errorCode = phoneBookNameSearch(phoneNumbers[i], name, phoneBook);
         if (errorCode != phoneBookOk || strcmp(name, names[i]) != 0)
         {
             phoneBookFree(&phoneBook);
@@ -58,7 +58,7 @@ int test(void)
 
     char name[MAX_NAME_LENGTH] = { 0 };
     char phoneNumber[MAX_PHONE_LENGTH] = { 0 };
-    for (size_t i = 0; fscanf_s(database, "%s\n%s\n", name, phoneNumber) != EOF; ++i)
+    for (size_t i = 0; fscanf(database, "%s\n%s\n", name, phoneNumber) != EOF; ++i)
     {
         if (strcmp(name, names[i]) != 0 || strcmp(phoneNumber, phoneNumbers[i]) != 0)
         {

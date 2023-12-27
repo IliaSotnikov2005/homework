@@ -7,7 +7,7 @@
 #define MAX_PHONE_LENGTH 12
 
 // Phone book error code
-typedef enum phoneBookErrorCode
+typedef enum PhoneBookErrorCode
 {
     phoneBookOk = 0,
     phoneBookDataFileNotFound = -1,
@@ -17,7 +17,7 @@ typedef enum phoneBookErrorCode
     maximumNumberOfUsersReached = -5,
     noSuchFieldInPhoneBook = -6,
     userIsAlreadyInPhoneBook = -7
-} phoneBookErrorCode;
+} PhoneBookErrorCode;
 
 typedef struct PhoneBook PhoneBook;
 
@@ -25,19 +25,19 @@ typedef struct PhoneBook PhoneBook;
 PhoneBook* phoneBookCreate(void);
 
 // Add user to phone book
-phoneBookErrorCode phoneBookAdd(const char* name, const char* phoneNumber, PhoneBook* phoneBook);
+PhoneBookErrorCode phoneBookAdd(const char* name, const char* phoneNumber, PhoneBook* phoneBook);
 
 // Print contacts
-phoneBookErrorCode phoneBookPrintContacts(PhoneBook* phoneBook);
+PhoneBookErrorCode phoneBookPrintContacts(PhoneBook* phoneBook);
 
 // Free phone book
-phoneBookErrorCode phoneBookFree(PhoneBook** phoneBook);
+PhoneBookErrorCode phoneBookFree(PhoneBook** phoneBook);
 
 // Find phone by name
-phoneBookErrorCode phoneBookPhoneSearch(const char* name, char* phoneNumber, const PhoneBook* phoneBook);
+PhoneBookErrorCode phoneBookPhoneSearch(const char* name, char* phoneNumber, const PhoneBook* phoneBook);
 
 // Find name by phone
-phoneBookErrorCode phoneBookNameSearch(const char* phoneNumber, char* name, const PhoneBook* phoneBook);
+PhoneBookErrorCode phoneBookNameSearch(const char* phoneNumber, char* name, const PhoneBook* phoneBook);
 
 // Save phone book
-phoneBookErrorCode phoneBookSave(PhoneBook* phoneBook);
+PhoneBookErrorCode phoneBookSave(PhoneBook* phoneBook);

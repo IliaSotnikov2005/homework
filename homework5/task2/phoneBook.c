@@ -19,7 +19,7 @@ struct PhoneBook
     size_t newUsers;
 };
 
-phoneBookErrorCode phoneBookFree(PhoneBook** phoneBook)
+PhoneBookErrorCode phoneBookFree(PhoneBook** phoneBook)
 {
     if (phoneBook == NULL)
     {
@@ -47,7 +47,7 @@ phoneBookErrorCode phoneBookFree(PhoneBook** phoneBook)
     return phoneBookOk;
 }
 
-static phoneBookErrorCode read(PhoneBook* phoneBook)
+static PhoneBookErrorCode read(PhoneBook* phoneBook)
 {
     FILE* database = fopen("database.txt", "r");
     if (database == NULL)
@@ -124,7 +124,7 @@ static bool inPhoneBook(const char* name, const char* phoneeNumber, const PhoneB
     return false;
 }
 
-phoneBookErrorCode phoneBookAdd(const char* name, const char* phoneNumber, PhoneBook* phoneBook)
+PhoneBookErrorCode phoneBookAdd(const char* name, const char* phoneNumber, PhoneBook* phoneBook)
 {
     if (phoneBook == NULL)
     {
@@ -156,7 +156,7 @@ phoneBookErrorCode phoneBookAdd(const char* name, const char* phoneNumber, Phone
     return phoneBookOk;
 }
 
-phoneBookErrorCode phoneBookPrintContacts(PhoneBook* phoneBook)
+PhoneBookErrorCode phoneBookPrintContacts(PhoneBook* phoneBook)
 {
     if (phoneBook == NULL)
     {
@@ -171,7 +171,7 @@ phoneBookErrorCode phoneBookPrintContacts(PhoneBook* phoneBook)
     return phoneBookOk;
 }
 
-phoneBookErrorCode phoneBookPhoneSearch(const char* name, char* phoneNumber, const PhoneBook* phoneBook)
+PhoneBookErrorCode phoneBookPhoneSearch(const char* name, char* phoneNumber, const PhoneBook* phoneBook)
 {
     if (phoneBook == NULL)
     {
@@ -191,7 +191,7 @@ phoneBookErrorCode phoneBookPhoneSearch(const char* name, char* phoneNumber, con
     return noSuchFieldInPhoneBook;
 }
 
-phoneBookErrorCode phoneBookNameSearch(const char* phoneNumber, char* name, const PhoneBook* phoneBook)
+PhoneBookErrorCode phoneBookNameSearch(const char* phoneNumber, char* name, const PhoneBook* phoneBook)
 {
     if (phoneBook == NULL)
     {
@@ -211,7 +211,7 @@ phoneBookErrorCode phoneBookNameSearch(const char* phoneNumber, char* name, cons
     return noSuchFieldInPhoneBook;
 }
 
-phoneBookErrorCode phoneBookSave(PhoneBook* phoneBook)
+PhoneBookErrorCode phoneBookSave(PhoneBook* phoneBook)
 {
     if (phoneBook->newUsers == 0)
     {
@@ -227,7 +227,9 @@ phoneBookErrorCode phoneBookSave(PhoneBook* phoneBook)
     fseek(database, 0, SEEK_END);
     for (size_t i = 0; i < phoneBook->newUsers; ++i)
     {
-        fprintf(database, "%s\n%s\n", phoneBook->database[phoneBook->usersCount - phoneBook->newUsers + i]->name, phoneBook->database[phoneBook->usersCount - phoneBook->newUsers + i]->phoneNumber);
+        fprintf(database, "%s\n%s\n", 
+            phoneBook->database[phoneBook->usersCount - phoneBook->newUsers + i]->name, 
+            phoneBook->database[phoneBook->usersCount - phoneBook->newUsers + i]->phoneNumber);
     }
 
     fclose(database);

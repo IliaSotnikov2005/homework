@@ -15,7 +15,7 @@ enum ErrorCode
 
 int main()
 {
-    phoneBookErrorCode errorCode = test();
+    PhoneBookErrorCode errorCode = test();
     if (errorCode != phoneBookOk)
     {
         printf("Test %d failed", errorCode);
@@ -48,7 +48,8 @@ int main()
         }
         case 1:
         {
-            printf("\nAdding a new user\nEnter the name of new user: ");
+            printf("\nAdding a new user\n"
+                "Enter the name of new user: ");
             char name[MAX_NAME_LENGTH] = { 0 };
             if (scanf_s("%s", name, MAX_NAME_LENGTH) == 0)
             {
