@@ -21,19 +21,19 @@ int test()
     addElement("2", "2", tree);
     addElement("1", "1", tree);
 
-    int* array = toArray(tree, 6);
+    int* array = toArray(tree);
     int expected0[] = { 1, 2, 6, 7, 8, 9 };
     testResults[0] = memcmp(expected0, array, sizeof(expected0));
     free(array);
 
     deleteElement("7", tree);
-    array = toArray(tree, 5);
+    array = toArray(tree);
     int expected1[] = { 1, 2, 6, 8, 9 };
     testResults[1] = memcmp(expected1, array, sizeof(expected1));
     free(array);
 
     deleteElement("1", tree);
-    array = toArray(tree, 4);
+    array = toArray(tree);
     int expected2[] = { 2, 6, 8, 9 };
     testResults[2] = memcmp(expected2, array, sizeof(expected2));
     free(array);

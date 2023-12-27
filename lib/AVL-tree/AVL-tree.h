@@ -22,4 +22,4 @@ char* get(char* key, AVLTree* tree);
 ErrorCode deleteElement(const char* key, AVLTree* tree);
 
 // tree to array
-char* toArray(const AVLTree* tree, const size_t size);
+char* toArray(const AVLTree* tree);

@@ -72,25 +72,25 @@ static Node* balance(Node** node)
         return NULL;
     }
 
-    fixHeight((*node));
-    if (balanceFactor((*node)) == 2)
+    fixHeight(*node);
+    if (balanceFactor(*node) == 2)
     {
         if (balanceFactor((*node)->rightChild) < 0)
         {
             (*node)->rightChild = rotateRight((*node)->rightChild);
         }
-        return rotateLeft((*node));
+        return rotateLeft(*node);
     }
-    if (balanceFactor((*node)) == -2)
+    if (balanceFactor(*node) == -2)
     {
         if (balanceFactor((*node)->leftChild) > 0)
         {
             (*node)->leftChild = rotateLeft((*node)->leftChild);
         }
-        return rotateRight((*node));
+        return rotateRight(*node);
     }
 
-    return (*node);
+    return *node;
 }
 
 static ErrorCode insertElement(Node** node, const char* key, const char* value)
@@ -205,7 +205,7 @@ Node* removeClosest(Node* node)
         return node->rightChild;
     }
     node->leftChild = removeClosest(node->leftChild);
-    return balance(node);
+    return balance(&node);
 }
 
 static Node* deleteNode(const char* key, Node* node)
@@ -222,7 +222,6 @@ static Node* deleteNode(const char* key, Node* node)
         Node* rightChild = node->rightChild;
         if (rightChild == NULL)
         {
-            freeNode(rightChild);
             return leftChild;
         }
         Node* closest = findClosest(rightChild);
