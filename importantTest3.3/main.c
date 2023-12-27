@@ -1,4 +1,5 @@
 #include "lexerOfEmails.h"
+#include "test.h"
 
 #include <stdio.h>
 
@@ -10,6 +11,14 @@ enum ErrorCode
 
 int main()
 {
+    int errorCode = test();
+    if (errorCode != 0)
+    {
+        printf("Test %d failed", errorCode);
+        return errorCode;
+    }
+
+    printf("Enter a line to check if it is an email: ");
     char string[100] = { 0 };
     if (scanf_s("%s", string, 100) == 0)
     {
@@ -17,5 +26,5 @@ int main()
         return invalidInput;
     }
 
-    printf(isEmailAddress(string) ? "DA" : "NET");
+    printf(isEmailAddress(string) ? "Yes it is" : "No it is not");
 }
